@@ -39,6 +39,8 @@ public class Client {
     public void setNom(String nom) throws SaisieException {
         if (nom == null || nom.isEmpty()) {
             throw new SaisieException("Le nom ne doit pas être vide");
+        } else if (!nom.matches(Regex.REGEXNOMPRENOM)) {
+            throw new SaisieException("Le nom ne corresponds pas");
         }
         this.nom = nom;
     }
@@ -50,6 +52,8 @@ public class Client {
     public void setPrenom(String prenom) throws SaisieException {
         if (prenom == null || prenom.isEmpty()) {
             throw new SaisieException("Le prénom ne doit pas être vide");
+        }else if (!prenom.matches(Regex.REGEXNOMPRENOM)) {
+            throw new SaisieException("Le prenom ne corresponds pas");
         }
         this.prenom = prenom;
     }
@@ -101,11 +105,12 @@ public class Client {
         try{
             if (dateNaissance == null) {
                 throw new SaisieException("La date de naissance ne corresponds pas");
+            }else{
+                this.dateNaissance = dateNaissance;
             }
         }catch (SaisieException e){
             throw new SaisieException("La date de naissance ne corresponds pas");
         }
-        this.dateNaissance = dateNaissance;
     }
 
     public String getMutuelle() {
@@ -126,6 +131,8 @@ public class Client {
     public void setMedecinTraitant(String medecinTraitant) throws SaisieException {
         if (medecinTraitant == null || medecinTraitant.isEmpty()) {
             throw new SaisieException("Le medecin traitant ne doit pas être vide");
+        } else if (medecinTraitant.matches(Regex.REGEXNOMPRENOM)) {
+            throw new SaisieException("Le medecin traitant ne corresponds pas");
         }
         this.medecinTraitant = medecinTraitant;
     }
@@ -137,6 +144,8 @@ public class Client {
     public void setSpecialiste(String specialiste) throws SaisieException {
         if(specialiste == null || specialiste.isEmpty()) {
             throw new SaisieException("La spécialite ne doit pas être vide");
+        } else if (specialiste.matches(Regex.REGEXNOMPRENOM)) {
+            throw new SaisieException("Le specialite ne corresponds pas");
         }
         this.specialiste = specialiste;
     }

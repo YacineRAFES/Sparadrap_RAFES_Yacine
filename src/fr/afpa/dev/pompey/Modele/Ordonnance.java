@@ -13,6 +13,7 @@ public class Ordonnance {
 
 
     //GETTER ET SETTER
+    //TODO A FAIRE
     public LocalDate getDate() {
         return date;
     }
