@@ -3,22 +3,41 @@ package fr.afpa.dev.pompey.Modele;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Regex;
 
+import javax.security.sasl.SaslException;
 import java.time.LocalDate;
 
 public class Client {
     private String nom;
     private String prenom;
     private String adresse;
+    private String codePostal;
+    private String ville;
     private String telephone;
     private String email;
     private String numeroSecuClient;
-    private LocalDate dateNaissance;
+    private String dateNaissance;
     private String mutuelle;
     private String medecinTraitant;
-    private String specialiste;
 
     //CONSTRUCTEURS
+    public Client(){
 
+    }
+
+    public Client(String nom, String prenom, String adresse, String codePostal, String ville, String telephone, String email,
+                  String numeroSecuClient, String dateNaissance, String mutuelle, String medecinTraitant) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.adresse = adresse;
+        this.codePostal = codePostal;
+        this.ville = ville;
+        this.telephone = telephone;
+        this.email = email;
+        this.numeroSecuClient = numeroSecuClient;
+        this.dateNaissance = dateNaissance;
+        this.mutuelle = mutuelle;
+        this.medecinTraitant = medecinTraitant;
+    }
 
     //GETTER ET SETTER
     public String getAdresse() {
@@ -57,6 +76,33 @@ public class Client {
         }
         this.prenom = prenom;
     }
+
+    public String getVille() {
+        return ville;
+    }
+
+    public void setVille(String ville) throws SaisieException {
+        if (ville == null || ville.isEmpty()) {
+            throw new SaisieException("la ville ne doit pas être vide");
+        } else if (!ville.matches(Regex.REGEXNOMPRENOM)) {
+            throw new SaisieException("la ville ne corresponds pas.");
+        }
+        this.ville = ville;
+    }
+
+    public String getCodePostal() {
+        return codePostal;
+    }
+
+    public void setCodePostal(String codePostal) throws SaisieException {
+        if (codePostal == null || codePostal.isEmpty()) {
+            throw new SaisieException("le code postal ne doit pas vide.");
+        } else if (!codePostal.matches(Regex.REGEXCODEPOSTAL)) {
+            throw new SaisieException("le code postal ne corresponds pas");
+        }
+        this.codePostal = codePostal;
+    }
+
 
     public String getTelephone() {
         return telephone;
@@ -97,11 +143,11 @@ public class Client {
         this.numeroSecuClient = numeroSecuClient;
     }
 
-    public LocalDate getDateNaissance() {
+    public String getDateNaissance() {
         return dateNaissance;
     }
 
-    public void setDateNaissance(LocalDate dateNaissance) throws SaisieException {
+    public void setDateNaissance(String dateNaissance) throws SaisieException {
         try{
             if (dateNaissance == null) {
                 throw new SaisieException("La date de naissance ne corresponds pas");
@@ -137,16 +183,8 @@ public class Client {
         this.medecinTraitant = medecinTraitant;
     }
 
-    public String getSpecialiste() {
-        return specialiste;
-    }
-
-    public void setSpecialiste(String specialiste) throws SaisieException {
-        if(specialiste == null || specialiste.isEmpty()) {
-            throw new SaisieException("La spécialite ne doit pas être vide");
-        } else if (specialiste.matches(Regex.REGEXNOMPRENOM)) {
-            throw new SaisieException("Le specialite ne corresponds pas");
-        }
-        this.specialiste = specialiste;
+    @Override
+    public String toString() {
+        return nom + " " + prenom;
     }
 }

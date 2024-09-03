@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class Medecin {
     private String nom;
     private String prenom;
-    private String adresse;
+    private String rue;
     private String codePostal;
     private String ville;
     private String telephone;
@@ -18,7 +18,14 @@ public class Medecin {
     private String specialite;
 
     //CONSTRUCTEURS
+    public Medecin(){
 
+    }
+
+    public Medecin(String nom, String prenom){
+        this.nom = nom;
+        this.prenom = prenom;
+    }
 
     //GETTER ET SETTER
     public String getNom() {
@@ -47,15 +54,15 @@ public class Medecin {
         this.prenom = prenom;
     }
 
-    public String getAdresse() {
-        return adresse;
+    public String getRue() {
+        return rue;
     }
 
-    public void setAdresse(String adresse) throws SaisieException {
-        if (adresse == null || adresse.isEmpty()) {
+    public void setRue(String rue) throws SaisieException {
+        if (rue == null || rue.isEmpty()) {
             throw new SaisieException("L'adresse ne doit pas être vide");
         }
-        this.adresse = adresse;
+        this.rue = rue;
     }
 
     public String getCodePostal() {
@@ -135,9 +142,9 @@ public class Medecin {
 
     public void setSpecialite(String specialite) throws SaisieException {
         if (specialite == null || specialite.isEmpty()) {
-            throw new SaisieException("la specialité ne doit pas être vide.");
+            throw new SaisieException("La specialité ne doit pas être vide.");
         } else if (!specialite.matches(Regex.REGEXNOMPRENOM)) {
-            throw new SaisieException("le nom de spécialité ne corresponds pas");
+            throw new SaisieException("Le nom de spécialité ne corresponds pas");
         }
         this.specialite = specialite;
     }

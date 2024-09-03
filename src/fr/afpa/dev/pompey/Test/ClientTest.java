@@ -186,7 +186,7 @@ class ClientTest {
 
     @ParameterizedTest
     @NullSource
-    void setDateNaissanceNullSource(LocalDate dateNaissance) {
+    void setDateNaissanceNullSource(String dateNaissance) {
         Exception e =  assertThrows(Exception.class, () -> {
             clientUnderTest.setDateNaissance(dateNaissance);
         });
@@ -235,28 +235,6 @@ class ClientTest {
             clientUnderTest.setMedecinTraitant(medecinTraitant);
         });
         assertEquals("Le medecin traitant ne doit pas être vide", e.getMessage());
-    }
-
-    @org.junit.jupiter.api.Test
-    void getSpecialiste() {
-    }
-
-    @ParameterizedTest
-    @NullSource
-    void setSpecialisteNullSource(String Specialiste) {
-        Exception e =  assertThrows(Exception.class, () -> {
-            clientUnderTest.setSpecialiste(Specialiste);
-        });
-        assertEquals("La spécialite ne doit pas être vide", e.getMessage());
-    }
-
-    @ParameterizedTest
-    @EmptySource
-    void setSpecialisteEmptySource(String Specialiste) {
-        Exception e =  assertThrows(Exception.class, () -> {
-            clientUnderTest.setSpecialiste(Specialiste);
-        });
-        assertEquals("La spécialite ne doit pas être vide", e.getMessage());
     }
 
     @org.junit.jupiter.api.AfterEach
