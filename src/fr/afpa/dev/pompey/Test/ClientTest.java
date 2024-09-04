@@ -1,6 +1,8 @@
 package fr.afpa.dev.pompey.Test;
 
 import fr.afpa.dev.pompey.Modele.Client;
+import fr.afpa.dev.pompey.Modele.Medecin;
+import fr.afpa.dev.pompey.Modele.Mutuelle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
@@ -199,40 +201,22 @@ class ClientTest {
 
     @ParameterizedTest
     @NullSource
-    void setMutuelleNullSource(String mutuelle) {
+    void setMutuelleNullSource(Object mutuelle) {
         Exception e =  assertThrows(Exception.class, () -> {
-            clientUnderTest.setMutuelle(mutuelle);
-        });
-        assertEquals("La mutuelle ne doit pas être vide", e.getMessage());
-    }
-
-    @ParameterizedTest
-    @EmptySource
-    void setMutuelleEmptySource(String mutuelle) {
-        Exception e =  assertThrows(Exception.class, () -> {
-            clientUnderTest.setMutuelle(mutuelle);
+            clientUnderTest.setMutuelle((Mutuelle) mutuelle);
         });
         assertEquals("La mutuelle ne doit pas être vide", e.getMessage());
     }
 
     @org.junit.jupiter.api.Test
-    void getMedecinTraitant() {
+    void getMedecin() {
     }
 
     @ParameterizedTest
     @NullSource
-    void setMedecinTraitantNullSource(String medecinTraitant) {
+    void setMedecinTraitantNullSource(Object medecin) {
         Exception e =  assertThrows(Exception.class, () -> {
-            clientUnderTest.setMedecinTraitant(medecinTraitant);
-        });
-        assertEquals("Le medecin traitant ne doit pas être vide", e.getMessage());
-    }
-
-    @ParameterizedTest
-    @EmptySource
-    void setMedecinTraitantEmptySource(String medecinTraitant) {
-        Exception e =  assertThrows(Exception.class, () -> {
-            clientUnderTest.setMedecinTraitant(medecinTraitant);
+            clientUnderTest.setMedecin((Medecin) medecin);
         });
         assertEquals("Le medecin traitant ne doit pas être vide", e.getMessage());
     }

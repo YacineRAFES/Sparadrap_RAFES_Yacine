@@ -1,20 +1,22 @@
 package fr.afpa.dev.pompey.Modele;
 
-import fr.afpa.dev.pompey.Exception.SaisieException;
-
 import java.time.LocalDate;
 
-public class Ordonnance {
+public class AchatSansOrdonnance {
+    private Client client;
     private LocalDate date;
     private String[] listeMedicament;
-    private Client client;
-    private Medecin medecin;
 
     //CONSTRUCTEURS
+    public AchatSansOrdonnance() {
 
+    }
+
+    public AchatSansOrdonnance(Client client, LocalDate date, String[] listeMedicament) {
+
+    }
 
     //GETTER ET SETTER
-
     public Client getClient() {
         return client;
     }
@@ -23,22 +25,11 @@ public class Ordonnance {
         this.client = client;
     }
 
-    public Medecin getMedecin() {
-        return medecin;
-    }
-
-    public void setMedecin(Medecin medecin) {
-        this.medecin = medecin;
-    }
-
     public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) throws SaisieException {
-        if(date == null || date.isBefore(LocalDate.now())){
-            throw new SaisieException("La date n'est pas valide");
-        }
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -49,5 +40,4 @@ public class Ordonnance {
     public void setListeMedicament(String[] listeMedicament) {
         this.listeMedicament = listeMedicament;
     }
-
 }

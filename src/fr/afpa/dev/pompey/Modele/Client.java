@@ -16,8 +16,8 @@ public class Client {
     private String email;
     private String numeroSecuClient;
     private String dateNaissance;
-    private String mutuelle;
-    private String medecinTraitant;
+    private Mutuelle mutuelle;
+    private Medecin medecin;
 
     //CONSTRUCTEURS
     public Client(){
@@ -25,7 +25,7 @@ public class Client {
     }
 
     public Client(String nom, String prenom, String adresse, String codePostal, String ville, String telephone, String email,
-                  String numeroSecuClient, String dateNaissance, String mutuelle, String medecinTraitant) {
+                  String numeroSecuClient, String dateNaissance, Mutuelle mutuelle, Medecin medecin) {
         this.nom = nom;
         this.prenom = prenom;
         this.adresse = adresse;
@@ -36,10 +36,28 @@ public class Client {
         this.numeroSecuClient = numeroSecuClient;
         this.dateNaissance = dateNaissance;
         this.mutuelle = mutuelle;
-        this.medecinTraitant = medecinTraitant;
+        this.medecin = medecin;
     }
 
+
+
     //GETTER ET SETTER
+    public Mutuelle getMutuelle() {
+        return mutuelle;
+    }
+
+    public void setMutuelle(Mutuelle mutuelle) {
+        this.mutuelle = mutuelle;
+    }
+
+    public Medecin getMedecin() {
+        return medecin;
+    }
+
+    public void setMedecin(Medecin medecin) {
+        this.medecin = medecin;
+    }
+
     public String getAdresse() {
         return adresse;
     }
@@ -157,30 +175,6 @@ public class Client {
         }catch (SaisieException e){
             throw new SaisieException("La date de naissance ne corresponds pas");
         }
-    }
-
-    public String getMutuelle() {
-        return mutuelle;
-    }
-
-    public void setMutuelle(String mutuelle) throws SaisieException {
-        if (mutuelle == null || mutuelle.isEmpty()) {
-            throw new SaisieException("La mutuelle ne doit pas être vide");
-        }
-        this.mutuelle = mutuelle;
-    }
-
-    public String getMedecinTraitant() {
-        return medecinTraitant;
-    }
-
-    public void setMedecinTraitant(String medecinTraitant) throws SaisieException {
-        if (medecinTraitant == null || medecinTraitant.isEmpty()) {
-            throw new SaisieException("Le medecin traitant ne doit pas être vide");
-        } else if (medecinTraitant.matches(Regex.REGEXNOMPRENOM)) {
-            throw new SaisieException("Le medecin traitant ne corresponds pas");
-        }
-        this.medecinTraitant = medecinTraitant;
     }
 
     @Override

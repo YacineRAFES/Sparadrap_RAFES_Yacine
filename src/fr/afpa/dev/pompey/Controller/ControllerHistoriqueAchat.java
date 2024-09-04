@@ -2,12 +2,12 @@ package fr.afpa.dev.pompey.Controller;
 
 import javax.swing.*;
 
-public class HistoriqueAchat extends javax.swing.JFrame {
+public class ControllerHistoriqueAchat extends javax.swing.JFrame {
     private JTable table1;
     private JPanel contentPane;
     private JTextField barreDeRecherche;
 
-    public HistoriqueAchat() {
+    public ControllerHistoriqueAchat() {
         setTitle("Historique d'Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);

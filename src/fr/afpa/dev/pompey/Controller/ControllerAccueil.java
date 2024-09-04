@@ -5,14 +5,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Accueil extends JFrame {
+public class ControllerAccueil extends JFrame {
     private JPanel contentPane;
     private JButton achatButton;
     private JButton historiqueDAchatButton;
     private JButton détailMédecinButton;
     private JButton détailClientButton;
 
-    public Accueil(){
+    public ControllerAccueil(){
 
         setTitle("Accueil");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,7 +45,7 @@ public class Accueil extends JFrame {
     }
 
     private void historiqueDAchat() {
-        HistoriqueAchat historiqueAchat = new HistoriqueAchat();
+        ControllerHistoriqueAchat historiqueAchat = new ControllerHistoriqueAchat();
         historiqueAchat.setVisible(true);
     }
 }

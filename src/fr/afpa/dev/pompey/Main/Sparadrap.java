@@ -1,6 +1,6 @@
 package fr.afpa.dev.pompey.Main;
 
-import fr.afpa.dev.pompey.Controller.Accueil;
+import fr.afpa.dev.pompey.Controller.ControllerAccueil;
 
 public class Sparadrap {
     public static void main(String[] args) {
@@ -8,7 +8,7 @@ public class Sparadrap {
         sparadrap.start();
     }
     public void start() {
-        Accueil accueil = new Accueil();
+        ControllerAccueil accueil = new ControllerAccueil();
         accueil.setVisible(true);
     }
 }

@@ -55,5 +55,21 @@ public class Verification {
         return saisie;
     }
 
+    public static String Prix(String saisie) throws SaisieException {
+        if(!saisie.matches(Regex.REGEXPRIX)) {
+            Fenetre.Fenetre("Le prix ne corresponds pas");
+            throw new SaisieException();
+        }
+        return saisie;
+    }
+
+    public static int Quantite(String saisie) throws SaisieException {
+        if(!saisie.matches(Regex.REGEXQUANTITE)) {
+            Fenetre.Fenetre("Le quantite ne corresponds pas");
+            throw new SaisieException();
+        }
+        return Integer.parseInt(saisie);
+    }
+
 
 }

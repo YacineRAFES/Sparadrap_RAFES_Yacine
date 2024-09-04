@@ -14,7 +14,12 @@ public class Mutuelle {
     private String tauxDePriseEnCharge;
 
     //CONSTRUCTEURS
+    public Mutuelle(){
 
+    }
+    public Mutuelle(String nom){
+        this.nom = nom;
+    }
 
     //GETTER ET SETTER
     public String getNom() {

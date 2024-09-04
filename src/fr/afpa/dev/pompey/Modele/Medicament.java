@@ -9,11 +9,25 @@ public class Medicament {
     private String nom;
     private String categorie;
     private String prix;
-    private LocalDate miseEnService;
+    private String miseEnService;
     private int quantite;
 
     //CONSTRUCTEURS
+    public Medicament(){
 
+    }
+
+    public Medicament(String nom){
+        this.nom = nom;
+    }
+
+    public Medicament(String nom, String categorie, String prix, String miseEnService, int quantite){
+        this.nom = nom;
+        this.categorie = categorie;
+        this.prix = prix;
+        this.miseEnService = miseEnService;
+        this.quantite = quantite;
+    }
 
     //GETTER ET SETTER
     public String getNom() {
@@ -53,11 +67,11 @@ public class Medicament {
         this.prix = prix;
     }
 
-    public LocalDate getMiseEnService() {
+    public String getMiseEnService() {
         return miseEnService;
     }
 
-    public void setMiseEnService(LocalDate miseEnService) throws SaisieException {
+    public void setMiseEnService(String miseEnService) throws SaisieException {
         try{
             if (miseEnService == null) {
                 throw new SaisieException("La mise en service ne doit pas être vide");
@@ -76,5 +90,10 @@ public class Medicament {
 
     public void setQuantite(int quantite) {
         this.quantite = quantite;
+    }
+
+    @Override
+    public String toString() {
+        return this.nom;
     }
 }

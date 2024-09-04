@@ -3,7 +3,7 @@ package fr.afpa.dev.pompey.Controller;
 import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.AjouterPlaceholder;
 import javax.swing.*;
 
-public class ControllerMedecin extends javax.swing.JFrame {
+public class ControllerMedecin extends JFrame {
     private JPanel contentPane;
     private JTextField nomTextField;
     private JLabel coordonneeLabel;

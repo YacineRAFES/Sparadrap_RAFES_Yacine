@@ -22,6 +22,7 @@ public class Medecin {
 
     }
 
+
     public Medecin(String nom, String prenom){
         this.nom = nom;
         this.prenom = prenom;
@@ -147,5 +148,10 @@ public class Medecin {
             throw new SaisieException("Le nom de spécialité ne corresponds pas");
         }
         this.specialite = specialite;
+    }
+
+    @Override
+    public String toString() {
+        return getNom() + " " + getPrenom();
     }
 }

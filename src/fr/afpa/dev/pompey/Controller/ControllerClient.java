@@ -3,6 +3,7 @@ package fr.afpa.dev.pompey.Controller;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.Medecin;
+import fr.afpa.dev.pompey.Modele.Mutuelle;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
@@ -35,6 +36,7 @@ public class ControllerClient extends JFrame {
     private JLabel contactLabel;
 
     public ControllerClient(){
+
         setTitle("Client");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
@@ -49,7 +51,7 @@ public class ControllerClient extends JFrame {
         AjouterPlaceholder(dateNaissanceTextField, "Date de naissance");
         AjouterPlaceholder(secusocialTextField, "Num. sécurité social");
         AjouterPlaceholder(mutuelleTextField, "Mutuelle");
-        AjouterPlaceholder(medTraitantTextField, "Nom Prénom");
+        AjouterPlaceholder(medTraitantTextField, "Médecin Traitant");
         AjouterPlaceholder(cpTextField, "Code postal");
         AjouterPlaceholder(telephoneTextField, "Numéro de téléphone");
         AjouterPlaceholder(emailTextField, "Email");
@@ -106,6 +108,12 @@ public class ControllerClient extends JFrame {
         String medTraitantNom = medTraitantSplit[0].trim();
         String medTraitantPrenom = medTraitantSplit[1].trim();
 
+        //Transformations en Object
+        Mutuelle mutuelleObj = new Mutuelle(Verification.NomPrenom(mutuelle, "Mutuelle"));
+        Medecin medecinObj = new Medecin(
+                Verification.NomPrenom(medTraitantNom, "le médecin traitant"),
+                Verification.NomPrenom(medTraitantPrenom, "le prénom du medecin traitant"));
+
         Client client = new Client(
                 Verification.NomPrenom(nom, "Nom"),
                 Verification.NomPrenom(prenom, "Prénom"),
@@ -116,8 +124,8 @@ public class ControllerClient extends JFrame {
                 Verification.Email(email),
                 Verification.SecuSocial(secusocial),
                 Verification.BirthDate(dateNaissance),
-                Verification.NomPrenom(mutuelle, "Mutuelle"),
-                Verification.NomPrenom(medTraitant, "le médecin traitant")
+                mutuelleObj,
+                medecinObj
         );
 
         Medecin medecin = new Medecin(
@@ -127,11 +135,13 @@ public class ControllerClient extends JFrame {
 
         addClient(client);
         addMedecin(medecin);
+        addMutuelle(mutuelleObj);
 
         Fenetre.Fenetre("Client enregistrée avec succès");
+        this.dispose();
 
         System.out.println(getClient());
-        System.out.println(client);
+        System.out.println(getMedecin());
 
         effaceToutLesChamps();
 
