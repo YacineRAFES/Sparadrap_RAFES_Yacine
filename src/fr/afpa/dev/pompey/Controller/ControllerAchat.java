@@ -1,19 +1,20 @@
 package fr.afpa.dev.pompey.Controller;
 
-import fr.afpa.dev.pompey.Modele.Client;
-import fr.afpa.dev.pompey.Modele.GestionListe;
-import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Medicament;
+import fr.afpa.dev.pompey.Exception.SaisieException;
+import fr.afpa.dev.pompey.Modele.*;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentTableModel;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Modele.Utilitaires.Generator;
 import fr.afpa.dev.pompey.Modele.Utilitaires.button;
 
+import static fr.afpa.dev.pompey.Modele.GestionListe.*;
 import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.List;
 
 
 public class ControllerAchat extends JFrame {
@@ -23,8 +24,8 @@ public class ControllerAchat extends JFrame {
     private JButton validerButton;
     private JComboBox clientCombobox;
     private JButton creerUnClientButton;
-    private JButton creerUnMédecinButton;
-    private JButton creerUnMédicamentButton;
+    private JButton creerUnMedecinButton;
+    private JButton creerUnMedicamentButton;
     private JComboBox medecinCombobox;
     private JComboBox medicamentCombobox;
     private JTable listeDeMedocTable;
@@ -35,6 +36,7 @@ public class ControllerAchat extends JFrame {
     private JLabel medecinLabel;
     private JComboBox typeAchatCombobox;
     private JButton ajouterUnMedicamentButton;
+    private JLabel prixLabel;
 
     public ControllerAchat() {
         //Création des constructeurs pour le test sur l'application
@@ -70,63 +72,52 @@ public class ControllerAchat extends JFrame {
         this.setLocationRelativeTo(null);
 
         //Fonctionnalité qui permet d'afficher le placeholder dans un combobox
-        AjouterPlaceholderComboboxNonEditable(typeAchatCombobox, "Type d'achat");
-        AjouterPlaceholderComboboxEditable(clientCombobox, "Selectionner un Client");
-        AjouterPlaceholderComboboxEditable(medecinCombobox, "Selectionner un Médecin");
-        AjouterPlaceholderComboboxEditable(medicamentCombobox, "Selectionner un Medicament");
+//        AjouterPlaceholderComboboxNonEditable(typeAchatCombobox, "Type d'achat");
+//        AjouterPlaceholderComboboxEditable(clientCombobox, "Selectionner un Client");
+//        AjouterPlaceholderComboboxEditable(medecinCombobox, "Selectionner un Médecin");
+//        AjouterPlaceholderComboboxEditable(medicamentCombobox, "Selectionner un Medicament");
 
 
-
+        // Les modèles
         DefaultComboBoxModel<Client> comboBoxModel1 = (DefaultComboBoxModel<Client>) clientCombobox.getModel();
         DefaultComboBoxModel<Medecin> comboBoxModel2 = (DefaultComboBoxModel<Medecin>) medecinCombobox.getModel();
         DefaultComboBoxModel<Medicament> comboBoxModel3 = (DefaultComboBoxModel<Medicament>) medicamentCombobox.getModel();
 
-        DefaultComboBoxModel<String> typeAchatModel = new DefaultComboBoxModel<>();
-        typeAchatModel.addElement("Achat direct");
-        typeAchatModel.addElement("Via ordonnance");
+        // Ajout des éléments avec ID dans le DefaultComboBoxModel
+        DefaultComboBoxModel<TypeAchat> typeAchatModel = new DefaultComboBoxModel<>();
+        typeAchatModel.addElement(new TypeAchat(0, "Type d'achat"));
+        typeAchatModel.addElement(new TypeAchat(1, "Achat direct"));
+        typeAchatModel.addElement(new TypeAchat(2, "Via ordonnance"));
         typeAchatCombobox.setModel(typeAchatModel);
 
-        ListeMedicamentTableModel model1 = new ListeMedicamentTableModel(GestionListe.getMedicament());
+        ListeMedicamentTableModel model1 = new ListeMedicamentTableModel(GestionListe.getTableMedicamentTemporaire());
         listeDeMedocTable.setModel(model1);
         listeDeMedocTable.getTableHeader().setResizingAllowed(false);
 
-        for(Client client : GestionListe.getClient()){
+        for (Client client : GestionListe.getClient()) {
             comboBoxModel1.addElement(client);
         }
-        for(Medecin medecin : GestionListe.getMedecin()){
+        for (Medecin medecin : GestionListe.getMedecin()) {
             comboBoxModel2.addElement(medecin);
         }
-        for(Medicament medicament : GestionListe.getMedicament()){
+        for (Medicament medicament : getMedicament()) {
             comboBoxModel3.addElement(medicament);
         }
 
-        listeDeMedocTable.getColumn("Action").setCellRenderer(new button.ButtonRenderer());
-        listeDeMedocTable.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = listeDeMedocTable.getSelectedRow();
-                Medicament medicament = GestionListe.getMedicament().get(row);
-
-                GestionListe.removeMedicament(medicament);
-                Refresh(listeDeMedocTable);
-                Fenetre.Fenetre("test");
-            }
-        }));
-
-        // Les listeners
+        // Les boutons de listeners
         creerUnClientButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 client();
             }
         });
-        creerUnMédecinButton.addActionListener(new ActionListener() {
+        creerUnMedecinButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 medecin();
             }
         });
-        creerUnMédicamentButton.addActionListener(new ActionListener() {
+        creerUnMedicamentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 medicament();
@@ -138,44 +129,166 @@ public class ControllerAchat extends JFrame {
                 ajouterUnMedicament();
             }
         });
+        validerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    valider();
+                } catch (SaisieException ex) {
+                    new RuntimeException(ex);
+                }
+            }
+        });
+        annulerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                annuler();
+            }
+        });
+        typeAchatCombobox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (typeAchatCombobox.getSelectedIndex() == 1) {
+                    medecinCombobox.setEnabled(false);
+                    medecinCombobox.setSelectedItem(null);
+                    medecinLabel.setForeground(Color.GRAY);
+                    creerUnMedecinButton.setEnabled(false);
+                    AjouterPlaceholderComboboxEditable(medecinCombobox, "Selectionner un Médecin");
+                } else {
+                    medecinCombobox.setEnabled(true);
+                    medecinLabel.setForeground(Color.BLACK);
+                    creerUnMedecinButton.setEnabled(true);
+                }
+            }
+        });
     }
 
     // les actions
+    // Ajouter un client
     private void client() {
         ControllerClient clientController = new ControllerClient();
         clientController.setVisible(true);
         clientController.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                actualiserLesCombobox();
+                DefaultComboBoxModel<Client> comboBoxModel1 = (DefaultComboBoxModel<Client>) clientCombobox.getModel();
+                DefaultComboBoxModel<Medecin> comboBoxModel2 = (DefaultComboBoxModel<Medecin>) medecinCombobox.getModel();
+                for (Client client : getClient()) {
+                    comboBoxModel1.addElement(client);
+                }
+                for(Medecin medecin : getMedecin()){
+                    comboBoxModel2.addElement(medecin);
+                }
+                clientCombobox.setModel(comboBoxModel1);
+                medecinCombobox.setModel(comboBoxModel2);
+
             }
         });
     }
 
+    // Ajouter un médecin
     private void medecin() {
         ControllerMedecin medecin = new ControllerMedecin();
         medecin.setVisible(true);
     }
 
+    // Ajouter un médicament
     private void medicament() {
-        ControllerMedicament medicament = new ControllerMedicament();
-        medicament.setVisible(true);
+        ControllerMedicament controllerMedicament = new ControllerMedicament();
+        controllerMedicament.setVisible(true);
+        controllerMedicament.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                DefaultComboBoxModel<Medicament> comboBoxModel3 = (DefaultComboBoxModel<Medicament>) medicamentCombobox.getModel();
+                for (Medicament medicament : getMedicament()) {
+                    comboBoxModel3.addElement(medicament);
+                }
+                medicamentCombobox.setModel(comboBoxModel3);
+            }
+        });
     }
 
+    // Ajouter un médicament
     private void ajouterUnMedicament() {
-
         Medicament medicament = new Medicament((String) medicamentCombobox.getSelectedItem());
 
-        ListeMedicamentTableModel newModel = new ListeMedicamentTableModel(GestionListe.getMedicament());
-        listeDeMedocTable.setModel(newModel);
-        listeDeMedocTable.getTableHeader().setResizingAllowed(false);
+        String medicamentTemporaire = (String) medicamentCombobox.getSelectedItem();
+        TableMedicamentTemporaire medicamentT = new TableMedicamentTemporaire(medicamentTemporaire);
 
-        ListeMedicamentTableModel tableMedoc = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
-        tableMedoc.addMedicament(medicament);
+        GestionListe.addMedicament(medicament);
+        GestionListe.addTableMedicamentTemporaire(medicamentT);
+        DefaultComboBoxModel<Medicament> comboBoxModel3 = new DefaultComboBoxModel<>();
+        for (Medicament medoc : getMedicament()) {
+            comboBoxModel3.addElement(medoc);
+        }
+        medicamentCombobox.setModel(comboBoxModel3);
 
         Refresh(listeDeMedocTable);
     }
 
+    //Validation de l'achat
+    private void valider() throws SaisieException {
+        int typeAchat = typeAchatCombobox.getSelectedIndex();
+        ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
+        List<TableMedicamentTemporaire> medicamentList = model.getMedicamentList();
+        String[] medoc = medicamentList.stream().map(TableMedicamentTemporaire::getNom).toArray(String[]::new);
+        if (typeAchat == 0) {
+            Fenetre.Fenetre("Veuillez sélectionner un type d'achat valide");
+            throw new SaisieException();
+        } else if (typeAchat == 1) {
+            GetClient();
+            AchatSansOrdonnance achatSansOrdonnance = new AchatSansOrdonnance(GetClient(), Generator.DateNow(), medoc);
+            GestionListe.addAchatSansOrdonnance(achatSansOrdonnance);
+        } else if (typeAchat == 2) {
+            GetClient();
+            GetMedecin();
+            Ordonnance ordonnance = new Ordonnance(Generator.DateNow(), medoc, GetClient(), GetMedecin());
+            GestionListe.addOrdonnance(ordonnance);
+        }
+        model.clear();
+        Fenetre.Fenetre("Achat effectué");
+        annuler();
+    }
+
+    //Annuler l'achat
+    private void annuler() {
+        if (typeAchatCombobox.getItemCount() > 0) {
+            typeAchatCombobox.setSelectedIndex(0);
+        }
+        if (clientCombobox.getItemCount() > 0) {
+            clientCombobox.setSelectedIndex(0);
+        }
+        if (medicamentCombobox.getItemCount() > 0) {
+            medicamentCombobox.setSelectedIndex(0);
+        }
+        if (medecinCombobox.getItemCount() > 0) {
+            medecinCombobox.setSelectedIndex(0);
+        }
+        // Vide la liste de médicaments
+        ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
+        model.clear();
+        AjouterPlaceholderComboboxNonEditable(typeAchatCombobox, "Type d'achat");
+        AjouterPlaceholderComboboxEditable(clientCombobox, "Selectionner un Client");
+        AjouterPlaceholderComboboxEditable(medecinCombobox, "Selectionner un Médecin");
+        AjouterPlaceholderComboboxEditable(medicamentCombobox, "Selectionner un Medicament");
+
+        DefaultComboBoxModel<Client> comboBoxModel1 = new DefaultComboBoxModel<>();
+        DefaultComboBoxModel<Medecin> comboBoxModel2 = new DefaultComboBoxModel<>();
+        DefaultComboBoxModel<Medicament> comboBoxModel3 = new DefaultComboBoxModel<>();
+        for (Client client : GestionListe.getClient()) {
+            comboBoxModel1.addElement(client);
+        }
+        for (Medecin medecin : GestionListe.getMedecin()) {
+            comboBoxModel2.addElement(medecin);
+        }
+        for (Medicament medicament : getMedicament()) {
+            comboBoxModel3.addElement(medicament);
+        }
+
+        clientCombobox.setModel(comboBoxModel1);
+        medecinCombobox.setModel(comboBoxModel2);
+        medicamentCombobox.setModel(comboBoxModel3);
+    }
 
 
     //Actualiser les combobox
@@ -188,10 +301,10 @@ public class ControllerAchat extends JFrame {
         for (Client client : GestionListe.getClient()) {
             comboBoxModel1.addElement(client);
         }
-        for(Medecin medecin : GestionListe.getMedecin()){
+        for (Medecin medecin : GestionListe.getMedecin()) {
             comboBoxModel2.addElement(medecin);
         }
-        for(Medicament medicament : GestionListe.getMedicament()){
+        for (Medicament medicament : getMedicament()) {
             comboBoxModel3.addElement(medicament);
         }
         clientCombobox.setModel(comboBoxModel1);
@@ -200,6 +313,61 @@ public class ControllerAchat extends JFrame {
 
     }
 
+    private Client GetClient() throws SaisieException {
+        Object selectedClient = clientCombobox.getSelectedItem();
+        if (!(selectedClient instanceof Client)) {
+            String[] clientSplit = ((String) selectedClient).split("\\s+", 2); // Limiter à deux parties
+            if (clientSplit.length != 2) {
+                Fenetre.Fenetre("Le nom et prénom du client doivent être séparés par un espace");
+                throw new SaisieException();
+            }
 
+            String clientNom = clientSplit[0].trim();
+            String clientPrenom = clientSplit[1].trim();
 
+            Client client = new Client(clientNom, clientPrenom);
+            addClient(client);
+            clientCombobox.setSelectedItem(client);
+        }
+        return (Client) clientCombobox.getSelectedItem();
+
+    }
+
+    private Medecin GetMedecin() throws SaisieException {
+        Object selectedMedecin = medecinCombobox.getSelectedItem();
+
+        // Si aucun médecin n'est sélectionné ou saisi
+        if (selectedMedecin == null || selectedMedecin.toString().trim().isEmpty()) {
+            Fenetre.Fenetre("Veuillez sélectionner ou saisir un médecin valide");
+            throw new SaisieException("Médecin non sélectionné ou saisi.");
+        }
+
+        // Vérifier si l'élément est déjà un objet Medecin
+        if (selectedMedecin instanceof Medecin) {
+            return (Medecin) selectedMedecin; // Retourner le médecin sélectionné
+        } else {
+            // Si c'est une chaîne de caractères, essayer de créer un nouveau médecin
+            String medecinText = selectedMedecin.toString().trim();
+            String[] medecinSplit = medecinText.split("\\s+", 2); // Diviser en nom et prénom
+
+            if (medecinSplit.length != 2) {
+                Fenetre.Fenetre("Le nom et prénom du médecin doivent être séparés par un espace.");
+                throw new SaisieException("Format de saisie incorrect.");
+            }
+
+            String medecinNom = medecinSplit[0].trim();
+            String medecinPrenom = medecinSplit[1].trim();
+
+            // Créer un nouveau médecin
+            Medecin nouveauMedecin = new Medecin(medecinNom, medecinPrenom);
+
+            // Ajouter le nouveau médecin à la liste et actualiser le ComboBox
+            addMedecin(nouveauMedecin);
+
+            // Sélectionner le nouveau médecin dans le ComboBox
+            medecinCombobox.setSelectedItem(nouveauMedecin);
+
+            return nouveauMedecin;
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package fr.afpa.dev.pompey.Controller;
 
+import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentTableModel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,6 +13,7 @@ public class ControllerAccueil extends JFrame {
     private JButton historiqueDAchatButton;
     private JButton détailMédecinButton;
     private JButton détailClientButton;
+    private JTable listeDeMedocTable;
 
     public ControllerAccueil(){
 
@@ -40,8 +43,16 @@ public class ControllerAccueil extends JFrame {
     }
 
     private void achat() {
-        ControllerAchat achat = new ControllerAchat();
-        achat.setVisible(true);
+        ControllerAchat controllerAchat = new ControllerAchat();
+        controllerAchat.setVisible(true);
+        controllerAchat.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+//                TODO : Vider la table de la liste de médicament quand on ferme la fenetre d'achat
+//                ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
+//                model.clear();
+            }
+        });
     }
 
     private void historiqueDAchat() {

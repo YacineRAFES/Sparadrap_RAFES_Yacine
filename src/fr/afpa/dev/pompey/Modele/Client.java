@@ -24,6 +24,11 @@ public class Client {
 
     }
 
+    public Client(String nom, String prenom) {
+        this.nom = nom;
+        this.prenom = prenom;
+    }
+
     public Client(String nom, String prenom, String adresse, String codePostal, String ville, String telephone, String email,
                   String numeroSecuClient, String dateNaissance, Mutuelle mutuelle, Medecin medecin) {
         this.nom = nom;
@@ -46,7 +51,10 @@ public class Client {
         return mutuelle;
     }
 
-    public void setMutuelle(Mutuelle mutuelle) {
+    public void setMutuelle(Mutuelle mutuelle) throws SaisieException {
+        if (mutuelle == null) {
+            throw new SaisieException("La mutuelle ne doit pas être vide");
+        }
         this.mutuelle = mutuelle;
     }
 
@@ -54,7 +62,10 @@ public class Client {
         return medecin;
     }
 
-    public void setMedecin(Medecin medecin) {
+    public void setMedecin(Medecin medecin) throws SaisieException {
+        if(medecin == null){
+            throw new SaisieException("Le medecin ne doit pas être vide");
+        }
         this.medecin = medecin;
     }
 

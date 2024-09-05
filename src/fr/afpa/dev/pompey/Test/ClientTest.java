@@ -218,7 +218,7 @@ class ClientTest {
         Exception e =  assertThrows(Exception.class, () -> {
             clientUnderTest.setMedecin((Medecin) medecin);
         });
-        assertEquals("Le medecin traitant ne doit pas être vide", e.getMessage());
+        assertEquals("Le medecin ne doit pas être vide", e.getMessage());
     }
 
     @org.junit.jupiter.api.AfterEach

@@ -41,7 +41,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="e7768" class="javax.swing.JTable" binding="table1" default-binding="true">
+              <component id="e7768" class="javax.swing.JTable" binding="tableHistoriqueAchat">
                 <constraints/>
                 <properties/>
               </component>

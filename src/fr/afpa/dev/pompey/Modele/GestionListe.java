@@ -9,6 +9,8 @@ public class GestionListe {
     private static List<Mutuelle> mutuelle = new ArrayList<>();
     private static List<Medicament> medicament = new ArrayList<>();
     private static List<AchatSansOrdonnance> achatSansOrdonnance = new ArrayList<>();
+    private static List<Ordonnance> ordonnance = new ArrayList<>();
+    private static List<TableMedicamentTemporaire> tableMedicamentTemporaire = new ArrayList<>();
 
     //GETTER, ADDERS ET REMOVERS
     public static List<Client> getClient() {
@@ -54,4 +56,34 @@ public class GestionListe {
     public static void addAchatSansOrdonnance(AchatSansOrdonnance achatSansOrdonnance) {
         getAchatSansOrdonnance().add(achatSansOrdonnance);
     }
+
+    public static void removeAchatSansOrdonnance(AchatSansOrdonnance achatSansOrdonnance) {
+        getAchatSansOrdonnance().remove(achatSansOrdonnance);
+    }
+
+    public static List<Ordonnance> getOrdonnance() {
+        return ordonnance;
+    }
+
+    public static void addOrdonnance(Ordonnance ordonnance) {
+        getOrdonnance().add(ordonnance);
+    }
+
+    public static void removeOrdonnance(Ordonnance ordonnance) {
+        getOrdonnance().remove(ordonnance);
+    }
+
+    public static List<TableMedicamentTemporaire> getTableMedicamentTemporaire() {
+        return tableMedicamentTemporaire;
+    }
+
+    public static void addTableMedicamentTemporaire(TableMedicamentTemporaire tableMedicamentTemporaire) {
+        getTableMedicamentTemporaire().add(tableMedicamentTemporaire);
+    }
+
+    public static void removeTableMedicamentTemporaire(TableMedicamentTemporaire tableMedicamentTemporaire) {
+        getTableMedicamentTemporaire().remove(tableMedicamentTemporaire);
+    }
+
+
 }

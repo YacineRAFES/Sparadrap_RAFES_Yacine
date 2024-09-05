@@ -3,7 +3,7 @@ package fr.afpa.dev.pompey.Controller;
 import javax.swing.*;
 
 public class ControllerHistoriqueAchat extends javax.swing.JFrame {
-    private JTable table1;
+    private JTable tableHistoriqueAchat;
     private JPanel contentPane;
     private JTextField barreDeRecherche;
 
@@ -16,5 +16,7 @@ public class ControllerHistoriqueAchat extends javax.swing.JFrame {
 
         //le positionnement de la fenetre
         this.setLocationRelativeTo(null);
+
+
     }
 }

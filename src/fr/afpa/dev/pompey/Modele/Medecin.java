@@ -28,6 +28,19 @@ public class Medecin {
         this.prenom = prenom;
     }
 
+    public Medecin(String nom, String prenom, String rue, String codePostal, String ville, String telephone, String email, String numAgreement, Client client, String specialite){
+        this.nom = nom;
+        this.prenom = prenom;
+        this.rue = rue;
+        this.codePostal = codePostal;
+        this.ville = ville;
+        this.telephone = telephone;
+        this.email = email;
+        this.numAgreement = numAgreement;
+        this.client = client;
+        this.specialite = specialite;
+    }
+
     //GETTER ET SETTER
     public String getNom() {
         return nom;

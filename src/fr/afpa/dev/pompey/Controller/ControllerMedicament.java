@@ -13,6 +13,7 @@ import javax.swing.event.DocumentListener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 import static fr.afpa.dev.pompey.Modele.GestionListe.*;
 import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.*;
@@ -102,7 +103,7 @@ public class ControllerMedicament extends javax.swing.JFrame {
 
     private void valider() throws SaisieException {
         String nomMedoc = nomTextField.getText();
-        String categorieMedoc = categorieCombobox.getSelectedItem().toString();
+        String categorieMedoc = Objects.requireNonNull(categorieCombobox.getSelectedItem()).toString();
         String miseEnService = miseEnServiceTextField.getText();
         String prixMedoc = prixTextField.getText();
         String quantiteMedoc = quantiteTextField.getText();
@@ -120,11 +121,8 @@ public class ControllerMedicament extends javax.swing.JFrame {
                 Verification.Quantite(quantiteMedoc));
 
         addMedicament(medicament);
-        Fenetre.Fenetre("Client enregistrée avec succès");
-        this.dispose();
-
-        System.out.println(getClient());
-        System.out.println(getMedecin());
+        Fenetre.Fenetre("Médicament a été enregistrée avec succès");
+        System.out.println(medicament);
         annuler();
     }
 

@@ -11,7 +11,13 @@ public class Ordonnance {
     private Medecin medecin;
 
     //CONSTRUCTEURS
+    public Ordonnance(LocalDate date, String[] listeMedicament, Client client, Medecin medecin) {
+        this.date = date;
+        this.listeMedicament = listeMedicament;
+        this.client = client;
+        this.medecin = medecin;
 
+    }
 
     //GETTER ET SETTER
 

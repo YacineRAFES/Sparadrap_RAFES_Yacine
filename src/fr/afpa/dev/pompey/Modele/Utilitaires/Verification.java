@@ -15,6 +15,14 @@ public class Verification {
         return saisie.toUpperCase();
     }
 
+    public static String String(String saisie) throws SaisieException {
+        if(!saisie.matches(Regex.REGEXSTRING)) {
+            Fenetre.Fenetre("La saisie ne corresponds pas, seuls les caractères sont acceptés");
+            throw new SaisieException();
+        }
+        return saisie;
+    }
+
     public static String Email(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXEMAIL)) {
             Fenetre.Fenetre("L'email ne corresponds pas");
@@ -65,7 +73,7 @@ public class Verification {
 
     public static int Quantite(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXQUANTITE)) {
-            Fenetre.Fenetre("Le quantite ne corresponds pas");
+            Fenetre.Fenetre("Le quantite ne corresponds pas, seuls les entiers sont acceptés");
             throw new SaisieException();
         }
         return Integer.parseInt(saisie);
