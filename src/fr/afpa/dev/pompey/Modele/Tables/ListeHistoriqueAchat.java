@@ -59,7 +59,7 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
                 }
                 return total;
             case 4:
-                return "Supprimer";
+                return "Détails";
             default:
                 return null;
         }

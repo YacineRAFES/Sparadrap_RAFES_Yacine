@@ -4,6 +4,7 @@ import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.Medicament;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Modele.Utilitaires.Generator;
 import fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
 
@@ -81,7 +82,7 @@ public class ControllerMedicament extends javax.swing.JFrame {
         AjouterPlaceholder(quantiteTextField, "Quantite");
         AjouterPlaceholderComboboxEditable(categorieCombobox, "Categorie");
 
-
+        miseEnServiceTextField.setText("30/12/2024");
         annulerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

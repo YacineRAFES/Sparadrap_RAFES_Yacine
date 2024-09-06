@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class ListeMedicamentTableModel extends AbstractTableModel {
 
     private final String[] ENTETE = new String[] {
-            "Nom", "Quantite", "Prix", "Actions"
+            "Nom", "Quantite", "Prix", "Action"
     };
 
     private final List<TableMedicamentTemporaire> tableMedicamentTemporaire;
@@ -59,21 +59,22 @@ public class ListeMedicamentTableModel extends AbstractTableModel {
         }
     }
     public boolean isCellEditable(int row, int column) {
-        if (column == 1 || column == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex){
         TableMedicamentTemporaire table = tableMedicamentTemporaire.get(rowIndex);
+        Medicament medicament = new Medicament();
         try{
             if(0 == columnIndex) {
                 table.setNom(Verification.String((String) aValue));
             }
             else if(1 == columnIndex) {
                 table.setQuantite(Verification.Quantite((String) aValue));
+            } else if (2 == columnIndex) {
+                table.setPrix(Verification.Prix((String) aValue));
+                medicament.setPrix(Verification.Prix((String) aValue));
+
             }
         }catch (SaisieException e){
             Fenetre.Fenetre("Une erreur est survenu");

@@ -13,7 +13,16 @@ public class TableMedicamentTemporaire {
         this.nom = nom;
     }
 
+    public TableMedicamentTemporaire(Medicament medicament, int quantite, String prix) {
+        this.nom = medicament.getNom();
+        this.quantite = quantite;
+        this.prix = prix;
+    }
+
     public TableMedicamentTemporaire(Medicament medicament) {
+        this.nom = medicament.getNom();
+        this.prix = medicament.getPrix();
+        this.quantite = medicament.getQuantite();
     }
 
     public String getNom() {

@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ControllerAchat extends JFrame {
@@ -39,28 +40,33 @@ public class ControllerAchat extends JFrame {
     private JLabel prixLabel;
 
     public ControllerAchat() {
+        //TODO Ajouter les boutons supprimés
+        //TODO Faire l'historique des achats
+        //TODO quand on crée un médicament avec la quantité, dans la tabletemporaire, la quantité est à 0
         //Création des constructeurs pour le test sur l'application
-//        Mutuelle mutuelleTest = new Mutuelle("Mutuelle X");
-//        Medecin medecinTest = new Medecin("Doctor", "House");
-//        Medicament medicamentTest = new Medicament("antibactériens");
-//        Client clientTest = new Client(
-//                "Dupont",
-//                "Jean",
-//                "123 rue de la Paix",
-//                "75001",
-//                "Paris",
-//                "0123456789",
-//                "jean.dupont@example.com",
-//                "123456789012345",
-//                "01/01/1980",
-//                mutuelleTest,
-//                medecinTest
-//        );
-//
-//        addClient(clientTest);
-//        addMedecin(medecinTest);
-//        addMutuelle(mutuelleTest);
-//        addMedicament(medicamentTest);
+        Mutuelle mutuelleTest = new Mutuelle("Mutuelle X");
+        Medecin medecinTest = new Medecin("Doctor", "House");
+        Medicament medicamentTest = new Medicament("antibactériens");
+        Medicament medicamentTest1 = new Medicament("");
+        Client clientTest = new Client(
+                "Dupont",
+                "Jean",
+                "123 rue de la Paix",
+                "75001",
+                "Paris",
+                "0123456789",
+                "jean.dupont@example.com",
+                "123456789012345",
+                "01/01/1980",
+                mutuelleTest,
+                medecinTest
+        );
+
+        addClient(clientTest);
+        addMedecin(medecinTest);
+        addMutuelle(mutuelleTest);
+        addMedicament(medicamentTest);
+        addMedicament(medicamentTest1);
 
         setTitle("Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -91,8 +97,8 @@ public class ControllerAchat extends JFrame {
         typeAchatCombobox.setModel(typeAchatModel);
 
         ListeMedicamentTableModel model1 = new ListeMedicamentTableModel(GestionListe.getTableMedicamentTemporaire());
-        listeDeMedocTable.setModel(model1);
-        listeDeMedocTable.getTableHeader().setResizingAllowed(false);
+        this.listeDeMedocTable.setModel(model1);
+        this.listeDeMedocTable.getTableHeader().setResizingAllowed(false);
 
         for (Client client : GestionListe.getClient()) {
             comboBoxModel1.addElement(client);
@@ -103,6 +109,20 @@ public class ControllerAchat extends JFrame {
         for (Medicament medicament : getMedicament()) {
             comboBoxModel3.addElement(medicament);
         }
+
+        listeDeMedocTable.getColumn("Action").setCellRenderer(new button.ButtonRenderer());
+        listeDeMedocTable.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = listeDeMedocTable.getEditingRow(); // Get the row being edited (clicked)
+                if (row >= 0) { // Ensure the row index is valid
+                    TableMedicamentTemporaire temp = GestionListe.getTableMedicamentTemporaire().get(row);
+                    GestionListe.removeTableMedicamentTemporaire(temp);
+                    Refresh(listeDeMedocTable);
+                    Fenetre.Fenetre("Médicament supprimé de la liste");
+                }
+            }
+        }));
 
         // Les boutons de listeners
         creerUnClientButton.addActionListener(new ActionListener() {
@@ -126,7 +146,11 @@ public class ControllerAchat extends JFrame {
         ajouterUnMedicamentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ajouterUnMedicament();
+                try {
+                    ajouterUnMedicament();
+                } catch (SaisieException ex) {
+                    new RuntimeException(ex);
+                }
             }
         });
         validerButton.addActionListener(new ActionListener() {
@@ -199,7 +223,9 @@ public class ControllerAchat extends JFrame {
         controllerMedicament.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+
                 DefaultComboBoxModel<Medicament> comboBoxModel3 = (DefaultComboBoxModel<Medicament>) medicamentCombobox.getModel();
+                comboBoxModel3.removeAllElements();
                 for (Medicament medicament : getMedicament()) {
                     comboBoxModel3.addElement(medicament);
                 }
@@ -209,22 +235,63 @@ public class ControllerAchat extends JFrame {
     }
 
     // Ajouter un médicament
-    private void ajouterUnMedicament() {
-        Medicament medicament = new Medicament((String) medicamentCombobox.getSelectedItem());
+    private void ajouterUnMedicament() throws SaisieException {
+        // Vérifier si un médicament est sélectionné dans la combobox
 
-        String medicamentTemporaire = (String) medicamentCombobox.getSelectedItem();
-        TableMedicamentTemporaire medicamentT = new TableMedicamentTemporaire(medicamentTemporaire);
+        Object selectedItem = medicamentCombobox.getSelectedItem();
+        Medicament selectedMedicament = null;
+        if (selectedItem instanceof Medicament) {
+            selectedMedicament = (Medicament) selectedItem;
+        } else if (selectedItem instanceof String) {
+            selectedMedicament = new Medicament((String) selectedItem);
+        }
 
-        GestionListe.addMedicament(medicament);
-        GestionListe.addTableMedicamentTemporaire(medicamentT);
+        if (selectedMedicament == null) {
+            Fenetre.Fenetre("Veuillez sélectionner ou ajouter un médicament");
+            throw new SaisieException();
+        }
+
+        String nomMedicament = selectedMedicament.getNom();
+        Medicament medicament = new Medicament(nomMedicament);
+        TableMedicamentTemporaire tableMedicamentTemporaire = new TableMedicamentTemporaire(selectedMedicament);
+
+
+        // Vérifier si le médicament est déjà dans la table temporaire
+        for (TableMedicamentTemporaire uniqueMedicamentTemp : getTableMedicamentTemporaire()) {
+            if (uniqueMedicamentTemp.getNom().equals(medicament.getNom())) {
+                Fenetre.Fenetre("Ce médicament est déjà ajouté");
+                throw new SaisieException();
+            }
+        }
+
+        // Ajouter le médicament à la table temporaire
+        GestionListe.addTableMedicamentTemporaire(tableMedicamentTemporaire);
+
+        // Vérifier si le médicament est déjà dans la liste globale
+        boolean existsInList = false;
+        for (Medicament uniqueMedicament : getMedicament()) {
+            if (uniqueMedicament.getNom().equals(medicament.getNom())) {
+                existsInList = true;
+                break;
+            }
+        }
+
+        // Ajouter le médicament si il n'existe pas dans la liste
+        if (!existsInList) {
+            GestionListe.addMedicament(medicament);
+        }
+
+        // Rafraîchir le modèle de la combobox
         DefaultComboBoxModel<Medicament> comboBoxModel3 = new DefaultComboBoxModel<>();
         for (Medicament medoc : getMedicament()) {
             comboBoxModel3.addElement(medoc);
         }
         medicamentCombobox.setModel(comboBoxModel3);
 
+        // Rafraîchir la table
         Refresh(listeDeMedocTable);
     }
+
 
     //Validation de l'achat
     private void valider() throws SaisieException {
@@ -232,6 +299,7 @@ public class ControllerAchat extends JFrame {
         ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
         List<TableMedicamentTemporaire> medicamentList = model.getMedicamentList();
         String[] medoc = medicamentList.stream().map(TableMedicamentTemporaire::getNom).toArray(String[]::new);
+
         if (typeAchat == 0) {
             Fenetre.Fenetre("Veuillez sélectionner un type d'achat valide");
             throw new SaisieException();
@@ -245,6 +313,7 @@ public class ControllerAchat extends JFrame {
             Ordonnance ordonnance = new Ordonnance(Generator.DateNow(), medoc, GetClient(), GetMedecin());
             GestionListe.addOrdonnance(ordonnance);
         }
+
         model.clear();
         Fenetre.Fenetre("Achat effectué");
         annuler();
@@ -267,10 +336,6 @@ public class ControllerAchat extends JFrame {
         // Vide la liste de médicaments
         ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
         model.clear();
-        AjouterPlaceholderComboboxNonEditable(typeAchatCombobox, "Type d'achat");
-        AjouterPlaceholderComboboxEditable(clientCombobox, "Selectionner un Client");
-        AjouterPlaceholderComboboxEditable(medecinCombobox, "Selectionner un Médecin");
-        AjouterPlaceholderComboboxEditable(medicamentCombobox, "Selectionner un Medicament");
 
         DefaultComboBoxModel<Client> comboBoxModel1 = new DefaultComboBoxModel<>();
         DefaultComboBoxModel<Medecin> comboBoxModel2 = new DefaultComboBoxModel<>();
