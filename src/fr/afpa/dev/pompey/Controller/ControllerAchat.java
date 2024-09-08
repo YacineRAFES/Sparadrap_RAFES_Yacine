@@ -3,9 +3,7 @@ package fr.afpa.dev.pompey.Controller;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.*;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentTableModel;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Generator;
-import fr.afpa.dev.pompey.Modele.Utilitaires.button;
+import fr.afpa.dev.pompey.Modele.Utilitaires.*;
 
 import static fr.afpa.dev.pompey.Modele.GestionListe.*;
 import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.*;
@@ -40,14 +38,12 @@ public class ControllerAchat extends JFrame {
     private JLabel prixLabel;
 
     public ControllerAchat() {
-        //TODO Ajouter les boutons supprimés
         //TODO Faire l'historique des achats
         //TODO quand on crée un médicament avec la quantité, dans la tabletemporaire, la quantité est à 0
         //Création des constructeurs pour le test sur l'application
         Mutuelle mutuelleTest = new Mutuelle("Mutuelle X");
         Medecin medecinTest = new Medecin("Doctor", "House");
         Medicament medicamentTest = new Medicament("antibactériens");
-        Medicament medicamentTest1 = new Medicament("");
         Client clientTest = new Client(
                 "Dupont",
                 "Jean",
@@ -66,12 +62,11 @@ public class ControllerAchat extends JFrame {
         addMedecin(medecinTest);
         addMutuelle(mutuelleTest);
         addMedicament(medicamentTest);
-        addMedicament(medicamentTest1);
 
         setTitle("Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
-        this.setResizable(false);
+        this.setResizable(true);
         this.pack();
 
         // le positionnement de la fenetre
@@ -84,7 +79,7 @@ public class ControllerAchat extends JFrame {
 //        AjouterPlaceholderComboboxEditable(medicamentCombobox, "Selectionner un Medicament");
 
 
-        // Les modèles
+        // Les modèles combobox
         DefaultComboBoxModel<Client> comboBoxModel1 = (DefaultComboBoxModel<Client>) clientCombobox.getModel();
         DefaultComboBoxModel<Medecin> comboBoxModel2 = (DefaultComboBoxModel<Medecin>) medecinCombobox.getModel();
         DefaultComboBoxModel<Medicament> comboBoxModel3 = (DefaultComboBoxModel<Medicament>) medicamentCombobox.getModel();
@@ -108,6 +103,11 @@ public class ControllerAchat extends JFrame {
         }
         for (Medicament medicament : getMedicament()) {
             comboBoxModel3.addElement(medicament);
+        }
+
+        // Quand le texte dépasse la largeur de la colonne, on ajout "..."
+        for (int i = 0; i < listeDeMedocTable.getColumnCount(); i++) {
+            listeDeMedocTable.getColumnModel().getColumn(i).setCellRenderer(new CustomTableCellRenderer());
         }
 
         listeDeMedocTable.getColumn("Action").setCellRenderer(new button.ButtonRenderer());

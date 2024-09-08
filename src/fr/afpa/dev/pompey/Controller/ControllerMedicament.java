@@ -48,13 +48,16 @@ public class ControllerMedicament extends javax.swing.JFrame {
         setTitle("Medicament");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
-        this.setResizable(false);
+        this.setResizable(true);
         this.pack();
 
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
-        DefaultComboBoxModel<Client> categorieModel = (DefaultComboBoxModel<Client>) categorieCombobox.getModel();
+        DefaultComboBoxModel<Medicament> categorieModel = (DefaultComboBoxModel<Medicament>) categorieCombobox.getModel();
+        for (String s : categorie) {
+            categorieModel.addElement(new Medicament(s));
+        }
 
         categorieCombobox.setModel(categorieModel);
         categorieCombobox.setEditable(true);
