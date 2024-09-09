@@ -69,7 +69,7 @@ public class GestionListe {
         getOrdonnance().add(ordonnance);
     }
 
-    public static void removeOrdonnance(Ordonnance ordonnance) {
+    public static void removeOrdonnance(int ordonnance) {
         getOrdonnance().remove(ordonnance);
     }
 
@@ -84,6 +84,5 @@ public class GestionListe {
     public static void removeTableMedicamentTemporaire(TableMedicamentTemporaire tableMedicamentTemporaire) {
         getTableMedicamentTemporaire().remove(tableMedicamentTemporaire);
     }
-
 
 }

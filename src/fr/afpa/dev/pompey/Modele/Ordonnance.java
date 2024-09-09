@@ -3,15 +3,16 @@ package fr.afpa.dev.pompey.Modele;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 public class Ordonnance {
     private LocalDate date;
-    private String[] listeMedicament;
+    private Map<String, Integer> listeMedicament;
     private Client client;
     private Medecin medecin;
 
     //CONSTRUCTEURS
-    public Ordonnance(LocalDate date, String[] listeMedicament, Client client, Medecin medecin) {
+    public Ordonnance(LocalDate date, Map<String, Integer> listeMedicament, Client client, Medecin medecin) {
         this.date = date;
         this.listeMedicament = listeMedicament;
         this.client = client;
@@ -48,11 +49,11 @@ public class Ordonnance {
         this.date = date;
     }
 
-    public String[] getListeMedicament() {
+    public Map<String, Integer> getListeMedicament() {
         return listeMedicament;
     }
 
-    public void setListeMedicament(String[] listeMedicament) {
+    public void setListeMedicament(Map<String, Integer> listeMedicament) {
         this.listeMedicament = listeMedicament;
     }
 

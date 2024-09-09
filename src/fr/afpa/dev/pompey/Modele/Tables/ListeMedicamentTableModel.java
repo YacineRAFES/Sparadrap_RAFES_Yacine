@@ -8,7 +8,6 @@ import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ListeMedicamentTableModel extends AbstractTableModel {
 
@@ -49,7 +48,7 @@ public class ListeMedicamentTableModel extends AbstractTableModel {
             case 0:
                 return table.getNom();
             case 1:
-                return table.getQuantite();
+                return "0";
             case 2:
                 return table.getPrix();
             case 3:

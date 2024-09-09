@@ -12,7 +12,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -40,28 +42,7 @@ public class ControllerAchat extends JFrame {
     public ControllerAchat() {
         //TODO Faire l'historique des achats
         //TODO quand on crée un médicament avec la quantité, dans la tabletemporaire, la quantité est à 0
-        //Création des constructeurs pour le test sur l'application
-        Mutuelle mutuelleTest = new Mutuelle("Mutuelle X");
-        Medecin medecinTest = new Medecin("Doctor", "House");
-        Medicament medicamentTest = new Medicament("antibactériens");
-        Client clientTest = new Client(
-                "Dupont",
-                "Jean",
-                "123 rue de la Paix",
-                "75001",
-                "Paris",
-                "0123456789",
-                "jean.dupont@example.com",
-                "123456789012345",
-                "01/01/1980",
-                mutuelleTest,
-                medecinTest
-        );
-
-        addClient(clientTest);
-        addMedecin(medecinTest);
-        addMutuelle(mutuelleTest);
-        addMedicament(medicamentTest);
+        //TODO AJOUTER LE PRIX DANS LA TABLE TEMPORAIRE
 
         setTitle("Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -81,7 +62,7 @@ public class ControllerAchat extends JFrame {
 
         // Les modèles combobox
         DefaultComboBoxModel<Client> comboBoxModel1 = (DefaultComboBoxModel<Client>) clientCombobox.getModel();
-        DefaultComboBoxModel<Medecin> comboBoxModel2 = (DefaultComboBoxModel<Medecin>) medecinCombobox.getModel();
+        DefaultComboBoxModel<Medecin> comboBoxModel2    = (DefaultComboBoxModel<Medecin>) medecinCombobox.getModel();
         DefaultComboBoxModel<Medicament> comboBoxModel3 = (DefaultComboBoxModel<Medicament>) medicamentCombobox.getModel();
 
         // Ajout des éléments avec ID dans le DefaultComboBoxModel
@@ -177,7 +158,6 @@ public class ControllerAchat extends JFrame {
                     medecinCombobox.setSelectedItem(null);
                     medecinLabel.setForeground(Color.GRAY);
                     creerUnMedecinButton.setEnabled(false);
-                    AjouterPlaceholderComboboxEditable(medecinCombobox, "Selectionner un Médecin");
                 } else {
                     medecinCombobox.setEnabled(true);
                     medecinLabel.setForeground(Color.BLACK);
@@ -287,6 +267,7 @@ public class ControllerAchat extends JFrame {
             comboBoxModel3.addElement(medoc);
         }
         medicamentCombobox.setModel(comboBoxModel3);
+//        prixLabel.setText((ListeMedicamentTableModel) listeDeMedocTable.getModel().g);
 
         // Rafraîchir la table
         Refresh(listeDeMedocTable);
@@ -298,7 +279,11 @@ public class ControllerAchat extends JFrame {
         int typeAchat = typeAchatCombobox.getSelectedIndex();
         ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
         List<TableMedicamentTemporaire> medicamentList = model.getMedicamentList();
-        String[] medoc = medicamentList.stream().map(TableMedicamentTemporaire::getNom).toArray(String[]::new);
+        Map<String, Integer> listeMedicament = medicamentList.stream()
+                .map(med -> med.getNom() + " (" + med.getQuantite() + ", " + med.getPrix() + "€)")
+                .toArray(String[]::new);
+
+        System.out.println(Arrays.toString(medoc));
 
         if (typeAchat == 0) {
             Fenetre.Fenetre("Veuillez sélectionner un type d'achat valide");
@@ -313,6 +298,7 @@ public class ControllerAchat extends JFrame {
             Ordonnance ordonnance = new Ordonnance(Generator.DateNow(), medoc, GetClient(), GetMedecin());
             GestionListe.addOrdonnance(ordonnance);
         }
+
 
         model.clear();
         Fenetre.Fenetre("Achat effectué");
@@ -435,4 +421,9 @@ public class ControllerAchat extends JFrame {
             return nouveauMedecin;
         }
     }
+
+    public ListeMedicamentTableModel getTableModel() {
+        return (ListeMedicamentTableModel) listeDeMedocTable.getModel();
+    }
+
 }

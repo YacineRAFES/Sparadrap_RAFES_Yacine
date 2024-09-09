@@ -27,7 +27,6 @@ public class ControllerAccueil extends JFrame {
         //le positionnement de la fenetre
         setLocationRelativeTo(null);
 
-
         achatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -48,9 +47,11 @@ public class ControllerAccueil extends JFrame {
         controllerAchat.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-//                TODO : Vider la table de la liste de médicament quand on ferme la fenetre d'achat
-//                ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
-//                model.clear();
+                ListeMedicamentTableModel modelListeDeMedoc = controllerAchat.getTableModel();
+                // Vider le modèle
+                if (modelListeDeMedoc != null) {
+                    modelListeDeMedoc.clear();
+                }
             }
         });
     }

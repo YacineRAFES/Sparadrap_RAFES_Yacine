@@ -1,19 +1,22 @@
 package fr.afpa.dev.pompey.Modele;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 public class AchatSansOrdonnance {
     private Client client;
     private LocalDate date;
-    private String[] listeMedicament;
+    private Map<String, Integer> listeMedicament;
 
     //CONSTRUCTEURS
     public AchatSansOrdonnance() {
 
     }
 
-    public AchatSansOrdonnance(Client client, LocalDate date, String[] listeMedicament) {
-
+    public AchatSansOrdonnance(Client client, LocalDate date, Map<String, Integer> listeMedicament) {
+        this.client = client;
+        this.date = date;
+        this.listeMedicament = listeMedicament;
     }
 
     //GETTER ET SETTER
@@ -33,11 +36,12 @@ public class AchatSansOrdonnance {
         this.date = date;
     }
 
-    public String[] getListeMedicament() {
+    public Map<String, Integer> getListeMedicament() {
         return listeMedicament;
     }
 
-    public void setListeMedicament(String[] listeMedicament) {
+    public void setListeMedicament(Map<String, Integer> listeMedicament) {
         this.listeMedicament = listeMedicament;
     }
+
 }

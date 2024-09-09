@@ -1,25 +1,23 @@
 package fr.afpa.dev.pompey.Modele.Tables;
 
 import fr.afpa.dev.pompey.Modele.AchatSansOrdonnance;
-import fr.afpa.dev.pompey.Modele.Medicament;
 import fr.afpa.dev.pompey.Modele.Ordonnance;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class ListeHistoriqueAchat extends AbstractTableModel {
+
     private final String[] ENTETE = new String[] {
-            "Nom Client", "Prénom Client", "Type d'Achat", "Prix", "Actions"
+            "Date", "Client", "Type d'Achat", "Détail", "Action"
     };
 
-    private final List<AchatSansOrdonnance> AchatSansOrdonnance;
-    private final List<Ordonnance> Ordonnance;
-    private final List<Medicament> Medicament;
+    private final List<AchatSansOrdonnance> achatSansOrdonnances;
+    private final List<Ordonnance> ordonnances;
 
-    public ListeHistoriqueAchat(List<AchatSansOrdonnance> AchatSansOrdonnance, List<Ordonnance> ordonnance, List<Medicament> medicament) {
-        this.AchatSansOrdonnance = AchatSansOrdonnance;
-        this.Ordonnance = ordonnance;
-        this.Medicament = medicament;
+    public ListeHistoriqueAchat(List<AchatSansOrdonnance> achatSansOrdonnances, List<Ordonnance> ordonnances) {
+        this.achatSansOrdonnances = achatSansOrdonnances;
+        this.ordonnances = ordonnances;
     }
 
     @Override
@@ -29,39 +27,63 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return 0;
+        return ordonnances.size() + achatSansOrdonnances.size();
     }
 
     @Override
     public int getColumnCount() {
-        return 0;
+        return ENTETE.length;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        AchatSansOrdonnance achatSansOrdonnance = AchatSansOrdonnance.get(rowIndex);
-        Ordonnance ordonnance = Ordonnance.get(rowIndex);
-        switch (columnIndex) {
-            case 0:
-                return achatSansOrdonnance.getClient().getNom() != null ? achatSansOrdonnance.getClient().getNom() : ordonnance.getClient().getNom();
-            case 1:
-                return achatSansOrdonnance.getClient().getPrenom() != null ? achatSansOrdonnance.getClient().getPrenom() : ordonnance.getClient().getPrenom();
-            case 2:
-                if (achatSansOrdonnance == null) {
-                    return "Ordonnance";
-                } else {
+        if (rowIndex < achatSansOrdonnances.size()) {
+            // Si l'index est dans les limites de achatSansOrdonnances
+            AchatSansOrdonnance achatSansOrdonnance = achatSansOrdonnances.get(rowIndex);
+            switch (columnIndex) {
+                case 0:
+                    return achatSansOrdonnance.getDate();
+                case 1:
+                    return achatSansOrdonnance.getClient() != null
+                            ? achatSansOrdonnance.getClient().getPrenom() + " " + achatSansOrdonnance.getClient().getNom()
+                            : "Client inconnu";
+                case 2:
                     return "Sans Ordonnance";
-                }
-            case 3:
-                int total = 0;
-                for (int i = 0; i < achatSansOrdonnance.getListeMedicament().length; i++) {
-                    total = achatSansOrdonnance.getListeMedicament()[i].equals(Medicament.get(i).getNom()) ? Integer.parseInt(Medicament.get(i).getPrix()) : 0;
-                }
-                return total;
-            case 4:
-                return "Détails";
-            default:
-                return null;
+                case 3:
+                    return "Détails";
+                case 4:
+                    return "Supprimer";
+                default:
+                    return null;
+            }
+        } else {
+            // Si l'index dépasse achatSansOrdonnances, il faut accéder à la liste des ordonnances
+            int ordonnanceIndex = rowIndex - achatSansOrdonnances.size();  // Calculer l'index relatif pour ordonnance
+            Ordonnance ordonnance = ordonnances.get(ordonnanceIndex);
+            switch (columnIndex) {
+                case 0:
+                    return ordonnance.getDate();
+                case 1:
+                    return ordonnance.getClient() != null
+                            ? ordonnance.getClient().getPrenom() + " " + ordonnance.getClient().getNom()
+                            : "Client inconnu";
+                case 2:
+                    return "Ordonnance";
+                case 3:
+                    return "Détails";
+                case 4:
+                    return "Supprimer";
+                default:
+                    return null;
+            }
         }
     }
+
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return true;
+    }
+
+
 }
