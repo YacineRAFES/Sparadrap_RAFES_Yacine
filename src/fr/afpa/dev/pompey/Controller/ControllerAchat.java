@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 public class ControllerAchat extends JFrame {
@@ -59,7 +59,6 @@ public class ControllerAchat extends JFrame {
 //        AjouterPlaceholderComboboxEditable(medecinCombobox, "Selectionner un Médecin");
 //        AjouterPlaceholderComboboxEditable(medicamentCombobox, "Selectionner un Medicament");
 
-
         // Les modèles combobox
         DefaultComboBoxModel<Client> comboBoxModel1 = (DefaultComboBoxModel<Client>) clientCombobox.getModel();
         DefaultComboBoxModel<Medecin> comboBoxModel2    = (DefaultComboBoxModel<Medecin>) medecinCombobox.getModel();
@@ -75,6 +74,8 @@ public class ControllerAchat extends JFrame {
         ListeMedicamentTableModel model1 = new ListeMedicamentTableModel(GestionListe.getTableMedicamentTemporaire());
         this.listeDeMedocTable.setModel(model1);
         this.listeDeMedocTable.getTableHeader().setResizingAllowed(false);
+
+        model1.addTableModelListener(e -> PrixTotalLabel());
 
         for (Client client : GestionListe.getClient()) {
             comboBoxModel1.addElement(client);
@@ -100,6 +101,7 @@ public class ControllerAchat extends JFrame {
                     TableMedicamentTemporaire temp = GestionListe.getTableMedicamentTemporaire().get(row);
                     GestionListe.removeTableMedicamentTemporaire(temp);
                     Refresh(listeDeMedocTable);
+                    PrixTotalLabel();
                     Fenetre.Fenetre("Médicament supprimé de la liste");
                 }
             }
@@ -233,7 +235,7 @@ public class ControllerAchat extends JFrame {
 
         String nomMedicament = selectedMedicament.getNom();
         Medicament medicament = new Medicament(nomMedicament);
-        TableMedicamentTemporaire tableMedicamentTemporaire = new TableMedicamentTemporaire(selectedMedicament);
+        TableMedicamentTemporaire tableMedicamentTemporaire = new TableMedicamentTemporaire(selectedMedicament, 0, selectedMedicament.getPrix());
 
 
         // Vérifier si le médicament est déjà dans la table temporaire
@@ -256,7 +258,7 @@ public class ControllerAchat extends JFrame {
             }
         }
 
-        // Ajouter le médicament si il n'existe pas dans la liste
+        // Ajouter le médicament s'il n'existe pas dans la liste
         if (!existsInList) {
             GestionListe.addMedicament(medicament);
         }
@@ -269,40 +271,45 @@ public class ControllerAchat extends JFrame {
         medicamentCombobox.setModel(comboBoxModel3);
 //        prixLabel.setText((ListeMedicamentTableModel) listeDeMedocTable.getModel().g);
 
+        PrixTotalLabel();
         // Rafraîchir la table
         Refresh(listeDeMedocTable);
     }
 
-
     //Validation de l'achat
     private void valider() throws SaisieException {
+        Refresh(listeDeMedocTable);
         int typeAchat = typeAchatCombobox.getSelectedIndex();
         ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
         List<TableMedicamentTemporaire> medicamentList = model.getMedicamentList();
-        Map<String, Integer> listeMedicament = medicamentList.stream()
-                .map(med -> med.getNom() + " (" + med.getQuantite() + ", " + med.getPrix() + "€)")
-                .toArray(String[]::new);
+        String[][] listeMedicament = new String[medicamentList.size()][3];
+        for (int i = 0; i < medicamentList.size(); i++) {
+            listeMedicament[i][0] = medicamentList.get(i).getNom();
+            listeMedicament[i][1] = String.valueOf(medicamentList.get(i).getQuantite());
+            int prixMedoc = Integer.parseInt(medicamentList.get(i).getPrix());
+            listeMedicament[i][2] = String.valueOf(medicamentList.get(i).getQuantite() * prixMedoc);
+        }
 
-        System.out.println(Arrays.toString(medoc));
+        System.out.println(Arrays.deepToString(listeMedicament));
 
         if (typeAchat == 0) {
             Fenetre.Fenetre("Veuillez sélectionner un type d'achat valide");
             throw new SaisieException();
         } else if (typeAchat == 1) {
             GetClient();
-            AchatSansOrdonnance achatSansOrdonnance = new AchatSansOrdonnance(GetClient(), Generator.DateNow(), medoc);
+            AchatSansOrdonnance achatSansOrdonnance = new AchatSansOrdonnance(GetClient(), Generator.DateNow(), listeMedicament, PrixTotal());
             GestionListe.addAchatSansOrdonnance(achatSansOrdonnance);
         } else if (typeAchat == 2) {
             GetClient();
             GetMedecin();
-            Ordonnance ordonnance = new Ordonnance(Generator.DateNow(), medoc, GetClient(), GetMedecin());
+            Ordonnance ordonnance = new Ordonnance(Generator.DateNow(), listeMedicament, GetClient(), GetMedecin(), PrixTotal());
             GestionListe.addOrdonnance(ordonnance);
         }
-
 
         model.clear();
         Fenetre.Fenetre("Achat effectué");
         annuler();
+        PrixTotalLabel();
     }
 
     //Annuler l'achat
@@ -340,7 +347,6 @@ public class ControllerAchat extends JFrame {
         medecinCombobox.setModel(comboBoxModel2);
         medicamentCombobox.setModel(comboBoxModel3);
     }
-
 
     //Actualiser les combobox
     private void actualiserLesCombobox() {
@@ -424,6 +430,31 @@ public class ControllerAchat extends JFrame {
 
     public ListeMedicamentTableModel getTableModel() {
         return (ListeMedicamentTableModel) listeDeMedocTable.getModel();
+    }
+
+    public void PrixTotalLabel() {
+        double prixTotal = 0.0;
+        for (TableMedicamentTemporaire prix : getTableMedicamentTemporaire()) {
+            String prixStr = prix.getPrix();
+            int qantity = prix.getQuantite();
+            if (prixStr != null && !prixStr.trim().isEmpty()) {
+                prixTotal += Double.parseDouble(prixStr) * qantity;
+            }
+        }
+        prixLabel.setText("Prix total : " + prixTotal);
+    }
+
+    public double PrixTotal() {
+        double prixTotal = 0.0;
+        for (TableMedicamentTemporaire prix : getTableMedicamentTemporaire()) {
+            String prixStr = prix.getPrix();
+            int qantity = prix.getQuantite();
+            if (prixStr != null && !prixStr.trim().isEmpty()) {
+                prixTotal += Double.parseDouble(prixStr) * qantity;
+            }
+        }
+        return prixTotal;
+
     }
 
 }

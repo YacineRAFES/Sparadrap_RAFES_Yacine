@@ -1,5 +1,7 @@
 package fr.afpa.dev.pompey.Controller;
 
+import fr.afpa.dev.pompey.Modele.GestionListe;
+import fr.afpa.dev.pompey.Modele.Medicament;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentTableModel;
 
 import javax.swing.*;
@@ -27,6 +29,17 @@ public class ControllerAccueil extends JFrame {
         //le positionnement de la fenetre
         setLocationRelativeTo(null);
 
+        Medicament medicament91 = new Medicament("amikacine","antibiotique", "33", "10/09/2024", 10);
+        Medicament medicament92 = new Medicament("dibékacine","antibiotique", "61", "10/09/2024", 10);
+        Medicament medicament93 = new Medicament("gentamicine","antibiotique", "6", "10/09/2024", 10);
+        Medicament medicament94 = new Medicament("kanamycine","antibiotique", "97", "10/09/2024", 10);
+        Medicament medicament95 = new Medicament("néomycine","antibiotique", "54", "10/09/2024", 10);
+        GestionListe.addMedicament(medicament91);
+        GestionListe.addMedicament(medicament92);
+        GestionListe.addMedicament(medicament93);
+        GestionListe.addMedicament(medicament94);
+        GestionListe.addMedicament(medicament95);
+
         achatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -52,6 +65,7 @@ public class ControllerAccueil extends JFrame {
                 if (modelListeDeMedoc != null) {
                     modelListeDeMedoc.clear();
                 }
+
             }
         });
     }

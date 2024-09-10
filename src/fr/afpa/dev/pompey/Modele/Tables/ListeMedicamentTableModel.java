@@ -1,7 +1,6 @@
 package fr.afpa.dev.pompey.Modele.Tables;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Medicament;
 import fr.afpa.dev.pompey.Modele.TableMedicamentTemporaire;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
@@ -48,7 +47,7 @@ public class ListeMedicamentTableModel extends AbstractTableModel {
             case 0:
                 return table.getNom();
             case 1:
-                return "0";
+                return table.getQuantite();
             case 2:
                 return table.getPrix();
             case 3:
@@ -58,21 +57,25 @@ public class ListeMedicamentTableModel extends AbstractTableModel {
         }
     }
     public boolean isCellEditable(int row, int column) {
-        return true;
+        if(column == 1 || column == 3){
+            return true;
+        }else{
+            return false;
+        }
     }
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex){
         if (rowIndex >= 0 && rowIndex < tableMedicamentTemporaire.size()) {
             TableMedicamentTemporaire table = tableMedicamentTemporaire.get(rowIndex);
-            Medicament medicament = new Medicament();
             try {
                 if (0 == columnIndex) {
                     table.setNom(Verification.String((String) aValue));
                 } else if (1 == columnIndex) {
                     table.setQuantite(Verification.Quantite((String) aValue));
+                    fireTableCellUpdated(rowIndex, columnIndex);
+                    fireTableDataChanged();
                 } else if (2 == columnIndex) {
                     table.setPrix(Verification.Prix((String) aValue));
-                    medicament.setPrix(Verification.Prix((String) aValue));
                 }
             } catch (SaisieException e) {
                 Fenetre.Fenetre("Une erreur est survenue");

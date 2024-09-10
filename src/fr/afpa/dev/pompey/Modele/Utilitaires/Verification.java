@@ -76,7 +76,12 @@ public class Verification {
             Fenetre.Fenetre("Le quantite ne corresponds pas, seuls les entiers sont acceptés");
             throw new SaisieException();
         }
-        return Integer.parseInt(saisie);
+        try {
+            return Integer.parseInt(saisie);
+        } catch (NumberFormatException e) {
+            Fenetre.Fenetre("La quantité ne doit pas être supérieure à 2000000000");
+            throw new SaisieException();
+        }
     }
 
 

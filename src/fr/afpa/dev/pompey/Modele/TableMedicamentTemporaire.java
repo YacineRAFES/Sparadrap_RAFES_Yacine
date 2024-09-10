@@ -3,7 +3,7 @@ package fr.afpa.dev.pompey.Modele;
 public class TableMedicamentTemporaire {
     private String nom;
     private String prix;
-    private int quantite;
+    private int quantite = 0;
 
     public TableMedicamentTemporaire() {
 

@@ -7,17 +7,18 @@ import java.util.Map;
 
 public class Ordonnance {
     private LocalDate date;
-    private Map<String, Integer> listeMedicament;
+    private String[][] listeMedicament;
     private Client client;
     private Medecin medecin;
+    private double prixTotal;
 
     //CONSTRUCTEURS
-    public Ordonnance(LocalDate date, Map<String, Integer> listeMedicament, Client client, Medecin medecin) {
+    public Ordonnance(LocalDate date, String[][] listeMedicament, Client client, Medecin medecin, double prixTotal) {
         this.date = date;
         this.listeMedicament = listeMedicament;
         this.client = client;
         this.medecin = medecin;
-
+        this.prixTotal = prixTotal;
     }
 
     //GETTER ET SETTER
@@ -49,12 +50,20 @@ public class Ordonnance {
         this.date = date;
     }
 
-    public Map<String, Integer> getListeMedicament() {
+    public String[][] getListeMedicament() {
         return listeMedicament;
     }
 
-    public void setListeMedicament(Map<String, Integer> listeMedicament) {
+    public void setListeMedicament(String[][] listeMedicament) {
         this.listeMedicament = listeMedicament;
+    }
+
+    public double getPrixTotal() {
+        return prixTotal;
+    }
+
+    public void setPrixTotal(double prixTotal) {
+        this.prixTotal = prixTotal;
     }
 
 }
