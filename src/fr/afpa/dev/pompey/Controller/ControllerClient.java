@@ -140,9 +140,6 @@ public class ControllerClient extends JFrame {
         Fenetre.Fenetre("Client enregistrée avec succès");
         this.dispose();
 
-        System.out.println(getClient());
-        System.out.println(getMedecin());
-
         effaceToutLesChamps();
 
     }

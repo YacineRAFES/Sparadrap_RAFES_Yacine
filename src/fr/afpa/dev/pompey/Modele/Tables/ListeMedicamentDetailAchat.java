@@ -14,12 +14,11 @@ import java.util.Locale;
 public class ListeMedicamentDetailAchat extends AbstractTableModel {
     private static String[][] data;
     private final String[] columnNames = {"Nom du Médicament", "Quantité", "Prix"};
-
     // Ajouter un tableau pour stocker les prix unitaires
     private final double[] prixUnitaires;
 
 
-    public ListeMedicamentDetailAchat(String[][] data) {
+    public ListeMedicamentDetailAchat(String[][] data){
         this.data = data;
 
         // Utiliser un format décimal qui supporte les virgules comme séparateur
@@ -38,27 +37,48 @@ public class ListeMedicamentDetailAchat extends AbstractTableModel {
         }
     }
 
+    //Récupére la longueur de la ligne
     @Override
     public int getRowCount() {
         return data.length;
     }
 
+    //Récupérer la longueur de la colonne
     @Override
     public int getColumnCount() {
         return columnNames.length;
     }
 
+    //Récupérer la valeur de la cellule
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         return data[rowIndex][columnIndex];
     }
 
+    // Seule la quantité est modifiable
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columnIndex == 1;
+    }
+
+    //Récupérer le nom de la colonne
+    @Override
+    public String getColumnName(int columnIndex) {
+        return columnNames[columnIndex];
+    }
+
+    //Saisir la nouvelle quantité
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         try {
             NumberFormat format = NumberFormat.getInstance(Locale.FRANCE); // Utiliser pour formater les nombres avec virgules
             DecimalFormat decimalFormat = (DecimalFormat) format;
-            decimalFormat.applyPattern("#,##0.00"); // Appliquer un format décimal avec virgule
+            decimalFormat.applyPattern("#,##0.00");
+
+            boolean autoriserModif = Fenetre.Confirmation("Voulez-vous vraiment modifier la quantité ?");
+            if(!autoriserModif){
+                return;
+            }
 
             if (columnIndex == 1) { // Quantité modifiée
                 int nouvelleQuantite = Verification.Quantite((String) aValue);
@@ -74,20 +94,12 @@ public class ListeMedicamentDetailAchat extends AbstractTableModel {
             }
         } catch (SaisieException e) {
             Fenetre.Fenetre("Erreur lors de la saisie");
+            new SaisieException("Erreur lors de la saisie");
         }
     }
 
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == 1; // Seule la quantité est modifiable
-    }
-
-    @Override
-    public String getColumnName(int columnIndex) {
-        return columnNames[columnIndex];
-    }
-
-    public double getPrixTotal(){
+    // Calculer le prix total
+    public static double getPrixTotal(){
         double prixTotal = 0;
         for (String[] ligne : data) {
             try {
@@ -98,6 +110,6 @@ public class ListeMedicamentDetailAchat extends AbstractTableModel {
                 Fenetre.Fenetre("Erreur lors de la conversion du prix");
             }
         }
-        ControllerDetailAchat.
+        return prixTotal;
     }
 }

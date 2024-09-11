@@ -2,12 +2,15 @@ package fr.afpa.dev.pompey.Modele.Utilitaires;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 
-public class InterfaceModel extends javax.swing.JFrame {
+public class InterfaceModel extends JFrame {
+    private static JTextField barRecherche;
+    private static TableRowSorter<TableModel> rowSorter;
+
     public InterfaceModel() {
 
     }
@@ -66,5 +69,23 @@ public class InterfaceModel extends javax.swing.JFrame {
         tableModel.revalidate();
         tableModel.repaint();
         ((AbstractTableModel) tableModel.getModel()).fireTableDataChanged();
+    }
+
+    public static void filterTable(JTextField barRecherche, TableModel tableModel, JTable NomDeLaTable) {
+        rowSorter = new TableRowSorter<>(tableModel);
+        NomDeLaTable.setRowSorter(rowSorter);
+
+        barRecherche.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String text = barRecherche.getText();
+                if (text.trim().isEmpty()) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    RowFilter<Object, Object> rf = RowFilter.regexFilter("(?i)" + text);
+                    rowSorter.setRowFilter(rf);
+                }
+            }
+        });
     }
 }

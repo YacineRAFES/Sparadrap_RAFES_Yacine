@@ -16,7 +16,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="52881" class="javax.swing.JLabel">
+          <component id="52881" class="javax.swing.JLabel" binding="titreLabel">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -70,14 +70,14 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
-          <component id="b9f7e" class="javax.swing.JLabel">
+          <component id="b9f7e" class="javax.swing.JLabel" binding="rechercheLabel">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <horizontalAlignment value="11"/>
               <horizontalTextPosition value="11"/>
-              <text value="Date"/>
+              <text value="Recherche"/>
             </properties>
           </component>
         </children>

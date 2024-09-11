@@ -14,7 +14,6 @@ public class Medecin {
     private String telephone;
     private String email;
     private String numAgreement;
-    private Client client;
     private String specialite;
 
     //CONSTRUCTEURS
@@ -28,7 +27,7 @@ public class Medecin {
         this.prenom = prenom;
     }
 
-    public Medecin(String nom, String prenom, String rue, String codePostal, String ville, String telephone, String email, String numAgreement, Client client, String specialite){
+    public Medecin(String nom, String prenom, String rue, String codePostal, String ville, String telephone, String email, String numAgreement, String specialite){
         this.nom = nom;
         this.prenom = prenom;
         this.rue = rue;
@@ -37,7 +36,6 @@ public class Medecin {
         this.telephone = telephone;
         this.email = email;
         this.numAgreement = numAgreement;
-        this.client = client;
         this.specialite = specialite;
     }
 
@@ -137,17 +135,6 @@ public class Medecin {
 
     public void setNumAgreement(String numAgreement) {
         this.numAgreement = numAgreement;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) throws SaisieException {
-        if (client == null) {
-            throw new SaisieException("le nom du client ne doit pas être vide");
-        }
-        this.client = client;
     }
 
     public String getSpecialite() {

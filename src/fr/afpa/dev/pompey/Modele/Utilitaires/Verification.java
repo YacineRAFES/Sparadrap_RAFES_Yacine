@@ -33,7 +33,7 @@ public class Verification {
 
     public static String BirthDate(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXDATE)) {
-            Fenetre.Fenetre("la date ne corresponds pas");
+            Fenetre.Fenetre("la date de naissance ne corresponds pas");
             throw new SaisieException();
         }
         return saisie;

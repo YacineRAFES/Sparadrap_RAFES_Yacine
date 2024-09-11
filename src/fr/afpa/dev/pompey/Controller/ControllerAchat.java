@@ -59,11 +59,6 @@ public class ControllerAchat extends JFrame {
 //        AjouterPlaceholderComboboxEditable(medecinCombobox, "Selectionner un Médecin");
 //        AjouterPlaceholderComboboxEditable(medicamentCombobox, "Selectionner un Medicament");
 
-        // Les modèles combobox
-        DefaultComboBoxModel<Client> comboBoxModel1 = (DefaultComboBoxModel<Client>) clientCombobox.getModel();
-        DefaultComboBoxModel<Medecin> comboBoxModel2    = (DefaultComboBoxModel<Medecin>) medecinCombobox.getModel();
-        DefaultComboBoxModel<Medicament> comboBoxModel3 = (DefaultComboBoxModel<Medicament>) medicamentCombobox.getModel();
-
         // Ajout des éléments avec ID dans le DefaultComboBoxModel
         DefaultComboBoxModel<TypeAchat> typeAchatModel = new DefaultComboBoxModel<>();
         typeAchatModel.addElement(new TypeAchat(0, "Type d'achat"));
@@ -77,15 +72,9 @@ public class ControllerAchat extends JFrame {
 
         model1.addTableModelListener(e -> PrixTotalLabel());
 
-        for (Client client : GestionListe.getClient()) {
-            comboBoxModel1.addElement(client);
-        }
-        for (Medecin medecin : GestionListe.getMedecin()) {
-            comboBoxModel2.addElement(medecin);
-        }
-        for (Medicament medicament : getMedicament()) {
-            comboBoxModel3.addElement(medicament);
-        }
+        actualiserComboClient();
+        actualiserComboMedecin();
+        actualiserComboMedicament();
 
         // Quand le texte dépasse la largeur de la colonne, on ajout "..."
         for (int i = 0; i < listeDeMedocTable.getColumnCount(); i++) {
@@ -177,25 +166,22 @@ public class ControllerAchat extends JFrame {
         clientController.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                DefaultComboBoxModel<Client> comboBoxModel1 = (DefaultComboBoxModel<Client>) clientCombobox.getModel();
-                DefaultComboBoxModel<Medecin> comboBoxModel2 = (DefaultComboBoxModel<Medecin>) medecinCombobox.getModel();
-                for (Client client : getClient()) {
-                    comboBoxModel1.addElement(client);
-                }
-                for(Medecin medecin : getMedecin()){
-                    comboBoxModel2.addElement(medecin);
-                }
-                clientCombobox.setModel(comboBoxModel1);
-                medecinCombobox.setModel(comboBoxModel2);
-
+                actualiserComboClient();
+                actualiserComboMedecin();
             }
         });
     }
 
     // Ajouter un médecin
     private void medecin() {
-        ControllerMedecin medecin = new ControllerMedecin();
-        medecin.setVisible(true);
+        ControllerMedecin controllerMedecin = new ControllerMedecin();
+        controllerMedecin.setVisible(true);
+        controllerMedecin.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                actualiserComboMedecin();
+            }
+        });
     }
 
     // Ajouter un médicament
@@ -205,13 +191,7 @@ public class ControllerAchat extends JFrame {
         controllerMedicament.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-
-                DefaultComboBoxModel<Medicament> comboBoxModel3 = (DefaultComboBoxModel<Medicament>) medicamentCombobox.getModel();
-                comboBoxModel3.removeAllElements();
-                for (Medicament medicament : getMedicament()) {
-                    comboBoxModel3.addElement(medicament);
-                }
-                medicamentCombobox.setModel(comboBoxModel3);
+                actualiserComboMedicament();
             }
         });
     }
@@ -330,45 +310,13 @@ public class ControllerAchat extends JFrame {
         ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
         model.clear();
 
-        DefaultComboBoxModel<Client> comboBoxModel1 = new DefaultComboBoxModel<>();
-        DefaultComboBoxModel<Medecin> comboBoxModel2 = new DefaultComboBoxModel<>();
-        DefaultComboBoxModel<Medicament> comboBoxModel3 = new DefaultComboBoxModel<>();
-        for (Client client : GestionListe.getClient()) {
-            comboBoxModel1.addElement(client);
-        }
-        for (Medecin medecin : GestionListe.getMedecin()) {
-            comboBoxModel2.addElement(medecin);
-        }
-        for (Medicament medicament : getMedicament()) {
-            comboBoxModel3.addElement(medicament);
-        }
-
-        clientCombobox.setModel(comboBoxModel1);
-        medecinCombobox.setModel(comboBoxModel2);
-        medicamentCombobox.setModel(comboBoxModel3);
+        actualiserComboClient();
+        actualiserComboMedecin();
+        actualiserComboMedicament();
     }
 
     //Actualiser les combobox
-    private void actualiserLesCombobox() {
 
-        DefaultComboBoxModel<Client> comboBoxModel1 = new DefaultComboBoxModel<>();
-        DefaultComboBoxModel<Medecin> comboBoxModel2 = new DefaultComboBoxModel<>();
-        DefaultComboBoxModel<Medicament> comboBoxModel3 = new DefaultComboBoxModel<>();
-
-        for (Client client : GestionListe.getClient()) {
-            comboBoxModel1.addElement(client);
-        }
-        for (Medecin medecin : GestionListe.getMedecin()) {
-            comboBoxModel2.addElement(medecin);
-        }
-        for (Medicament medicament : getMedicament()) {
-            comboBoxModel3.addElement(medicament);
-        }
-        clientCombobox.setModel(comboBoxModel1);
-        medecinCombobox.setModel(comboBoxModel2);
-        medicamentCombobox.setModel(comboBoxModel3);
-
-    }
 
     private Client GetClient() throws SaisieException {
         Object selectedClient = clientCombobox.getSelectedItem();
@@ -456,5 +404,34 @@ public class ControllerAchat extends JFrame {
         return prixTotal;
 
     }
+
+    private void actualiserComboClient() {
+        DefaultComboBoxModel<Client> comboBoxModel1 = new DefaultComboBoxModel<>();
+        comboBoxModel1.removeAllElements();
+        for (Client client : GestionListe.getClient()) {
+            comboBoxModel1.addElement(client);
+        }
+        clientCombobox.setModel(comboBoxModel1);
+    }
+
+    private void actualiserComboMedecin() {
+        DefaultComboBoxModel<Medecin> comboBoxModel2 = new DefaultComboBoxModel<>();
+        comboBoxModel2.removeAllElements();
+        for (Medecin medecin : GestionListe.getMedecin()) {
+            comboBoxModel2.addElement(medecin);
+        }
+        medecinCombobox.setModel(comboBoxModel2);
+    }
+
+    private void actualiserComboMedicament() {
+        DefaultComboBoxModel<Medicament> comboBoxModel3 = new DefaultComboBoxModel<>();
+        comboBoxModel3.removeAllElements();
+        for (Medicament medicament : getMedicament()) {
+            comboBoxModel3.addElement(medicament);
+        }
+        medicamentCombobox.setModel(comboBoxModel3);
+    }
+
+
 
 }

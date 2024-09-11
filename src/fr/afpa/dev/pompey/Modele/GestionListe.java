@@ -21,6 +21,10 @@ public class GestionListe {
         getClient().add(client);
     }
 
+    public static void removeClient(Client client) {
+        getClient().remove(client);
+    }
+
     public static List<Medecin> getMedecin() {
         return medecin;
     }

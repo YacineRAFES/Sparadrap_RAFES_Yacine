@@ -7,18 +7,25 @@ import fr.afpa.dev.pompey.Modele.TableMedicamentTemporaire;
 import fr.afpa.dev.pompey.Modele.Tables.ListeHistoriqueAchat;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Modele.Utilitaires.button;
+import fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.*;
 
 import javax.swing.*;
+import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.Refresh;
+import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.filterTable;
 
 public class ControllerHistoriqueAchat extends JFrame {
     private JTable tableHistoriqueAchat;
     private JPanel contentPane;
     private JTextField barreDeRecherche;
     private JScrollPane scrollPane;
+    private JLabel rechercheLabel;
+    private JLabel titreLabel;
 
     public ControllerHistoriqueAchat() {
         // TODO A FAIRE
@@ -69,5 +76,7 @@ public class ControllerHistoriqueAchat extends JFrame {
                 }
             }
         }));
+
+        filterTable(barreDeRecherche, model1, tableHistoriqueAchat);
     }
 }
