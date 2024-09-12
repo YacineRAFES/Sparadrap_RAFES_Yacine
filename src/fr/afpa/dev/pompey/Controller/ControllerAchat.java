@@ -262,15 +262,22 @@ public class ControllerAchat extends JFrame {
         int typeAchat = typeAchatCombobox.getSelectedIndex();
         ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
         List<TableMedicamentTemporaire> medicamentList = model.getMedicamentList();
+
         String[][] listeMedicament = new String[medicamentList.size()][3];
         for (int i = 0; i < medicamentList.size(); i++) {
             listeMedicament[i][0] = medicamentList.get(i).getNom();
             listeMedicament[i][1] = String.valueOf(medicamentList.get(i).getQuantite());
+
             int prixMedoc;
             if(medicamentList.get(i).getPrix() == null || medicamentList.get(i).getPrix().trim().isEmpty()){
                 prixMedoc = 0;
             }else{
                 prixMedoc = Integer.parseInt(medicamentList.get(i).getPrix());
+            }
+
+            if(medicamentList.get(i).getQuantite() == 0){
+                Fenetre.Fenetre("La quantité de médicament ne doit pas être à 0");
+                throw new SaisieException();
             }
             listeMedicament[i][2] = String.valueOf(medicamentList.get(i).getQuantite() * prixMedoc);
         }
@@ -326,7 +333,7 @@ public class ControllerAchat extends JFrame {
     private Client GetClient() throws SaisieException {
         Object selectedClient = clientCombobox.getSelectedItem();
         if (!(selectedClient instanceof Client)) {
-            String[] clientSplit = ((String) selectedClient).split("\\s+", 2); // Limiter à deux parties
+            String[] clientSplit = ((String) selectedClient).split("\\s+", 2);// Limiter à deux parties
             if (clientSplit.length != 2) {
                 Fenetre.Fenetre("Le nom et prénom du client doivent être séparés par un espace");
                 throw new SaisieException();

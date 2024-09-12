@@ -49,6 +49,7 @@ public class ControllerMedecin extends JFrame {
         AjouterPlaceholder(villeTextField, "Ville");
         AjouterPlaceholder(telephoneTextField, "Telephone");
         AjouterPlaceholder(emailTextField, "Email");
+        AjouterPlaceholder(specialisteTextField, "Spécialiste");
 
         //Créer un medecin
 

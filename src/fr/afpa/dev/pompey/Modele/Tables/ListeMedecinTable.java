@@ -36,12 +36,8 @@ public class ListeMedecinTable extends AbstractTableModel {
             case 1:
                 return medecin.getPrenom();
             case 2:
-                return medecin.getEmail();
-            case 3:
-                return medecin.getTelephone();
-            case 4:
                 return "Détail";
-            case 5:
+            case 3:
                 return "Supprimer";
             default:
                 return null;
@@ -49,7 +45,7 @@ public class ListeMedecinTable extends AbstractTableModel {
     }
 
     public boolean isCellEditable(int row, int col) {
-        if(col == 4 || col == 5) {
+        if(col == 2 || col == 3) {
             return true;
         } else {
             return false;
