@@ -266,7 +266,12 @@ public class ControllerAchat extends JFrame {
         for (int i = 0; i < medicamentList.size(); i++) {
             listeMedicament[i][0] = medicamentList.get(i).getNom();
             listeMedicament[i][1] = String.valueOf(medicamentList.get(i).getQuantite());
-            int prixMedoc = Integer.parseInt(medicamentList.get(i).getPrix());
+            int prixMedoc;
+            if(medicamentList.get(i).getPrix() == null || medicamentList.get(i).getPrix().trim().isEmpty()){
+                prixMedoc = 0;
+            }else{
+                prixMedoc = Integer.parseInt(medicamentList.get(i).getPrix());
+            }
             listeMedicament[i][2] = String.valueOf(medicamentList.get(i).getQuantite() * prixMedoc);
         }
 

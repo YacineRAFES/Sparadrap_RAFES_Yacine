@@ -47,6 +47,12 @@ public class ControllerAccueil extends JFrame {
                 listeClient();
             }
         });
+        détailMédecinButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listeMdecin();
+            }
+        });
     }
 
     private void achat() {
@@ -73,5 +79,10 @@ public class ControllerAccueil extends JFrame {
     private void listeClient() {
         ControllerListeClient listeClient = new ControllerListeClient();
         listeClient.setVisible(true);
+    }
+
+    private void listeMdecin() {
+        ControllerListeMedecin listeMedecin = new ControllerListeMedecin();
+        listeMedecin.setVisible(true);
     }
 }

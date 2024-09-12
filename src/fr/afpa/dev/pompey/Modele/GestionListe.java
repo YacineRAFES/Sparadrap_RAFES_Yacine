@@ -33,6 +33,10 @@ public class GestionListe {
         getMedecin().add(medecin);
     }
 
+    public static void removeMedecin(Medecin medecin) {
+        getMedecin().remove(medecin);
+    }
+
     public static List<Mutuelle> getMutuelle() {
         return mutuelle;
     }

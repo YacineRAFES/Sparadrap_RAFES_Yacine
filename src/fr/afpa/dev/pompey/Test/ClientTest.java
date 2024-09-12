@@ -1,4 +1,3 @@
-/*
 package fr.afpa.dev.pompey.Test;
 
 import fr.afpa.dev.pompey.Modele.Client;
@@ -225,4 +224,4 @@ class ClientTest {
     @org.junit.jupiter.api.AfterEach
     void tearDown() {
     }
-}*/
+}

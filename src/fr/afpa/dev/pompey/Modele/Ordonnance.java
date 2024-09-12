@@ -13,6 +13,10 @@ public class Ordonnance {
     private double prixTotal;
 
     //CONSTRUCTEURS
+
+    public Ordonnance() {
+    }
+
     public Ordonnance(LocalDate date, String[][] listeMedicament, Client client, Medecin medecin, double prixTotal) {
         this.date = date;
         this.listeMedicament = listeMedicament;
@@ -27,7 +31,10 @@ public class Ordonnance {
         return client;
     }
 
-    public void setClient(Client client) {
+    public void setClient(Client client) throws SaisieException {
+        if (client == null) {
+            throw new SaisieException("Le client ne doit pas être vide");
+        }
         this.client = client;
     }
 
@@ -35,7 +42,10 @@ public class Ordonnance {
         return medecin;
     }
 
-    public void setMedecin(Medecin medecin) {
+    public void setMedecin(Medecin medecin) throws SaisieException {
+        if (medecin == null) {
+            throw new SaisieException("Le medecin ne doit pas être vide");
+        }
         this.medecin = medecin;
     }
 
@@ -47,6 +57,12 @@ public class Ordonnance {
         if(date == null || date.isBefore(LocalDate.now())){
             throw new SaisieException("La date n'est pas valide");
         }
+        if(date.isBefore(LocalDate.now())){
+            throw new SaisieException("La date ne doit pas être vide");
+        }
+        if(date.isAfter(LocalDate.now())){
+            throw new SaisieException("La date ne doit pas être supérieure à la date du jour");
+        }
         this.date = date;
     }
 
@@ -54,7 +70,10 @@ public class Ordonnance {
         return listeMedicament;
     }
 
-    public void setListeMedicament(String[][] listeMedicament) {
+    public void setListeMedicament(String[][] listeMedicament) throws SaisieException {
+        if (listeMedicament == null || listeMedicament.length == 0) {
+            throw new SaisieException("La liste des médicaments ne doit pas être vide");
+        }
         this.listeMedicament = listeMedicament;
     }
 
@@ -62,7 +81,10 @@ public class Ordonnance {
         return prixTotal;
     }
 
-    public void setPrixTotal(double prixTotal) {
+    public void setPrixTotal(double prixTotal) throws SaisieException {
+        if (prixTotal < 0 || prixTotal == 0) {
+            throw new SaisieException("Le prix total ne peut pas être négatif");
+        }
         this.prixTotal = prixTotal;
     }
 

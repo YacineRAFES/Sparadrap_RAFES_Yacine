@@ -133,7 +133,10 @@ public class Medecin {
         return numAgreement;
     }
 
-    public void setNumAgreement(String numAgreement) {
+    public void setNumAgreement(String numAgreement) throws SaisieException {
+        if(numAgreement == null || numAgreement.isEmpty()){
+            throw new SaisieException("Le numéro d'agreement ne doit pas être vide");
+        }
         this.numAgreement = numAgreement;
     }
 

@@ -64,6 +64,9 @@ public class Medicament {
         if(!prix.matches(Regex.REGEXPRIX)){
             throw new SaisieException("le prix ne corresponds pas.");
         }
+        if(prix == null || prix.isEmpty()){
+            throw new SaisieException("Le prix ne doit pas être vide");
+        }
         this.prix = prix;
     }
 
@@ -72,14 +75,14 @@ public class Medicament {
     }
 
     public void setMiseEnService(String miseEnService) throws SaisieException {
-        try{
-            if (miseEnService == null) {
-                throw new SaisieException("La mise en service ne doit pas être vide");
-            }else{
-                this.miseEnService = miseEnService;
-            }
-        }catch (SaisieException e){
-            throw new SaisieException("La date de naissance ne corresponds pas");
+        if(!miseEnService.matches(Regex.REGEXDATE)) {
+            throw new SaisieException("la date de mise en service ne corresponds pas.");
+        }
+        if(LocalDate.parse(miseEnService).isAfter(LocalDate.now())){
+            throw new SaisieException("La date de mise en service ne peut pas être supérieure à la date actuelle");
+        }
+        if(miseEnService == null || miseEnService.isEmpty()){
+            throw new SaisieException("La mise en service ne doit pas être vide");
         }
 
     }
@@ -88,7 +91,10 @@ public class Medicament {
         return quantite;
     }
 
-    public void setQuantite(int quantite) {
+    public void setQuantite(int quantite) throws SaisieException {
+        if(quantite <= 0){
+            throw new SaisieException("La quantité ne peut pas être négative");
+        }
         this.quantite = quantite;
     }
 

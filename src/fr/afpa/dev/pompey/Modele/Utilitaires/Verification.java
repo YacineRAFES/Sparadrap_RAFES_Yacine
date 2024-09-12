@@ -41,7 +41,7 @@ public class Verification {
 
     public static String SecuSocial(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXNUMSECU)){
-            Fenetre.Fenetre("Le numéro de la sécurité social");
+            Fenetre.Fenetre("Vérifier le numéro de la sécurité social si il est bien composé de 15 chiffres");
             throw new SaisieException();
         }
         return saisie;

@@ -48,6 +48,10 @@ public class ControllerHistoriqueAchat extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int row = tableHistoriqueAchat.getEditingRow(); // Get the row being edited (clicked)
                 if (row >= 0) { // Ensure the row index is valid
+
+                    JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(tableHistoriqueAchat);
+                    mainFrame.setEnabled(false);
+
                     ControllerDetailAchat controllerDetailAchat = null;
                     try {
                         controllerDetailAchat = new ControllerDetailAchat(row);
@@ -55,6 +59,15 @@ public class ControllerHistoriqueAchat extends JFrame {
                         new RuntimeException(ex);
                     }
                     controllerDetailAchat.setVisible(true);
+
+                    controllerDetailAchat.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                            mainFrame.setEnabled(true);
+                        }
+                    });
+                    Refresh(tableHistoriqueAchat);
+
                 }
             }
         }));

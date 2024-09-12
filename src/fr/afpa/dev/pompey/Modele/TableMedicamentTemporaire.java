@@ -1,5 +1,7 @@
 package fr.afpa.dev.pompey.Modele;
 
+import fr.afpa.dev.pompey.Exception.SaisieException;
+
 public class TableMedicamentTemporaire {
     private String nom;
     private String prix;
@@ -29,7 +31,10 @@ public class TableMedicamentTemporaire {
         return nom;
     }
 
-    public void setNom(String nom) {
+    public void setNom(String nom) throws SaisieException {
+        if (nom == null || nom.isEmpty()) {
+            throw new SaisieException("le nom de médicament ne doit pas être vide");
+        }
         this.nom = nom;
     }
 
@@ -37,7 +42,10 @@ public class TableMedicamentTemporaire {
         return prix;
     }
 
-    public void setPrix(String prix) {
+    public void setPrix(String prix) throws SaisieException {
+        if (prix == null || prix.isEmpty()) {
+            throw new SaisieException("le prix ne doit pas être vide");
+        }
         this.prix = prix;
     }
 
@@ -45,7 +53,10 @@ public class TableMedicamentTemporaire {
         return quantite;
     }
 
-    public void setQuantite(int quantite) {
+    public void setQuantite(int quantite) throws SaisieException {
+        if (quantite < 0) {
+            throw new SaisieException("la quantité ne doit pas être vide");
+        }
         this.quantite = quantite;
     }
 }

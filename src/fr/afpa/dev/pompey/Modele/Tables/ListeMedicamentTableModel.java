@@ -56,6 +56,7 @@ public class ListeMedicamentTableModel extends AbstractTableModel {
                 return null;
         }
     }
+
     public boolean isCellEditable(int row, int column) {
         if(column == 1 || column == 3){
             return true;
@@ -63,6 +64,7 @@ public class ListeMedicamentTableModel extends AbstractTableModel {
             return false;
         }
     }
+
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex){
         if (rowIndex >= 0 && rowIndex < tableMedicamentTemporaire.size()) {

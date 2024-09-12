@@ -115,7 +115,10 @@ public class Mutuelle {
         return tauxDePriseEnCharge;
     }
 
-    public void setTauxDePriseEnCharge(String tauxDePriseEnCharge) {
+    public void setTauxDePriseEnCharge(String tauxDePriseEnCharge) throws SaisieException {
+        if(tauxDePriseEnCharge == null || tauxDePriseEnCharge.isEmpty()){
+            throw new SaisieException("le taux de prise en charge ne doit pas être vide.");
+        }
         this.tauxDePriseEnCharge = tauxDePriseEnCharge;
     }
 }

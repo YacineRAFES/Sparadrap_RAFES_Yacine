@@ -6,6 +6,8 @@ import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
 
 import javax.swing.table.AbstractTableModel;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -110,6 +112,8 @@ public class ListeMedicamentDetailAchat extends AbstractTableModel {
                 Fenetre.Fenetre("Erreur lors de la conversion du prix");
             }
         }
-        return prixTotal;
+        BigDecimal bd = new BigDecimal(prixTotal);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }
