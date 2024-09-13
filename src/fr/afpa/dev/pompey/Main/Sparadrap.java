@@ -10,5 +10,6 @@ public class Sparadrap {
     public void start() {
         ControllerAccueil accueil = new ControllerAccueil();
         accueil.setVisible(true);
+
     }
 }

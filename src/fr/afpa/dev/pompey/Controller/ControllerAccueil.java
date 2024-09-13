@@ -55,6 +55,7 @@ public class ControllerAccueil extends JFrame {
         });
     }
 
+
     private void achat() {
         ControllerAchat controllerAchat = new ControllerAchat();
         controllerAchat.setVisible(true);
