@@ -1,10 +1,7 @@
 package fr.afpa.dev.pompey.Controller;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Client;
-import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Mutuelle;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
 
@@ -31,6 +28,8 @@ public class ControllerDetailMedecin extends JFrame {
     private JButton annulerButton;
     private JButton modifierButton;
     private JLabel titreLabel;
+    private JButton listesDesOrdonnancesButton;
+    private JButton listesDesClientsButton;
 
     public ControllerDetailMedecin(Medecin idmedecin) {
         setTitle("Détail Médecin");
@@ -70,6 +69,11 @@ public class ControllerDetailMedecin extends JFrame {
             } catch (SaisieException ex) {
                 Fenetre.Fenetre("Erreur lors de la saisie");
             }
+        });
+
+        listesDesOrdonnancesButton.addActionListener(e -> {
+            ControllerListeOrdonnance controllerListeOrdonnance = new ControllerListeOrdonnance(idmedecin);
+            controllerListeOrdonnance.setVisible(true);
         });
     }
 
