@@ -21,6 +21,17 @@ public class Mutuelle {
         this.nom = nom;
     }
 
+    public Mutuelle(String nom, String adresse, String codePostal, String ville, String telephone, String email, String departement, String tauxDePriseEnCharge) throws SaisieException {
+        setNom(nom);
+        setAdresse(adresse);
+        setCodePostal(codePostal);
+        setVille(ville);
+        setTelephone(telephone);
+        setEmail(email);
+        setDepartement(departement);
+        setTauxDePriseEnCharge(tauxDePriseEnCharge);
+    }
+
     //GETTER ET SETTER
     public String getNom() {
         return nom;
@@ -105,7 +116,7 @@ public class Mutuelle {
     public void setDepartement(String departement) throws SaisieException {
         if(departement == null || departement.isEmpty()){
             throw new SaisieException("le departement ne doit pas être vide.");
-        } else if (!departement.matches(Regex.REGEXNOMPRENOM)) {
+        } else if (!departement.matches(Regex.REGEXCODEPOSTAL)) {
             throw new SaisieException("le département ne corresponds pas.");
         }
         this.departement = departement;

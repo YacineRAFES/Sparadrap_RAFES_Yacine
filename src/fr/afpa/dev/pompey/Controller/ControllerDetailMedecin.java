@@ -72,8 +72,13 @@ public class ControllerDetailMedecin extends JFrame {
         });
 
         listesDesOrdonnancesButton.addActionListener(e -> {
-            ControllerListeOrdonnance controllerListeOrdonnance = new ControllerListeOrdonnance(idmedecin);
-            controllerListeOrdonnance.setVisible(true);
+            ControllerListeOrdonnanceIdMed controllerListeOrdonnanceIdMed = new ControllerListeOrdonnanceIdMed(idmedecin);
+            controllerListeOrdonnanceIdMed.setVisible(true);
+        });
+
+        listesDesClientsButton.addActionListener(e -> {
+            ControllerListeClientIdMed controllerListeClientIdMed = new ControllerListeClientIdMed(idmedecin);
+            controllerListeClientIdMed.setVisible(true);
         });
     }
 

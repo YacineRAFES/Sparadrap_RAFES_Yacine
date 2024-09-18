@@ -4,8 +4,8 @@ import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Mutuelle;
+import fr.afpa.dev.pompey.Modele.TypeAchat;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
 
 import javax.swing.*;
@@ -34,6 +34,7 @@ public class ControllerClient extends JFrame {
     private JLabel coordonneeLabel;
     private JLabel adresseLabel;
     private JLabel contactLabel;
+    private JComboBox medTraitantComboBox;
 
     public ControllerClient(){
 
@@ -51,12 +52,17 @@ public class ControllerClient extends JFrame {
         AjouterPlaceholder(dateNaissanceTextField, "Date de naissance");
         AjouterPlaceholder(secusocialTextField, "Num. sécurité social");
         AjouterPlaceholder(mutuelleTextField, "Mutuelle");
-        AjouterPlaceholder(medTraitantTextField, "Médecin Traitant");
         AjouterPlaceholder(cpTextField, "Code postal");
         AjouterPlaceholder(telephoneTextField, "Numéro de téléphone");
         AjouterPlaceholder(emailTextField, "Email");
         AjouterPlaceholder(rueTextField, "Rue");
         AjouterPlaceholder(villeTextField, "Ville");
+
+        DefaultComboBoxModel<Medecin> MedTraitantModel = new DefaultComboBoxModel<>();
+        for (Medecin medecin : getMedecin()) {
+            MedTraitantModel.addElement(medecin);
+        }
+        medTraitantComboBox.setModel(MedTraitantModel);
 
         //Les Listeners
         creerButton.addActionListener(new ActionListener() {
@@ -69,6 +75,7 @@ public class ControllerClient extends JFrame {
                 }
             }
         });
+
         annulerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -76,7 +83,6 @@ public class ControllerClient extends JFrame {
             }
         });
     }
-
 
     private void enregistrerClient() throws SaisieException {
         String nom = nomTextField.getText().trim();

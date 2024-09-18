@@ -5,6 +5,8 @@ import fr.afpa.dev.pompey.Modele.Utilitaires.Regex;
 
 import javax.security.sasl.SaslException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client {
     private String nom;
@@ -22,6 +24,20 @@ public class Client {
     //CONSTRUCTEURS
     public Client(){
 
+    }
+
+    public Client(Client client){
+        this.nom = client.getNom();
+        this.prenom = client.getPrenom();
+        this.adresse = client.getAdresse();
+        this.codePostal = client.getCodePostal();
+        this.ville = client.getVille();
+        this.telephone = client.getTelephone();
+        this.email = client.getEmail();
+        this.numeroSecuClient = client.getNumeroSecuClient();
+        this.dateNaissance = client.getDateNaissance();
+        this.mutuelle = client.getMutuelle();
+        this.medecin = client.getMedecin();
     }
 
     public Client(String nom, String prenom) {
@@ -44,9 +60,24 @@ public class Client {
         this.medecin = medecin;
     }
 
-
-
     //GETTER ET SETTER
+    public static List<Client> getClients() {
+        return GestionListe.getClient();
+    }
+
+    public static List<Client> getClientsParMedecin(Medecin medecin) {
+        List<Client> touteslesClients = GestionListe.getClient();
+        List<Client> clientsParMedecin = new ArrayList<>();
+
+        for (Client client : touteslesClients) {
+            if (client.getMedecin() != null && client.getMedecin().equals(medecin)) {
+                clientsParMedecin.add(client);
+            }
+        }
+        return clientsParMedecin;
+    }
+
+
     public Mutuelle getMutuelle() {
         return mutuelle;
     }

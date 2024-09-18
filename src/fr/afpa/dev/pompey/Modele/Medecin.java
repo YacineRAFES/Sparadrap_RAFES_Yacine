@@ -4,6 +4,7 @@ import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Regex;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Medecin {
     private String nom;
@@ -40,6 +41,14 @@ public class Medecin {
     }
 
     //GETTER ET SETTER
+    public List<Ordonnance> getOrdonnances() {
+        return Ordonnance.getOrdonnancesParMedecin(this);
+    }
+
+    public List<Client> getClients() {
+        return Client.getClientsParMedecin(this);
+    }
+
     public String getNom() {
         return nom;
     }
@@ -123,7 +132,7 @@ public class Medecin {
     public void setEmail(String email) throws SaisieException {
         if (email == null || email.isEmpty()) {
             throw new SaisieException("l'email ne doit pas être vide");
-        } else if (email.matches(Regex.REGEXEMAIL)) {
+        } else if (!email.matches(Regex.REGEXEMAIL)) {
             throw new SaisieException("l'email ne corresponds pas");
         }
         this.email = email;
@@ -157,4 +166,6 @@ public class Medecin {
     public String toString() {
         return getNom() + " " + getPrenom();
     }
+
+
 }

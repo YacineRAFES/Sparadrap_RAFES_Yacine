@@ -1,3 +1,4 @@
+// src/fr/afpa/dev/pompey/Controller/ControllerListeMedecin.java
 package fr.afpa.dev.pompey.Controller;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
@@ -64,18 +65,25 @@ public class ControllerListeMedecin extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int row = listeMedecinTable1.getEditingRow(); // Get the row being edited (clicked)
                 if (row >= 0) { // Ensure the row index is valid
-                    if (row < GestionListe.getMedecin().size()){
+                    if (row < GestionListe.getMedecin().size()) {
                         Medecin medecin = GestionListe.getMedecin().get(row);
-                        GestionListe.removeMedecin(medecin);
+                        // On vérifie si le médecin est lié à un client ou une ordonnance
+                        boolean medecinLieClient = GestionListe.getClient().stream().anyMatch(client -> client.getMedecin() != null && client.getMedecin().equals(medecin));
+                        boolean medecinLieOrdonnance = GestionListe.getOrdonnance().stream().anyMatch(ordonnance -> ordonnance.getMedecin() != null && ordonnance.getMedecin().equals(medecin));
+                        if (medecinLieClient || medecinLieOrdonnance) {
+                            Fenetre.Fenetre("Le médecin est lié à un client ou une ordonnance, impossible de le supprimer");
+                        } else {
+                            GestionListe.removeMedecin(medecin);
+                            Fenetre.Fenetre("Medecin supprimé");
+                        }
                     } else {
-                        Fenetre.Fenetre("Medecin n'existe pas");
-                        new SaisieException("Medecin n'existe pas");
+                        Fenetre.Fenetre("Médecin n'existe pas");
                     }
-                    Refresh(listeMedecinTable1);
-                    Fenetre.Fenetre("Client supprimé");
+                    Refresh(listeMedecinTable1); // Rafraîchir la table après la suppression
                 }
             }
         }));
+
         creerUnMedecinButton.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed

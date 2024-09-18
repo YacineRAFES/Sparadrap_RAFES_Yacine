@@ -64,20 +64,39 @@ public class ControllerListeClient extends JFrame {
         listeClientTable.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int row = listeClientTable.getEditingRow(); // Get the row being edited (clicked)
-                if (row >= 0) { // Ensure the row index is valid
-                    if (row < GestionListe.getClient().size()){
+                int row = listeClientTable.getEditingRow(); // Obtenez la ligne en cours d'édition (cliquée)
+                if (row >= 0) { // Vérifiez que l'index de la ligne est valide
+                    if (row < GestionListe.getClient().size()) {
                         Client client = GestionListe.getClient().get(row);
-                        GestionListe.removeClient(client);
+
+                        // Vérifiez si le client est lié à une ordonnance
+                        boolean ordonnanceLie = GestionListe.getOrdonnance().stream()
+                                .anyMatch(ordonnance -> ordonnance.getClient().equals(client));
+                        // Vérifiez si le client est lié à un achat sans ordonnance
+                        boolean achatSansOrdonnanceLie = GestionListe.getAchatSansOrdonnance().stream()
+                                .anyMatch(achatSansOrdonnance -> achatSansOrdonnance.getClient().equals(client));
+
+                        if (ordonnanceLie || achatSansOrdonnanceLie) {
+                            // Si le client est lié à une ordonnance ou à un achat sans ordonnance, on affiche un message d'erreur
+                            Fenetre.Fenetre("Client lié à une ordonnance ou un achat sans ordonnance, impossible de le supprimer");
+                        } else {
+                            // Supprimer le client de la liste des clients
+                            GestionListe.getClient().remove(client);
+
+                            // Supprimer les achats sans ordonnance liés à ce client (au cas où ils existeraient)
+                            GestionListe.getAchatSansOrdonnance().removeIf(achatSansOrdonnance -> achatSansOrdonnance.getClient().equals(client));
+
+                            // Rafraîchir la table après la suppression
+                            Refresh(listeClientTable);
+                            Fenetre.Fenetre("Client supprimé");
+                        }
                     } else {
                         Fenetre.Fenetre("Client n'existe pas");
-                        new SaisieException("Client n'existe pas");
                     }
-                    Refresh(listeClientTable);
-                    Fenetre.Fenetre("Client supprimé");
                 }
             }
         }));
+
 
         //Bouton Créer un client
         creerUnClientButton.addActionListener(new ActionListener() {

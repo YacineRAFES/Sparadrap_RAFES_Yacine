@@ -146,16 +146,6 @@
             </constraints>
             <properties/>
           </component>
-          <component id="1e2bc" class="javax.swing.JTextField" binding="medTraitantTextField">
-            <constraints>
-              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
-              </grid>
-            </constraints>
-            <properties>
-              <toolTipText value="Nom + Prénom(avec un espace)"/>
-            </properties>
-          </component>
           <component id="56322" class="javax.swing.JSeparator">
             <constraints>
               <grid row="7" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -165,6 +155,12 @@
           <component id="4d07f" class="javax.swing.JSeparator">
             <constraints>
               <grid row="4" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="f5c4d" class="javax.swing.JComboBox" binding="medTraitantComboBox">
+            <constraints>
+              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
           </component>

@@ -2,6 +2,7 @@ package fr.afpa.dev.pompey.Controller;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.GestionListe;
+import fr.afpa.dev.pompey.Modele.Ordonnance;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentDetailAchat;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
 
@@ -25,9 +26,9 @@ public class ControllerDetailAchat extends JFrame {
     private JLabel dateAchatLabel;
     private JLabel prixTotalLabel;
 
+    private Ordonnance ordonnance;
+
     public ControllerDetailAchat(int idAchat) throws SaisieException {
-
-
         setTitle("Détail d'Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
@@ -36,14 +37,6 @@ public class ControllerDetailAchat extends JFrame {
 
         // Positionnement de la fenêtre
         this.setLocationRelativeTo(null);
-
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                //ne rien faire pour empêcher la fermeture de la fenêtre
-
-            }
-        });
 
         validerButton.addActionListener(e -> {
             this.dispose();
@@ -88,5 +81,37 @@ public class ControllerDetailAchat extends JFrame {
             // Mettre à jour le prix total
             prixTotalLabel.setText("Prix total : " + ListeMedicamentDetailAchat.getPrixTotal() + " €");
         });
+    }
+
+    public ControllerDetailAchat(Ordonnance ordonnance) throws SaisieException{
+        this.ordonnance = ordonnance;
+        setTitle("Détail d'Achat");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setContentPane(contentPane);
+        this.setResizable(false);
+        this.pack();
+
+        // Positionnement de la fenêtre
+        this.setLocationRelativeTo(null);
+
+        validerButton.addActionListener(e -> {
+            this.dispose();
+        });
+
+        if(ordonnance != null){
+            typeAchatLabel.setText("Achat avec ordonnance");
+            nomLabel.setText("Nom : "+ordonnance.getClient().getNom());
+            prenomLabel.setText("Prénom : "+ordonnance.getClient().getPrenom());
+            medecinLabel.setText("Medecin : "+ordonnance.getMedecin().getNom() + " " + ordonnance.getMedecin().getPrenom());
+            dateAchatLabel.setText("Date de l'achat : " + ordonnance.getDate().toString());
+            prixTotalLabel.setText("Prix total : " + ordonnance.getPrixTotal() + " €");
+            // Récupérer et afficher les médicaments dans le tableau
+            String[][] listeMedicament = ordonnance.getListeMedicament();
+            remplirTableMedicament(listeMedicament);
+        } else {
+            // Si idAchat dépasse les deux listes, il y a un problème
+            Fenetre.Fenetre("Erreur : Achat introuvable");
+            throw new SaisieException("Erreur lors de la récupération de l'achat");
+        }
     }
 }

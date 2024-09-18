@@ -3,6 +3,8 @@ package fr.afpa.dev.pompey.Modele;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Ordonnance {
@@ -23,6 +25,20 @@ public class Ordonnance {
         this.client = client;
         this.medecin = medecin;
         this.prixTotal = prixTotal;
+    }
+
+    public static List<Ordonnance> getOrdonnancesParMedecin(Medecin medecin) {
+        // Supposez que vous avez une liste d'ordonnances en mémoire ou dans une base de données
+        List<Ordonnance> toutesLesOrdonnances = GestionListe.getOrdonnance();
+        List<Ordonnance> ordonnancesParMedecin = new ArrayList<>();
+
+        for (Ordonnance ordonnance : toutesLesOrdonnances) {
+            if (ordonnance.getMedecin().equals(medecin)) {
+                ordonnancesParMedecin.add(ordonnance);
+            }
+        }
+
+        return ordonnancesParMedecin;
     }
 
     //GETTER ET SETTER

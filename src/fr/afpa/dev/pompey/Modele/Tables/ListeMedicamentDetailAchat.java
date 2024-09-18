@@ -57,47 +57,10 @@ public class ListeMedicamentDetailAchat extends AbstractTableModel {
         return data[rowIndex][columnIndex];
     }
 
-    // Seule la quantité est modifiable
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == 1;
-    }
-
     //Récupérer le nom de la colonne
     @Override
     public String getColumnName(int columnIndex) {
         return columnNames[columnIndex];
-    }
-
-    //Saisir la nouvelle quantité
-    @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        try {
-            NumberFormat format = NumberFormat.getInstance(Locale.FRANCE); // Utiliser pour formater les nombres avec virgules
-            DecimalFormat decimalFormat = (DecimalFormat) format;
-            decimalFormat.applyPattern("#,##0.00");
-
-            boolean autoriserModif = Fenetre.Confirmation("Voulez-vous vraiment modifier la quantité ?");
-            if(!autoriserModif){
-                return;
-            }
-
-            if (columnIndex == 1) { // Quantité modifiée
-                int nouvelleQuantite = Verification.Quantite((String) aValue);
-                data[rowIndex][columnIndex] = String.valueOf(nouvelleQuantite);
-
-                // Mettre à jour le prix en fonction de la nouvelle quantité
-                double nouveauPrix = prixUnitaires[rowIndex] * nouvelleQuantite;
-                data[rowIndex][2] = decimalFormat.format(nouveauPrix); // Formater avec virgule
-
-                // Notifie que les cellules Quantité et Prix ont été mises à jour
-                fireTableCellUpdated(rowIndex, 1); // Quantité
-                fireTableCellUpdated(rowIndex, 2); // Prix
-            }
-        } catch (SaisieException e) {
-            Fenetre.Fenetre("Erreur lors de la saisie");
-            new SaisieException("Erreur lors de la saisie");
-        }
     }
 
     // Calculer le prix total
