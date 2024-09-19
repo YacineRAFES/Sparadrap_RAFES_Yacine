@@ -49,6 +49,7 @@ public class ControllerDetailAchat extends JFrame {
             prenomLabel.setText(GestionListe.getAchatSansOrdonnance().get(idAchat).getClient().getPrenom());
             medecinLabel.setText("");
             prixTotalLabel.setText("Prix total : " + GestionListe.getAchatSansOrdonnance().get(idAchat).getPrixTotal() + " €");
+            dateAchatLabel.setText("Date de l'achat : " + GestionListe.getAchatSansOrdonnance().get(idAchat).getDate().toString());
 
             // Récupérer et afficher les médicaments dans le tableau
             String[][] listeMedicament = GestionListe.getAchatSansOrdonnance().get(idAchat).getListeMedicament();
@@ -62,7 +63,19 @@ public class ControllerDetailAchat extends JFrame {
             prenomLabel.setText("Prénom : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getPrenom());
             medecinLabel.setText("Medecin : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getMedecin().getNom() + " " + GestionListe.getOrdonnance().get(ordonnanceIndex).getMedecin().getPrenom());
             dateAchatLabel.setText("Date de l'achat : " + GestionListe.getOrdonnance().get(ordonnanceIndex).getDate().toString());
-            prixTotalLabel.setText("Prix total : " + GestionListe.getOrdonnance().get(ordonnanceIndex).getPrixTotal() + " €");
+            //Si le client a une mutuelle, on réduit le prix total sinon on affiche le prix total
+            if (GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getMutuelle() == null) {
+                prixTotalLabel.setText("Prix total : " + GestionListe.getOrdonnance().get(ordonnanceIndex).getPrixTotal() + " €");
+            } else {
+                double prixTotal = GestionListe.getOrdonnance().get(ordonnanceIndex).getPrixTotal();
+                double tauxDePriseEnCharge = Double.parseDouble(GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getMutuelle().getTauxDePriseEnCharge()) / 100;
+                double prixApresMutuelle = prixTotal * (1 - tauxDePriseEnCharge);
+                prixTotalLabel.setText(String.format(
+                        "Prix total : %.2f €, Après la mutuelle : %.2f €",
+                        prixTotal,
+                        prixApresMutuelle
+                ));
+            }
             // Récupérer et afficher les médicaments dans le tableau
             String[][] listeMedicament = GestionListe.getOrdonnance().get(ordonnanceIndex).getListeMedicament();
             remplirTableMedicament(listeMedicament);
@@ -105,6 +118,18 @@ public class ControllerDetailAchat extends JFrame {
             medecinLabel.setText("Medecin : "+ordonnance.getMedecin().getNom() + " " + ordonnance.getMedecin().getPrenom());
             dateAchatLabel.setText("Date de l'achat : " + ordonnance.getDate().toString());
             prixTotalLabel.setText("Prix total : " + ordonnance.getPrixTotal() + " €");
+            if (ordonnance.getClient().getMutuelle() == null) {
+                prixTotalLabel.setText("Prix total : " +ordonnance.getPrixTotal() + " €");
+            } else {
+                double prixTotal = ordonnance.getPrixTotal();
+                double tauxDePriseEnCharge = Double.parseDouble(ordonnance.getClient().getMutuelle().getTauxDePriseEnCharge()) / 100;
+                double prixApresMutuelle = prixTotal * (1 - tauxDePriseEnCharge);
+                prixTotalLabel.setText(String.format(
+                        "Prix total : %.2f €, Après la mutuelle : %.2f €",
+                        prixTotal,
+                        prixApresMutuelle
+                ));
+            }
             // Récupérer et afficher les médicaments dans le tableau
             String[][] listeMedicament = ordonnance.getListeMedicament();
             remplirTableMedicament(listeMedicament);

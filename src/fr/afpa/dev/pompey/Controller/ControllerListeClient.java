@@ -10,10 +10,7 @@ import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Modele.Utilitaires.button;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
+import java.awt.event.*;
 
 import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.Refresh;
 
@@ -47,13 +44,22 @@ public class ControllerListeClient extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int row = listeClientTable.getEditingRow(); // Get the row being edited (clicked)
                 if (row >= 0) { // Ensure the row index is valid
-                    if (row < GestionListe.getClient().size()){
+                    if (row < GestionListe.getClient().size()) {
                         Client client = GestionListe.getClient().get(row);
                         ControllerDetailClient controllerDetailClient = new ControllerDetailClient(client);
                         controllerDetailClient.setVisible(true);
+
+                        // Écouteur pour rafraîchir la table quand la fenêtre se ferme
+                        controllerDetailClient.addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosed(WindowEvent e) {
+                                // Rafraîchir la table une fois la fenêtre fermée
+                                Refresh(listeClientTable);
+                            }
+                        });
                     } else {
-                        Fenetre.Fenetre("Client n'existe pas");
-                        new SaisieException("Client n'existe pas");
+                        Fenetre.Fenetre("Le client n'existe pas");
+                        new SaisieException("Le client n'existe pas");
                     }
                 }
             }

@@ -1,7 +1,6 @@
 package fr.afpa.dev.pompey.Controller;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Ordonnance;
 import fr.afpa.dev.pompey.Modele.Tables.ListeOrdonnancesMed;
@@ -12,8 +11,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.Refresh;
-
 public class ControllerListeOrdonnanceIdMed extends JFrame {
     private JPanel contentPane;
     private JLabel titreLabel;
@@ -21,6 +18,7 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
     private JTable tableHistoriqueOrdonnanceidmed;
     private JTextField barreDeRecherche;
     private JLabel rechercheLabel;
+    private JButton fermerButton;
 
     public ControllerListeOrdonnanceIdMed(Medecin medecin) {
         setTitle("Historiques des ordonnances de " + medecin.getNom() + " " + medecin.getPrenom());
@@ -63,5 +61,15 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
             }
         }));
 
+        fermerButton.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+
+            }
+        });
     }
 }

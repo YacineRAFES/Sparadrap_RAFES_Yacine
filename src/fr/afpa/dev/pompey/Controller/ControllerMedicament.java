@@ -116,6 +116,11 @@ public class ControllerMedicament extends javax.swing.JFrame {
             Fenetre.Fenetre("Veuillez remplir tous les champs");
             throw new SaisieException();
         }
+        //Si un médicament avec le même nom existe déjà
+        if (getMedicament().stream().anyMatch(medicament -> medicament.getNom().equals(nomMedoc))) {
+            Fenetre.Fenetre("Ce médicament existe déjà");
+            throw new SaisieException("Ce médicament existe déjà");
+        }
 
         Medicament medicament = new Medicament(
                 Verification.NomPrenom(nomMedoc, "médicament"),

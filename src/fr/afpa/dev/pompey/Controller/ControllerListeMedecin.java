@@ -101,5 +101,14 @@ public class ControllerListeMedecin extends JFrame {
 
             }
         });
+        fermerButton.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
     }
 }

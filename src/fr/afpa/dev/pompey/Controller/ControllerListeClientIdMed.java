@@ -5,6 +5,8 @@ import fr.afpa.dev.pompey.Modele.Tables.ListeClientMed;
 import fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ControllerListeClientIdMed extends JFrame {
     private JPanel contentPane;
@@ -12,6 +14,7 @@ public class ControllerListeClientIdMed extends JFrame {
     private JTable listeDesClientByIdMed;
     private JLabel ListesDesClientLabel;
     private JLabel rechercheLabel;
+    private JButton fermerButton;
 
     public ControllerListeClientIdMed(Medecin medecin){
         setTitle("Liste des clients de " + medecin.getNom() + " " + medecin.getPrenom());
@@ -32,5 +35,15 @@ public class ControllerListeClientIdMed extends JFrame {
 
         InterfaceModel.filterTable(barreDeRecherche, model1, listeDesClientByIdMed);
 
+        fermerButton.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+
+            }
+        });
     }
 }

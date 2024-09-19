@@ -12,6 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,12 +53,6 @@ public class ControllerAchat extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
-        //Fonctionnalité qui permet d'afficher le placeholder dans un combobox
-//        AjouterPlaceholderComboboxNonEditable(typeAchatCombobox, "Type d'achat");
-//        AjouterPlaceholderComboboxEditable(clientCombobox, "Selectionner un Client");
-//        AjouterPlaceholderComboboxEditable(medecinCombobox, "Selectionner un Médecin");
-//        AjouterPlaceholderComboboxEditable(medicamentCombobox, "Selectionner un Medicament");
-
         // Ajout des éléments avec ID dans le DefaultComboBoxModel
         DefaultComboBoxModel<TypeAchat> typeAchatModel = new DefaultComboBoxModel<>();
         typeAchatModel.addElement(new TypeAchat(0, "Type d'achat"));
@@ -64,12 +60,21 @@ public class ControllerAchat extends JFrame {
         typeAchatModel.addElement(new TypeAchat(2, "Via ordonnance"));
         typeAchatCombobox.setModel(typeAchatModel);
 
+
         ListeMedicamentTableModel model1 = new ListeMedicamentTableModel(GestionListe.getTableMedicamentTemporaire());
         this.listeDeMedocTable.setModel(model1);
         this.listeDeMedocTable.getTableHeader().setResizingAllowed(false);
 
-        model1.addTableModelListener(e -> PrixTotalLabel());
+        //On écoute les changements dans la table si on ajoute ou supprime un médicament, on recalcule le prix total
+        model1.addTableModelListener(e -> {
+            try {
+                PrixTotalLabel();
+            } catch (SaisieException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
+        // Actualiser les combobox
         actualiserComboClient();
         actualiserComboMedecin();
         actualiserComboMedicament();
@@ -89,7 +94,11 @@ public class ControllerAchat extends JFrame {
                     TableMedicamentTemporaire temp = GestionListe.getTableMedicamentTemporaire().get(row);
                     GestionListe.removeTableMedicamentTemporaire(temp);
                     Refresh(listeDeMedocTable);
-                    PrixTotalLabel();
+                    try {
+                        PrixTotalLabel();
+                    } catch (SaisieException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     Fenetre.Fenetre("Médicament supprimé de la liste");
                 }
             }
@@ -138,12 +147,14 @@ public class ControllerAchat extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     ajouterUnMedicament();
+                    PrixTotalLabel();
                 } catch (SaisieException ex) {
                     Fenetre.Fenetre("Une erreur lors d'ajouter un médicament, veuillez contacter l'administrateur");
                     new SaisieException("Erreur d'ajout de médicament");
                 }
             }
         });
+
         // Valider l'achat
         validerButton.addActionListener(new ActionListener() {
             @Override
@@ -156,6 +167,7 @@ public class ControllerAchat extends JFrame {
                 }
             }
         });
+
         // Annuler l'achat
         annulerButton.addActionListener(new ActionListener() {
             @Override
@@ -180,6 +192,11 @@ public class ControllerAchat extends JFrame {
                     medecinCombobox.setEnabled(true);
                     medecinLabel.setForeground(Color.BLACK);
                     creerUnMedecinButton.setEnabled(true);
+                }
+                try {
+                    PrixTotalLabel();
+                } catch (SaisieException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
@@ -307,9 +324,6 @@ public class ControllerAchat extends JFrame {
             }
             listeMedicament[i][2] = String.valueOf(medicamentList.get(i).getQuantite() * prixMedoc);
         }
-
-        System.out.println(Arrays.deepToString(listeMedicament));
-
         if (typeAchat == 0) {
             Fenetre.Fenetre("Veuillez sélectionner un type d'achat valide");
             throw new SaisieException();
@@ -420,7 +434,7 @@ public class ControllerAchat extends JFrame {
     }
 
     // Calculer le prix total
-    public void PrixTotalLabel() {
+    public void PrixTotalLabel() throws SaisieException {
         double prixTotal = 0.0;
         for (TableMedicamentTemporaire prix : getTableMedicamentTemporaire()) {
             String prixStr = prix.getPrix();
@@ -430,7 +444,30 @@ public class ControllerAchat extends JFrame {
                 prixTotal += Double.parseDouble(prixStr) * qantity;
             }
         }
-        prixLabel.setText("Prix total : " + prixTotal);
+
+        //si le client a une mutuelle on applique la réduction sinon on affiche le prix total
+        int typeAchat = typeAchatCombobox.getSelectedIndex();
+        if(clientCombobox.getSelectedItem() instanceof Client){
+            Client client = (Client) clientCombobox.getSelectedItem();
+            if(client.getMutuelle() != null){
+                if(typeAchat == 2) {
+                    BigDecimal total = new BigDecimal(prixTotal).setScale(2, RoundingMode.HALF_UP);
+                    BigDecimal apresMutuelle = total.multiply(BigDecimal.valueOf(1 - (Double.parseDouble(client.getMutuelle().getTauxDePriseEnCharge()) / 100)))
+                            .setScale(2, RoundingMode.HALF_UP);
+
+                    prixLabel.setText("Prix total : " + total + " €, Après la mutuelle : " + apresMutuelle + " €");
+                }else{
+                    BigDecimal total = new BigDecimal(prixTotal).setScale(2, RoundingMode.HALF_UP);
+                    prixLabel.setText("Prix total : " + total + " €");
+                }
+            }else{
+                BigDecimal total = new BigDecimal(prixTotal).setScale(2, RoundingMode.HALF_UP);
+                prixLabel.setText("Prix total : " + total + " €");
+            }
+        }else{
+            BigDecimal total = new BigDecimal(prixTotal).setScale(2, RoundingMode.HALF_UP);
+            prixLabel.setText("Prix total : " + total + " €");
+        }
     }
 
     // Calculer le prix total

@@ -9,7 +9,7 @@ public class Verification {
 
     public static String NomPrenom(String saisie, String type) throws SaisieException {
         if(!saisie.matches(Regex.REGEXNOMPRENOM)) {
-            Fenetre.Fenetre("Le " + type + " ne corresponds pas");
+            Fenetre.Fenetre("Le " + type + " ne correspond pas");
             throw new SaisieException();
         }
         return saisie.toUpperCase();

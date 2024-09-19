@@ -2,7 +2,6 @@ package fr.afpa.dev.pompey.Controller;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Client;
-import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Mutuelle;
 import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
@@ -10,14 +9,17 @@ import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import static fr.afpa.dev.pompey.Modele.GestionListe.getMedecin;
+import static fr.afpa.dev.pompey.Modele.GestionListe.getMutuelle;
 import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.AjouterPlaceholder;
 
 public class ControllerDetailClient extends JFrame{
     private JLabel coordonneeLabel;
     private JTextField nomTextField;
     private JTextField secusocialTextField;
-    private JTextField mutuelleTextField;
     private JLabel adresseLabel;
     private JTextField cpTextField;
     private JTextField prenomTextField;
@@ -27,10 +29,12 @@ public class ControllerDetailClient extends JFrame{
     private JLabel contactLabel;
     private JTextField telephoneTextField;
     private JTextField emailTextField;
-    private JTextField medTraitantTextField;
     private JButton annulerButton;
     private JButton modifierButton;
     private JPanel contentPane;
+    private JComboBox medTraitantComboBox;
+    private JComboBox mutuelleComboBox;
+    private JButton mutuelleDuClientButton;
 
     public ControllerDetailClient(Client idclient) {
         setTitle("Détail Client");
@@ -42,12 +46,22 @@ public class ControllerDetailClient extends JFrame{
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
+        DefaultComboBoxModel<Medecin> MedTraitantModel = new DefaultComboBoxModel<>();
+        for (Medecin medecin : getMedecin()) {
+            MedTraitantModel.addElement(medecin);
+        }
+        medTraitantComboBox.setModel(MedTraitantModel);
+
+        DefaultComboBoxModel<Mutuelle> mutuelleModel = new DefaultComboBoxModel<>();
+        for (Mutuelle mutuelle : getMutuelle()) {
+            mutuelleModel.addElement(mutuelle);
+        }
+        mutuelleComboBox.setModel(mutuelleModel);
+
         AjouterPlaceholder(nomTextField, "Nom");
         AjouterPlaceholder(prenomTextField, "Prénom");
         AjouterPlaceholder(dateNaissanceTextField, "Date de naissance");
         AjouterPlaceholder(secusocialTextField, "Num. sécurité social");
-        AjouterPlaceholder(mutuelleTextField, "Mutuelle");
-        AjouterPlaceholder(medTraitantTextField, "Médecin Traitant");
         AjouterPlaceholder(cpTextField, "Code postal");
         AjouterPlaceholder(telephoneTextField, "Numéro de téléphone");
         AjouterPlaceholder(emailTextField, "Email");
@@ -58,23 +72,44 @@ public class ControllerDetailClient extends JFrame{
         setTextFieldData(prenomTextField, idclient.getPrenom());
         setTextFieldData(dateNaissanceTextField, idclient.getDateNaissance());
         setTextFieldData(secusocialTextField, idclient.getNumeroSecuClient());
-        setTextFieldData(mutuelleTextField, idclient.getMutuelle() != null ? idclient.getMutuelle().getNom() : "");
-        setTextFieldData(medTraitantTextField, idclient.getMedecin() != null ? idclient.getMedecin().getNom() + " " + idclient.getMedecin().getPrenom() : "");
         setTextFieldData(cpTextField, idclient.getCodePostal());
         setTextFieldData(rueTextField, idclient.getAdresse());
         setTextFieldData(villeTextField, idclient.getVille());
         setTextFieldData(telephoneTextField, idclient.getTelephone());
         setTextFieldData(emailTextField, idclient.getEmail());
+        mutuelleComboBox.setSelectedItem(idclient.getMutuelle());
+        medTraitantComboBox.setSelectedItem(idclient.getMedecin());
 
         annulerButton.addActionListener(e -> this.dispose());
 
         modifierButton.addActionListener(e -> {
             try {
                 modifier(idclient);
+                dispose();
             } catch (SaisieException ex) {
                 Fenetre.Fenetre("Erreur lors de la saisie");
             }
         });
+        mutuelleDuClientButton.addActionListener(new ActionListener() {
+            /**
+             * @param e the event to be processed
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    mutuelleDuClient();
+                } catch (SaisieException ex) {
+                    Fenetre.Fenetre("Erreur lors de l'ouverture de la fenêtre de mutuelle");
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    }
+
+    private void mutuelleDuClient() throws SaisieException {
+        Mutuelle mutuelle = (Mutuelle) mutuelleComboBox.getSelectedItem();
+        ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(mutuelle);
+        controllerDetailMutuelle.setVisible(true);
     }
 
     // La modification du client a été effectué avec succès sinon une exception est levée
@@ -84,9 +119,9 @@ public class ControllerDetailClient extends JFrame{
         try{
             updateClientInfo(idclient, client);
             Fenetre.Fenetre("Client modifié avec succès");
-            this.dispose();
-        }catch (SaisieException e){
-            Fenetre.Fenetre("Erreur lors de la modification du client");
+        } catch (SaisieException e) {
+            Fenetre.Fenetre("Une erreur s'est produite lors de la modification du client" + e.getMessage());
+            new RuntimeException(e);
         }
     }
 
@@ -96,32 +131,15 @@ public class ControllerDetailClient extends JFrame{
         String prenom = Verification.NomPrenom(prenomTextField.getText(), "Prénom");
         String dateNaissance = Verification.BirthDate(dateNaissanceTextField.getText());
         String secuSocial = Verification.SecuSocial(secusocialTextField.getText());
-        String mutuelleText = mutuelleTextField.getText();
-        String medTraitant = medTraitantTextField.getText();
+        Object mutuelleObject = mutuelleComboBox.getSelectedItem();
+        Object medTraitantObject = medTraitantComboBox.getSelectedItem();
         String cp = Verification.CodePostal(cpTextField.getText());
         String rue = rueTextField.getText();
         String ville = Verification.NomPrenom(villeTextField.getText(), "Ville");
         String telephone = Verification.Telephone(telephoneTextField.getText());
         String email = Verification.Email(emailTextField.getText());
 
-        Mutuelle mutuelle = new Mutuelle(mutuelleText);
-
-        GestionListe.addMutuelle(mutuelle);
-
-        String[] medTraitantSplit = medTraitant.split("\\s+", 2);
-        if (medTraitantSplit.length != 2) {
-            Fenetre.Fenetre("Le nom et prénom du médecin traitant doivent être séparés par un espace");
-            return null;
-        }
-
-        Medecin medecin = new Medecin(
-                Verification.NomPrenom(medTraitantSplit[0].trim(), "nom du médecin"),
-                Verification.NomPrenom(medTraitantSplit[1].trim(), "prénom du médecin")
-        );
-
-        GestionListe.addMedecin(medecin);
-
-        return new Client(nom, prenom, rue, cp, ville, telephone, email, secuSocial, dateNaissance, mutuelle, medecin);
+        return new Client(nom, prenom, rue, cp, ville, telephone, email, secuSocial, dateNaissance, (Mutuelle) mutuelleObject, (Medecin) medTraitantObject);
 
     }
 

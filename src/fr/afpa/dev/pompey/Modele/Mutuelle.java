@@ -132,4 +132,9 @@ public class Mutuelle {
         }
         this.tauxDePriseEnCharge = tauxDePriseEnCharge;
     }
+
+    @Override
+    public String toString() {
+        return nom;
+    }
 }
