@@ -28,6 +28,7 @@ public class ControllerDetailMutuelle extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
+        // Remplir les champs de texte
         NomMutuelle.setText(mutuelle.getNom());
         AdresseMutuelle.setText(mutuelle.getAdresse());
         CodepostalMutuelle.setText(mutuelle.getCodePostal());
@@ -37,10 +38,8 @@ public class ControllerDetailMutuelle extends JFrame {
         DepartementMutuelle.setText(mutuelle.getDepartement());
         TxMutuelle.setText(mutuelle.getTauxDePriseEnCharge() + " %");
 
+        // Fermer la fenêtre
         fermerButton.addActionListener(new ActionListener() {
-            /**
-             * @param e the event to be processed
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();

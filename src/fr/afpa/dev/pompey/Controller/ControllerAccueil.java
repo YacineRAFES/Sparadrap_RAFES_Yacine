@@ -22,7 +22,7 @@ public class ControllerAccueil extends JFrame {
     public ControllerAccueil() throws SaisieException {
         //TODO FAIRE LA MUTUELLE
         
-        //Tests
+        //Tests :
         Medecin medecin = new Medecin("Dr. Dupont", "Jean", "1 rue de la paix", "54000", "Nancy", "0372000000", "dupont@gmail.com", "123456", "Cardiologue");
         Medecin medecin1 = new Medecin("Dr. Durand", "Pierre", "10 rue des champs", "75000", "Paris", "0172000000", "durand@mail.com", "654321", "Dentiste");
         Medecin medecin2 = new Medecin("Dr. Martin", "Paul", "5 avenue de l'Europe", "69000", "Lyon", "0472000000", "martin@gmail.com", "789456", "Ophtalmologue");

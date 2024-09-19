@@ -85,6 +85,8 @@ public class ControllerAchat extends JFrame {
             listeDeMedocTable.getColumnModel().getColumn(i).setCellRenderer(new CustomTableCellRenderer());
         }
 
+        // Les boutons de la table
+        // Supprimer un médicament de la liste
         listeDeMedocTable.getColumn("Action").setCellRenderer(new button.ButtonRenderer());
         listeDeMedocTable.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
             @Override
@@ -117,6 +119,7 @@ public class ControllerAchat extends JFrame {
                 }
             }
         });
+
         // Ajouter un médecin
         creerUnMedecinButton.addActionListener(new ActionListener() {
             @Override
@@ -129,6 +132,7 @@ public class ControllerAchat extends JFrame {
                 }
             }
         });
+
         // Ajouter un médicament
         creerUnMedicamentButton.addActionListener(new ActionListener() {
             @Override
@@ -141,6 +145,7 @@ public class ControllerAchat extends JFrame {
                 }
             }
         });
+
         // Ajouter un médicament dans la liste
         ajouterUnMedicamentButton.addActionListener(new ActionListener() {
             @Override
@@ -180,6 +185,8 @@ public class ControllerAchat extends JFrame {
                 }
             }
         });
+
+        // Listeners pour le combobox si on change le type d'achat et le prix total
         typeAchatCombobox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -338,9 +345,13 @@ public class ControllerAchat extends JFrame {
             GestionListe.addOrdonnance(ordonnance);
         }
 
+        // Vider la table temporaire
         model.clear();
+        // Afficher un message de confirmation
         Fenetre.Fenetre("Achat effectué");
+        // Actualiser les saisies
         annuler();
+        // Rafraîchir le prix total
         PrixTotalLabel();
     }
 

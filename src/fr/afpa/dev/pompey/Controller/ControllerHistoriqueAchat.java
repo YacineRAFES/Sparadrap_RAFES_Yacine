@@ -34,10 +34,13 @@ public class ControllerHistoriqueAchat extends JFrame {
         //le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
+        // Remplir le tableau
         ListeHistoriqueAchat model1 = new ListeHistoriqueAchat(GestionListe.getAchatSansOrdonnance(), GestionListe.getOrdonnance());
         this.tableHistoriqueAchat.setModel(model1);
         this.tableHistoriqueAchat.getTableHeader().setResizingAllowed(false);
 
+        // Ajouter les boutons dans le tableau
+        // Détail
         tableHistoriqueAchat.getColumn("Détail").setCellRenderer(new button.ButtonRenderer());
         tableHistoriqueAchat.getColumn("Détail").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
             @Override
@@ -58,6 +61,7 @@ public class ControllerHistoriqueAchat extends JFrame {
             }
         }));
 
+        // Supprimer
         tableHistoriqueAchat.getColumn("Action").setCellRenderer(new button.ButtonRenderer());
         tableHistoriqueAchat.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
             @Override
@@ -76,7 +80,11 @@ public class ControllerHistoriqueAchat extends JFrame {
             }
         }));
 
+        //Méthode qui permet de filtrer le tableau
         filterTable(barreDeRecherche, model1, tableHistoriqueAchat);
+
+        // Les Listeners
+        // Fermer la fenêtre
         fermerButton.addActionListener(new ActionListener() {
             /**
              * @param e the event to be processed

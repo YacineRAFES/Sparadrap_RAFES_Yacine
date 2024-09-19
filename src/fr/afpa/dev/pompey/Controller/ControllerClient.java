@@ -87,7 +87,9 @@ public class ControllerClient extends JFrame {
         });
     }
 
+    //Méthode pour enregistrer un client
     private void enregistrerClient() throws SaisieException {
+        //Récupération des valeurs des champs
         String nom = nomTextField.getText().trim();
         String prenom = prenomTextField.getText().trim();
         String dateNaissance = dateNaissanceTextField.getText();
@@ -101,12 +103,14 @@ public class ControllerClient extends JFrame {
         Object mutuelle = mutuelleComboBox.getSelectedItem();
 
 
+        //Vérification des champs
         if(nom.isEmpty() || prenom.isEmpty() || dateNaissance.isEmpty() || secusocial.isEmpty() || cp.isEmpty() ||
                 telephone.isEmpty() || email.isEmpty() || rue.isEmpty() || ville.isEmpty()){
             Fenetre.Fenetre("Veuillez remplir tous les champs");
             throw new SaisieException();
         }
 
+        //Création d'un client
         Client client = new Client(
                 Verification.NomPrenom(nom, "Nom"),
                 Verification.NomPrenom(prenom, "Prénom"),
@@ -122,18 +126,26 @@ public class ControllerClient extends JFrame {
         );
 
 
+        //Ajout du client à la liste des clients
         addClient(client);
 
+        //Affichage d'un message de confirmation
         Fenetre.Fenetre("Client enregistrée avec succès");
+
+        //Fermeture de la fenêtre
         this.dispose();
 
+        //Effacer les champs
         effaceToutLesChamps();
 
     }
+
+    //Méthode pour annuler l'enregistrement d'un client
     private void annulerClient() {
         effaceToutLesChamps();
     }
 
+    //Méthode pour effacer tous les champs
     private void effaceToutLesChamps(){
         nomTextField.setText("");
         prenomTextField.setText("");

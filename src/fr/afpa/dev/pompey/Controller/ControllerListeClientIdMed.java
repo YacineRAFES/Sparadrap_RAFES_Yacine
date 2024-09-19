@@ -2,11 +2,13 @@ package fr.afpa.dev.pompey.Controller;
 
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Tables.ListeClientMed;
-import fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel;
+import fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.filterTable;
 
 public class ControllerListeClientIdMed extends JFrame {
     private JPanel contentPane;
@@ -33,12 +35,10 @@ public class ControllerListeClientIdMed extends JFrame {
         // Affichage des clients du médecin
         listeDesClientByIdMed.setModel(new ListeClientMed(medecin));
 
-        InterfaceModel.filterTable(barreDeRecherche, model1, listeDesClientByIdMed);
+        filterTable(barreDeRecherche, model1, listeDesClientByIdMed);
 
+        // Fermer la fenêtre
         fermerButton.addActionListener(new ActionListener() {
-            /**
-             * @param e the event to be processed
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();

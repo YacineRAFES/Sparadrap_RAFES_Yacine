@@ -53,7 +53,7 @@ public class ControllerMedecin extends JFrame {
 
         //Créer un medecin
 
-
+        //Bouton Créer
         creerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,6 +65,7 @@ public class ControllerMedecin extends JFrame {
             }
         });
 
+        //Bouton Annuler
         annulerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -73,10 +74,12 @@ public class ControllerMedecin extends JFrame {
         });
     }
 
+    //Méthode pour annuler la création d'un médecin
     private void annulerMedecin() {
         this.dispose();
     }
 
+    //Méthode pour créer un médecin
     private void creerMedecin() throws SaisieException {
         String nom = nomTextField.getText();
         String prenom = prenomTextField.getText();
@@ -88,6 +91,7 @@ public class ControllerMedecin extends JFrame {
         String email = emailTextField.getText();
         String specialiste = specialisteTextField.getText();
 
+        //Vérification des champs
         if (nom.isEmpty() || prenom.isEmpty() || numAgreement.isEmpty() || rue.isEmpty() || cp.isEmpty() || ville.isEmpty() || telephone.isEmpty() || email.isEmpty() || specialiste.isEmpty()) {
             Fenetre.Fenetre("Veuillez remplir tous les champs");
         } else {
@@ -100,6 +104,8 @@ public class ControllerMedecin extends JFrame {
                     Verification.Email(email),
                     numAgreement,
                     Verification.NomPrenom(specialiste, "Spécialiste"));
+
+            //Ajout du médecin à la liste
             GestionListe.getMedecin().add(medecin);
             Fenetre.Fenetre("Medecin créé");
             this.dispose();

@@ -84,10 +84,8 @@ public class ControllerListeMedecin extends JFrame {
             }
         }));
 
+        //Boton Creer un Medecin
         creerUnMedecinButton.addActionListener(new ActionListener() {
-            /**
-             * @param e the event to be processed
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 ControllerMedecin controllerMedecin = new ControllerMedecin();
@@ -101,10 +99,9 @@ public class ControllerListeMedecin extends JFrame {
 
             }
         });
+
+        //Bouton Fermer
         fermerButton.addActionListener(new ActionListener() {
-            /**
-             * @param e the event to be processed
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();

@@ -41,6 +41,7 @@ public class ControllerDetailMedecin extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
+        // Remplir les champs de texte
         AjouterPlaceholder(nomTextField, "Nom");
         AjouterPlaceholder(prenomTextField, "Prénom");
         AjouterPlaceholder(cpTextField, "Code postal");
@@ -123,6 +124,7 @@ public class ControllerDetailMedecin extends JFrame {
         idmedecin.setSpecialite(updatedMedecin.getSpecialite());
     }
 
+    // Remplir les champs de texte
     private void setTextFieldData(JTextField textField, String data) {
         if (data != null && !data.isEmpty()) {
             textField.setText(data);

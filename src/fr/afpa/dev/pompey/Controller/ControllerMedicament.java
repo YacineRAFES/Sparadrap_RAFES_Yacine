@@ -32,7 +32,6 @@ public class ControllerMedicament extends javax.swing.JFrame {
     private JButton annulerButton;
     private JButton creerButton;
 
-
     String[] categorie = {
             "Analgésiques",
             "Anti-inflammatoires",
@@ -54,44 +53,30 @@ public class ControllerMedicament extends javax.swing.JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
+        // Remplir la combobox de catégorie
         DefaultComboBoxModel<Medicament> categorieModel = (DefaultComboBoxModel<Medicament>) categorieCombobox.getModel();
         for (String s : categorie) {
             categorieModel.addElement(new Medicament(s));
         }
-
         categorieCombobox.setModel(categorieModel);
-        categorieCombobox.setEditable(true);
 
-        ((JTextField) categorieCombobox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-//                verifierEtAjouterCategorie();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-//                verifierEtAjouterCategorie();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-//                verifierEtAjouterCategorie();
-            }
-        });
-
+        //Les saisies avec placeholder
         AjouterPlaceholder(nomTextField, "Nom du medicament");
         AjouterPlaceholder(miseEnServiceTextField, "Mise en service");
         AjouterPlaceholder(prixTextField, "Prix");
         AjouterPlaceholder(quantiteTextField, "Quantite");
-        AjouterPlaceholderComboboxEditable(categorieCombobox, "Categorie");
 
         miseEnServiceTextField.setText("30/12/2024");
+
+        //Bouton Annuler
         annulerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 annuler();
             }
         });
+
+        //Bouton Créer
         creerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,6 +90,7 @@ public class ControllerMedicament extends javax.swing.JFrame {
         AjouterPlaceholderComboboxEditable(categorieCombobox, "Categorie");
     }
 
+    //Méthode pour valider la création d'un médicament
     private void valider() throws SaisieException {
         String nomMedoc = nomTextField.getText();
         String categorieMedoc = Objects.requireNonNull(categorieCombobox.getSelectedItem()).toString();
@@ -135,6 +121,7 @@ public class ControllerMedicament extends javax.swing.JFrame {
         annuler();
     }
 
+    //Méthode pour annuler la création d'un médicament
     private void annuler() {
         nomTextField.setText("");
         categorieCombobox.setSelectedItem(0);

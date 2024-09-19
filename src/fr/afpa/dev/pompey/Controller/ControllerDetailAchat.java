@@ -63,7 +63,7 @@ public class ControllerDetailAchat extends JFrame {
             prenomLabel.setText("Prénom : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getPrenom());
             medecinLabel.setText("Medecin : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getMedecin().getNom() + " " + GestionListe.getOrdonnance().get(ordonnanceIndex).getMedecin().getPrenom());
             dateAchatLabel.setText("Date de l'achat : " + GestionListe.getOrdonnance().get(ordonnanceIndex).getDate().toString());
-            //Si le client a une mutuelle, on réduit le prix total sinon on affiche le prix total
+            //Si le client a une mutuelle, on réduit le prix total sinon on affiche le prix total sans mutuelle
             if (GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getMutuelle() == null) {
                 prixTotalLabel.setText("Prix total : " + GestionListe.getOrdonnance().get(ordonnanceIndex).getPrixTotal() + " €");
             } else {

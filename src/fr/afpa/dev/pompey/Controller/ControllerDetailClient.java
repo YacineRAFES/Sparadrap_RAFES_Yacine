@@ -46,6 +46,7 @@ public class ControllerDetailClient extends JFrame{
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
+        // Remplir les combobox
         DefaultComboBoxModel<Medecin> MedTraitantModel = new DefaultComboBoxModel<>();
         for (Medecin medecin : getMedecin()) {
             MedTraitantModel.addElement(medecin);
@@ -90,10 +91,9 @@ public class ControllerDetailClient extends JFrame{
                 Fenetre.Fenetre("Erreur lors de la saisie");
             }
         });
+
+        // Ouvre la fenêtre de détail de la mutuelle du client
         mutuelleDuClientButton.addActionListener(new ActionListener() {
-            /**
-             * @param e the event to be processed
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -106,6 +106,7 @@ public class ControllerDetailClient extends JFrame{
         });
     }
 
+    // Ouvre la fenêtre de détail de la mutuelle du client
     private void mutuelleDuClient() throws SaisieException {
         Mutuelle mutuelle = (Mutuelle) mutuelleComboBox.getSelectedItem();
         ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(mutuelle);
@@ -158,6 +159,7 @@ public class ControllerDetailClient extends JFrame{
         idclient.setMedecin(updatedClient.getMedecin());
     }
 
+    // Remplir les champs de texte avec les données du client
     private void setTextFieldData(JTextField textField, String data) {
         if (data != null && !data.isEmpty()) {
             textField.setText(data);

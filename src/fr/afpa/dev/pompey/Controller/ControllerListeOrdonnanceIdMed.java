@@ -61,10 +61,8 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
             }
         }));
 
+        // Fermer la fenêtre
         fermerButton.addActionListener(new ActionListener() {
-            /**
-             * @param e the event to be processed
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
