@@ -154,7 +154,6 @@ public class ControllerAchat extends JFrame {
                     ajouterUnMedicament();
                     PrixTotalLabel();
                 } catch (SaisieException ex) {
-                    Fenetre.Fenetre("Une erreur lors d'ajouter un médicament, veuillez contacter l'administrateur");
                     new SaisieException("Erreur d'ajout de médicament");
                 }
             }
@@ -167,7 +166,6 @@ public class ControllerAchat extends JFrame {
                 try {
                     valider();
                 } catch (SaisieException ex) {
-                    Fenetre.Fenetre("Erreur de validation, veuillez contacter l'administrateur");
                     new SaisieException("Erreur de validation");
                 }
             }
@@ -180,7 +178,6 @@ public class ControllerAchat extends JFrame {
                 try{
                     annuler();
                 }catch (SaisieException ex){
-                    Fenetre.Fenetre("Erreur lors de l'annulation, veuillez contacter l'administrateur");
                     new SaisieException("Erreur lors de l'annulation");
                 }
             }
