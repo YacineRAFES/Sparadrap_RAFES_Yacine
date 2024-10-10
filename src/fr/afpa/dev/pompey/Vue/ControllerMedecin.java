@@ -1,12 +1,12 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.PlaceholderTextField;
+import fr.afpa.dev.pompey.Utilitaires.Verification;
 
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.AjouterPlaceholder;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,16 +40,16 @@ public class ControllerMedecin extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
-        //Les saisies avec placeholder
-        AjouterPlaceholder(nomTextField, "Nom");
-        AjouterPlaceholder(numAgreementTextField, "numéro d'agreement");
-        AjouterPlaceholder(cpTextField, "Code postal");
-        AjouterPlaceholder(prenomTextField, "Prénom");
-        AjouterPlaceholder(rueTextField, "Rue");
-        AjouterPlaceholder(villeTextField, "Ville");
-        AjouterPlaceholder(telephoneTextField, "Telephone");
-        AjouterPlaceholder(emailTextField, "Email");
-        AjouterPlaceholder(specialisteTextField, "Spécialiste");
+        //Placeholder
+        PlaceholderTextField.setPlaceholder(nomTextField, "Nom");
+        PlaceholderTextField.setPlaceholder(prenomTextField, "Prénom");
+        PlaceholderTextField.setPlaceholder(numAgreementTextField, "Numéro d'agreement");
+        PlaceholderTextField.setPlaceholder(rueTextField, "Rue");
+        PlaceholderTextField.setPlaceholder(cpTextField, "Code postal");
+        PlaceholderTextField.setPlaceholder(villeTextField, "Ville");
+        PlaceholderTextField.setPlaceholder(telephoneTextField, "Téléphone");
+        PlaceholderTextField.setPlaceholder(emailTextField, "Email");
+        PlaceholderTextField.setPlaceholder(specialisteTextField, "Spécialiste");
 
         //Créer un medecin
 
@@ -74,12 +74,17 @@ public class ControllerMedecin extends JFrame {
         });
     }
 
-    //Méthode pour annuler la création d'un médecin
+    /**
+     * Méthode pour annuler la création d'un médecin
+     */
     private void annulerMedecin() {
         this.dispose();
     }
 
-    //Méthode pour créer un médecin
+    /**
+     * Méthode pour créer un médecin
+     * @throws SaisieException
+     */
     private void creerMedecin() throws SaisieException {
         String nom = nomTextField.getText();
         String prenom = prenomTextField.getText();
@@ -95,7 +100,8 @@ public class ControllerMedecin extends JFrame {
         if (nom.isEmpty() || prenom.isEmpty() || numAgreement.isEmpty() || rue.isEmpty() || cp.isEmpty() || ville.isEmpty() || telephone.isEmpty() || email.isEmpty() || specialiste.isEmpty()) {
             Fenetre.Fenetre("Veuillez remplir tous les champs");
         } else {
-            Medecin medecin = new Medecin(Verification.NomPrenom(nom, "Nom"),
+            Medecin medecin = new Medecin(
+                    Verification.NomPrenom(nom, "Nom"),
                     Verification.NomPrenom(prenom, "Prénom"),
                     rue,
                     Verification.CodePostal(cp),

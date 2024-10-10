@@ -1,11 +1,12 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Mutuelle;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.PlaceholderTextField;
+import fr.afpa.dev.pompey.Utilitaires.Verification;
 
 import javax.swing.*;
 
@@ -13,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import static fr.afpa.dev.pompey.Modele.GestionListe.*;
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.AjouterPlaceholder;
 
 public class ControllerClient extends JFrame {
     private JPanel contentPane;
@@ -45,21 +45,23 @@ public class ControllerClient extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
-        AjouterPlaceholder(nomTextField, "Nom");
-        AjouterPlaceholder(prenomTextField, "Prénom");
-        AjouterPlaceholder(dateNaissanceTextField, "Date de naissance");
-        AjouterPlaceholder(secusocialTextField, "Num. sécurité social");
-        AjouterPlaceholder(cpTextField, "Code postal");
-        AjouterPlaceholder(telephoneTextField, "Numéro de téléphone");
-        AjouterPlaceholder(emailTextField, "Email");
-        AjouterPlaceholder(rueTextField, "Rue");
-        AjouterPlaceholder(villeTextField, "Ville");
+        // Placeholder
+        PlaceholderTextField.setPlaceholder(nomTextField, "Nom");
+        PlaceholderTextField.setPlaceholder(prenomTextField, "Prénom");
+        PlaceholderTextField.setPlaceholder(dateNaissanceTextField, "JJ/MM/AAAA");
+        PlaceholderTextField.setPlaceholder(secusocialTextField, "Numéro de sécurité sociale");
+        PlaceholderTextField.setPlaceholder(cpTextField, "Code postal");
+        PlaceholderTextField.setPlaceholder(telephoneTextField, "Téléphone");
+        PlaceholderTextField.setPlaceholder(emailTextField, "Email");
+        PlaceholderTextField.setPlaceholder(rueTextField, "Rue");
+        PlaceholderTextField.setPlaceholder(villeTextField, "Ville");
 
         DefaultComboBoxModel<Medecin> MedTraitantModel = new DefaultComboBoxModel<>();
         for (Medecin medecin : getMedecin()) {
             MedTraitantModel.addElement(medecin);
         }
         medTraitantComboBox.setModel(MedTraitantModel);
+
 
         DefaultComboBoxModel<Mutuelle> mutuelleModel = new DefaultComboBoxModel<>();
         for (Mutuelle mutuelle : getMutuelle()) {
@@ -122,7 +124,8 @@ public class ControllerClient extends JFrame {
                 Verification.SecuSocial(secusocial),
                 Verification.BirthDate(dateNaissance),
                 (Mutuelle) mutuelle,
-                (Medecin) medTraitant
+                ((Medecin) medTraitant).getNomMedecin(),
+                ((Medecin) medTraitant).getPrenomMedecin()
         );
 
 

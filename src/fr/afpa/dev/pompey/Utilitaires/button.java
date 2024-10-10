@@ -1,4 +1,4 @@
-package fr.afpa.dev.pompey.Modele.Utilitaires;
+package fr.afpa.dev.pompey.Utilitaires;
 
 
 import javax.swing.*;

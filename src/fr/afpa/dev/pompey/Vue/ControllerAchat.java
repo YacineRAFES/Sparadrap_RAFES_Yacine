@@ -1,12 +1,12 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.*;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentTableModel;
-import fr.afpa.dev.pompey.Modele.Utilitaires.*;
+import fr.afpa.dev.pompey.Utilitaires.*;
 
 import static fr.afpa.dev.pompey.Modele.GestionListe.*;
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.*;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,6 +38,7 @@ public class ControllerAchat extends JFrame {
     private JComboBox typeAchatCombobox;
     private JButton ajouterUnMedicamentButton;
     private JLabel prixLabel;
+    private JLabel informationLabel;
 
     public ControllerAchat() {
         //TODO Faire l'historique des achats
@@ -101,7 +102,7 @@ public class ControllerAchat extends JFrame {
                     } catch (SaisieException ex) {
                         throw new RuntimeException(ex);
                     }
-                    Fenetre.Fenetre("Médicament supprimé de la liste");
+                    ShowLabelWithTimer(informationLabel, "Médicament supprimé de la liste", Color.RED);
                 }
             }
         }));
@@ -111,12 +112,7 @@ public class ControllerAchat extends JFrame {
         creerUnClientButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    client();
-                }catch (SaisieException ex){
-                    Fenetre.Fenetre("Erreur lors de crée un client, veuillez contacter l'administrateur");
-                    new SaisieException("Erreur lors de crée un client");
-                }
+                client();
             }
         });
 
@@ -124,12 +120,7 @@ public class ControllerAchat extends JFrame {
         creerUnMedecinButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    medecin();
-                }catch (SaisieException ex){
-                    Fenetre.Fenetre("Erreur lors de crée un médecin, veuillez contacter l'administrateur");
-                    new SaisieException("Erreur lors de crée un médecin");
-                }
+                medecin();
             }
         });
 
@@ -137,12 +128,7 @@ public class ControllerAchat extends JFrame {
         creerUnMedicamentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    medicament();
-                }catch (SaisieException ex){
-                    Fenetre.Fenetre("Erreur lors de crée un médicament, veuillez contacter l'administrateur");
-                    new SaisieException("Erreur lors de crée un médicament");
-                }
+                medicament();
             }
         });
 
@@ -208,7 +194,7 @@ public class ControllerAchat extends JFrame {
 
     // les actions
     // Ajouter un client
-    private void client() throws SaisieException {
+    private void client() {
         ControllerClient clientController = new ControllerClient();
         clientController.setVisible(true);
         clientController.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -221,7 +207,7 @@ public class ControllerAchat extends JFrame {
     }
 
     // Ajouter un médecin
-    private void medecin() throws SaisieException{
+    private void medecin(){
         ControllerMedecin controllerMedecin = new ControllerMedecin();
         controllerMedecin.setVisible(true);
         controllerMedecin.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -232,8 +218,8 @@ public class ControllerAchat extends JFrame {
         });
     }
 
-    // Ajouter un médicament
-    private void medicament() throws SaisieException{
+    // Créer un médicament
+    private void medicament(){
         ControllerMedicament controllerMedicament = new ControllerMedicament();
         controllerMedicament.setVisible(true);
         controllerMedicament.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -257,7 +243,7 @@ public class ControllerAchat extends JFrame {
         }
 
         if (selectedMedicament == null) {
-            Fenetre.Fenetre("Veuillez sélectionner ou ajouter un médicament");
+            ShowLabelWithTimer(informationLabel, "Veuillez sélectionner ou ajouter un médicament", Color.RED);
             throw new SaisieException();
         }
 
@@ -269,7 +255,7 @@ public class ControllerAchat extends JFrame {
         // Vérifier si le médicament est déjà dans la table temporaire
         for (TableMedicamentTemporaire uniqueMedicamentTemp : getTableMedicamentTemporaire()) {
             if (uniqueMedicamentTemp.getNom().equals(medicament.getNom())) {
-                Fenetre.Fenetre("Ce médicament est déjà ajouté");
+                ShowLabelWithTimer(informationLabel, "Ce médicament est déjà ajouté", Color.ORANGE);
                 throw new SaisieException();
             }
         }
@@ -323,13 +309,14 @@ public class ControllerAchat extends JFrame {
             }
 
             if(medicamentList.get(i).getQuantite() == 0){
-                Fenetre.Fenetre("La quantité de médicament ne doit pas être à 0");
+                ShowLabelWithBlinker(informationLabel, "La quantité de médicament ne doit pas être à 0", Color.RED);
                 throw new SaisieException();
             }
             listeMedicament[i][2] = String.valueOf(medicamentList.get(i).getQuantite() * prixMedoc);
         }
         if (typeAchat == 0) {
-            Fenetre.Fenetre("Veuillez sélectionner un type d'achat valide");
+            ShowLabelWithBlinker(informationLabel, "Veuillez sélectionner un type d'achat valide", Color.RED);
+            setComboBoxColor(typeAchatCombobox, Color.RED);
             throw new SaisieException();
         } else if (typeAchat == 1) {
             GetClient();
@@ -345,7 +332,7 @@ public class ControllerAchat extends JFrame {
         // Vider la table temporaire
         model.clear();
         // Afficher un message de confirmation
-        Fenetre.Fenetre("Achat effectué");
+        ShowLabelWithTimer(informationLabel, "Achat effectué", Color.GREEN);
         // Actualiser les saisies
         annuler();
         // Rafraîchir le prix total
@@ -382,7 +369,7 @@ public class ControllerAchat extends JFrame {
         if (!(selectedClient instanceof Client)) {
             String[] clientSplit = ((String) selectedClient).split("\\s+", 2);// Limiter à deux parties
             if (clientSplit.length != 2) {
-                Fenetre.Fenetre("Le nom et prénom du client doivent être séparés par un espace");
+                ShowLabelWithBlinker(informationLabel, "Le nom/prénom du client doivent être séparés par un espace", Color.RED);
                 throw new SaisieException();
             }
 

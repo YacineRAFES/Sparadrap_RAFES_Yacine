@@ -1,20 +1,19 @@
 // src/fr/afpa/dev/pompey/Controller/ControllerListeMedecin.java
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedecinTable;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.button;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.button;
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.Refresh;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.Refresh;
 
 public class ControllerListeMedecin extends JFrame {
     private JPanel contentPane;
@@ -23,6 +22,8 @@ public class ControllerListeMedecin extends JFrame {
     private JButton creerUnMedecinButton;
     private JScrollPane scrollPane;
     private JButton fermerButton;
+    private JLabel informationLabel;
+    private JPanel affichageAlertePanel;
 
     public ControllerListeMedecin() {
         setTitle("Liste des Médecins");

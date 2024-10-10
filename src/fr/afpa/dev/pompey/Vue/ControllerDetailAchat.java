@@ -1,15 +1,12 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Ordonnance;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentDetailAchat;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 
 public class ControllerDetailAchat extends JFrame {
     private String[][] oldData;
@@ -61,7 +58,7 @@ public class ControllerDetailAchat extends JFrame {
             typeAchatLabel.setText("Achat avec ordonnance");
             nomLabel.setText("Nom : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getNom());
             prenomLabel.setText("Prénom : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getPrenom());
-            medecinLabel.setText("Medecin : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getMedecin().getNom() + " " + GestionListe.getOrdonnance().get(ordonnanceIndex).getMedecin().getPrenom());
+            medecinLabel.setText("Medecin : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getMedecin().getNomMedecin() + " " + GestionListe.getOrdonnance().get(ordonnanceIndex).getMedecin().getPrenomMedecin());
             dateAchatLabel.setText("Date de l'achat : " + GestionListe.getOrdonnance().get(ordonnanceIndex).getDate().toString());
             //Si le client a une mutuelle, on réduit le prix total sinon on affiche le prix total sans mutuelle
             if (GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getMutuelle() == null) {
@@ -115,7 +112,7 @@ public class ControllerDetailAchat extends JFrame {
             typeAchatLabel.setText("Achat avec ordonnance");
             nomLabel.setText("Nom : "+ordonnance.getClient().getNom());
             prenomLabel.setText("Prénom : "+ordonnance.getClient().getPrenom());
-            medecinLabel.setText("Medecin : "+ordonnance.getMedecin().getNom() + " " + ordonnance.getMedecin().getPrenom());
+            medecinLabel.setText("Medecin : "+ordonnance.getMedecin().getNomMedecin() + " " + ordonnance.getMedecin().getPrenomMedecin());
             dateAchatLabel.setText("Date de l'achat : " + ordonnance.getDate().toString());
             prixTotalLabel.setText("Prix total : " + ordonnance.getPrixTotal() + " €");
             if (ordonnance.getClient().getMutuelle() == null) {

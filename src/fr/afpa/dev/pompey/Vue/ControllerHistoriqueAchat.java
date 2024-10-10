@@ -1,18 +1,19 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.AchatSansOrdonnance;
 import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Tables.ListeHistoriqueAchat;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.button;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.button;
+import fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.Refresh;
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.filterTable;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
 public class ControllerHistoriqueAchat extends JFrame {
     private JTable tableHistoriqueAchat;
@@ -22,6 +23,8 @@ public class ControllerHistoriqueAchat extends JFrame {
     private JLabel rechercheLabel;
     private JLabel titreLabel;
     private JButton fermerButton;
+    private JPanel affichageAlertePanel;
+    private JLabel informationLabel;
 
     public ControllerHistoriqueAchat() {
         // TODO A FAIRE
@@ -75,7 +78,7 @@ public class ControllerHistoriqueAchat extends JFrame {
                         GestionListe.removeAchatSansOrdonnance(achatSansOrdonnance);
                     }
                     Refresh(tableHistoriqueAchat);
-                    Fenetre.Fenetre("Achat supprimé dans l'historique");
+                    ShowLabelWithTimer(informationLabel, "Achat supprimé dans l'historique", Color.RED);
                 }
             }
         }));

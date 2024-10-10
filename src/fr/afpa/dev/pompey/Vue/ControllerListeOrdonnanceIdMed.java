@@ -1,11 +1,11 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Ordonnance;
 import fr.afpa.dev.pompey.Modele.Tables.ListeOrdonnancesMed;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.button;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.button;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -21,7 +21,7 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
     private JButton fermerButton;
 
     public ControllerListeOrdonnanceIdMed(Medecin medecin) {
-        setTitle("Historiques des ordonnances de " + medecin.getNom() + " " + medecin.getPrenom());
+        setTitle("Historiques des ordonnances de " + medecin.getNomMedecin() + " " + medecin.getPrenomMedecin());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
         this.setResizable(false);
@@ -30,7 +30,7 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
-        titreLabel.setText("Historiques des ordonnances de " + medecin.getNom() + " " + medecin.getPrenom());
+        titreLabel.setText("Historiques des ordonnances de " + medecin.getNomMedecin() + " " + medecin.getPrenomMedecin());
 
         // Affichage des ordonnances du médecin
         tableHistoriqueOrdonnanceidmed.setModel(new ListeOrdonnancesMed(medecin));

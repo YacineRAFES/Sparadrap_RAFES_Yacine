@@ -1,7 +1,7 @@
 package fr.afpa.dev.pompey.Modele;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Regex;
+import fr.afpa.dev.pompey.Utilitaires.Regex;
 
 public class Mutuelle {
     private String nom;

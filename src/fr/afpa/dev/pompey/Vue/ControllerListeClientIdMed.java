@@ -1,14 +1,13 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Tables.ListeClientMed;
-import fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.filterTable;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.filterTable;
 
 public class ControllerListeClientIdMed extends JFrame {
     private JPanel contentPane;
@@ -19,13 +18,13 @@ public class ControllerListeClientIdMed extends JFrame {
     private JButton fermerButton;
 
     public ControllerListeClientIdMed(Medecin medecin){
-        setTitle("Liste des clients de " + medecin.getNom() + " " + medecin.getPrenom());
+        setTitle("Liste des clients de " + medecin.getNomMedecin() + " " + medecin.getPrenomMedecin());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
         this.setResizable(false);
         this.pack();
 
-        ListesDesClientLabel.setText("Liste des clients de " + medecin.getNom() + " " + medecin.getPrenom());
+        ListesDesClientLabel.setText("Liste des clients de " + medecin.getNomMedecin() + " " + medecin.getPrenomMedecin());
 
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);

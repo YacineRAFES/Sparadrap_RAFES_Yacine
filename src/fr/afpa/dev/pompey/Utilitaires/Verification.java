@@ -1,8 +1,9 @@
-package fr.afpa.dev.pompey.Modele.Utilitaires;
+package fr.afpa.dev.pompey.Utilitaires;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Verification {
     public Verification() {}
@@ -23,6 +24,12 @@ public class Verification {
         return saisie;
     }
 
+    /**
+     * Vérifie si la saisie correspond à un email
+     * @param saisie
+     * @return
+     * @throws SaisieException
+     */
     public static String Email(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXEMAIL)) {
             Fenetre.Fenetre("L'email ne corresponds pas");
@@ -32,10 +39,20 @@ public class Verification {
     }
 
     public static String BirthDate(String saisie) throws SaisieException {
-        if(!saisie.matches(Regex.REGEXDATE)) {
-            Fenetre.Fenetre("la date de naissance ne corresponds pas");
+        //get the current date
+        LocalDate dateActuel = LocalDate.now();
+        // On vérifie la regex de la date de naissance
+        if (!saisie.matches(Regex.REGEXDATE)) {
+            Fenetre.Fenetre("La date de naissance ne correspond pas");
             throw new SaisieException();
         }
+        //On accepte les date de naissance ceux qui ont 12 ans
+        LocalDate dateNaissance = LocalDate.parse(saisie, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        if(dateNaissance.isAfter(dateActuel.minusYears(12))) {
+            Fenetre.Fenetre("La date de naissance doit être antérieure à 12 ans");
+            throw new SaisieException();
+        }
+
         return saisie;
     }
 
@@ -73,7 +90,7 @@ public class Verification {
 
     public static int Quantite(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXQUANTITE)) {
-            Fenetre.Fenetre("Le quantite ne corresponds pas, seuls les entiers sont acceptés");
+            Fenetre.Fenetre("La quantite ne corresponds pas, seuls les entiers sont acceptés");
             throw new SaisieException();
         }
         try {

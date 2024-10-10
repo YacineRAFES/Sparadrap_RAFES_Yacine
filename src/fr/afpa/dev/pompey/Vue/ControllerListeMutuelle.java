@@ -1,12 +1,12 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Mutuelle;
 import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMutuelleTable;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel;
-import fr.afpa.dev.pompey.Modele.Utilitaires.button;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.InterfaceModel;
+import fr.afpa.dev.pompey.Utilitaires.button;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -19,6 +19,8 @@ public class ControllerListeMutuelle extends JFrame {
     private JScrollPane scrollPane;
     private JLabel titreLabel;
     private JButton fermerButton;
+    private JPanel affichageAlertePanel;
+    private JLabel informationLabel;
 
     public ControllerListeMutuelle() {
         setTitle("Liste des Mutuelles");

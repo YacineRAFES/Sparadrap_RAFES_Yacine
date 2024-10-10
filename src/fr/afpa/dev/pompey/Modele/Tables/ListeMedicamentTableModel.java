@@ -2,8 +2,8 @@ package fr.afpa.dev.pompey.Modele.Tables;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.TableMedicamentTemporaire;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.Verification;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -80,7 +80,7 @@ public class ListeMedicamentTableModel extends AbstractTableModel {
                     table.setPrix(Verification.Prix((String) aValue));
                 }
             } catch (SaisieException e) {
-                Fenetre.Fenetre("Une erreur est survenue");
+                new SaisieException();
             }
         }
     }

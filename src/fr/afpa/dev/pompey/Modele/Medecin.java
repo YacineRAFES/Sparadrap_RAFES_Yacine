@@ -1,14 +1,13 @@
 package fr.afpa.dev.pompey.Modele;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Regex;
+import fr.afpa.dev.pompey.Utilitaires.Regex;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class Medecin {
-    private String nom;
-    private String prenom;
+    private String nomMedecin;
+    private String prenomMedecin;
     private String rue;
     private String codePostal;
     private String ville;
@@ -24,13 +23,13 @@ public class Medecin {
 
 
     public Medecin(String nom, String prenom){
-        this.nom = nom;
-        this.prenom = prenom;
+        this.nomMedecin = nom;
+        this.prenomMedecin = prenom;
     }
 
     public Medecin(String nom, String prenom, String rue, String codePostal, String ville, String telephone, String email, String numAgreement, String specialite){
-        this.nom = nom;
-        this.prenom = prenom;
+        this.nomMedecin = nom;
+        this.prenomMedecin = prenom;
         this.rue = rue;
         this.codePostal = codePostal;
         this.ville = ville;
@@ -49,30 +48,30 @@ public class Medecin {
         return Client.getClientsParMedecin(this);
     }
 
-    public String getNom() {
-        return nom;
+    public String getNomMedecin() {
+        return nomMedecin;
     }
 
-    public void setNom(String nom) throws SaisieException {
+    public void setNomMedecin(String nom) throws SaisieException {
         if (nom == null || nom.isEmpty()) {
             throw new SaisieException("Le nom ne doit pas être vide");
         } else if (!nom.matches(Regex.REGEXNOMPRENOM)) {
             throw new SaisieException("Le nom ne corresponds pas");
         }
-        this.nom = nom;
+        this.nomMedecin = nom;
     }
 
-    public String getPrenom() {
-        return prenom;
+    public String getPrenomMedecin() {
+        return prenomMedecin;
     }
 
-    public void setPrenom(String prenom) throws SaisieException {
+    public void setPrenomMedecin(String prenom) throws SaisieException {
         if (prenom == null || prenom.isEmpty()) {
             throw new SaisieException("Le prénom ne doit pas être vide");
         }else if (!prenom.matches(Regex.REGEXNOMPRENOM)) {
             throw new SaisieException("Le prenom ne corresponds pas");
         }
-        this.prenom = prenom;
+        this.prenomMedecin = prenom;
     }
 
     public String getRue() {
@@ -164,7 +163,7 @@ public class Medecin {
 
     @Override
     public String toString() {
-        return getNom() + " " + getPrenom();
+        return getNomMedecin() + " " + getPrenomMedecin();
     }
 
 

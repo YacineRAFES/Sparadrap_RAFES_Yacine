@@ -1,14 +1,12 @@
 package fr.afpa.dev.pompey.Modele;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Regex;
+import fr.afpa.dev.pompey.Utilitaires.Regex;
 
-import javax.security.sasl.SaslException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Client {
+public class Client extends Medecin {
     private String nom;
     private String prenom;
     private String adresse;
@@ -19,14 +17,12 @@ public class Client {
     private String numeroSecuClient;
     private String dateNaissance;
     private Mutuelle mutuelle;
-    private Medecin medecin;
 
     //CONSTRUCTEURS
-    public Client(){
 
-    }
 
-    public Client(Client client){
+    public Client(Client client, String nomMedecin, String prenomMedecin) {
+        super(nomMedecin, prenomMedecin);
         this.nom = client.getNom();
         this.prenom = client.getPrenom();
         this.adresse = client.getAdresse();
@@ -37,7 +33,6 @@ public class Client {
         this.numeroSecuClient = client.getNumeroSecuClient();
         this.dateNaissance = client.getDateNaissance();
         this.mutuelle = client.getMutuelle();
-        this.medecin = client.getMedecin();
     }
 
     public Client(String nom, String prenom) {
@@ -46,7 +41,8 @@ public class Client {
     }
 
     public Client(String nom, String prenom, String adresse, String codePostal, String ville, String telephone, String email,
-                  String numeroSecuClient, String dateNaissance, Mutuelle mutuelle, Medecin medecin) {
+                  String numeroSecuClient, String dateNaissance, Mutuelle mutuelle, String nomMedecin, String prenomMedecin) {
+        super(nomMedecin, prenomMedecin);
         this.nom = nom;
         this.prenom = prenom;
         this.adresse = adresse;
@@ -57,12 +53,23 @@ public class Client {
         this.numeroSecuClient = numeroSecuClient;
         this.dateNaissance = dateNaissance;
         this.mutuelle = mutuelle;
-        this.medecin = medecin;
     }
 
+    public Client(){
+
+    };
+
     //GETTER ET SETTER
-    public static List<Client> getClients() {
+    public List<Client> getClients() {
         return GestionListe.getClient();
+    }
+
+    public Medecin getMedecin() {
+        return new Medecin(super.getNomMedecin(), super.getPrenomMedecin());
+    }
+
+    public Medecin setMedecin(Medecin medecin) {
+        return new Medecin(medecin.getNomMedecin(), medecin.getPrenomMedecin());
     }
 
     public static List<Client> getClientsParMedecin(Medecin medecin) {
@@ -70,8 +77,9 @@ public class Client {
         List<Client> clientsParMedecin = new ArrayList<>();
 
         for (Client client : touteslesClients) {
-            if (client.getMedecin() != null && client.getMedecin().equals(medecin)) {
-                clientsParMedecin.add(client);
+            if (client.getMedecin().getNomMedecin().equals(medecin.getNomMedecin()) &&
+            client.getMedecin().getPrenomMedecin().equals(medecin.getPrenomMedecin())) {
+            clientsParMedecin.add(client);
             }
         }
         return clientsParMedecin;
@@ -87,17 +95,6 @@ public class Client {
             throw new SaisieException("La mutuelle ne doit pas être vide");
         }
         this.mutuelle = mutuelle;
-    }
-
-    public Medecin getMedecin() {
-        return medecin;
-    }
-
-    public void setMedecin(Medecin medecin) throws SaisieException {
-        if(medecin == null){
-            throw new SaisieException("Le medecin ne doit pas être vide");
-        }
-        this.medecin = medecin;
     }
 
     public String getAdresse() {

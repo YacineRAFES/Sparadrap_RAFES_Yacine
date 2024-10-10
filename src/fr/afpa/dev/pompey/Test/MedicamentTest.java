@@ -25,7 +25,6 @@ class MedicamentTest {
     void getNom() {
     }
 
-    //fais moi un test pour le setNom si il est null et empty
     @ParameterizedTest
     @NullSource
     void setNomNull(String nom) {

@@ -1,23 +1,19 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.Medicament;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Generator;
-import fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.PlaceholderTextField;
+import fr.afpa.dev.pompey.Utilitaires.Verification;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
 
 import static fr.afpa.dev.pompey.Modele.GestionListe.*;
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.*;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
 public class ControllerMedicament extends javax.swing.JFrame {
     private JPanel contentPane;
@@ -60,13 +56,12 @@ public class ControllerMedicament extends javax.swing.JFrame {
         }
         categorieCombobox.setModel(categorieModel);
 
-        //Les saisies avec placeholder
-        AjouterPlaceholder(nomTextField, "Nom du medicament");
-        AjouterPlaceholder(miseEnServiceTextField, "Mise en service");
-        AjouterPlaceholder(prixTextField, "Prix");
-        AjouterPlaceholder(quantiteTextField, "Quantite");
+        //Placeholder
+        PlaceholderTextField.setPlaceholder(nomTextField, "Nom");
+        PlaceholderTextField.setPlaceholder(miseEnServiceTextField, "JJ/MM/AAAA");
+        PlaceholderTextField.setPlaceholder(prixTextField, "Prix");
+        PlaceholderTextField.setPlaceholder(quantiteTextField, "Quantité");
 
-        miseEnServiceTextField.setText("30/12/2024");
 
         //Bouton Annuler
         annulerButton.addActionListener(new ActionListener() {
@@ -87,7 +82,6 @@ public class ControllerMedicament extends javax.swing.JFrame {
                 }
             }
         });
-        AjouterPlaceholderComboboxEditable(categorieCombobox, "Categorie");
     }
 
     //Méthode pour valider la création d'un médicament

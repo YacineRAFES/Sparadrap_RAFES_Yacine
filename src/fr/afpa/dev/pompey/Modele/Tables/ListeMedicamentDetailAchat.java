@@ -1,14 +1,10 @@
 package fr.afpa.dev.pompey.Modele.Tables;
 
-import fr.afpa.dev.pompey.Controller.ControllerDetailAchat;
-import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 
 import javax.swing.table.AbstractTableModel;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;

@@ -1,11 +1,11 @@
 package fr.afpa.dev.pompey.Modele;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Regex;
+import fr.afpa.dev.pompey.Utilitaires.Regex;
 
 import java.time.LocalDate;
 
-public class Medicament {
+public class Medicament{
     private String nom;
     private String categorie;
     private String prix;

@@ -1,4 +1,4 @@
-package fr.afpa.dev.pompey.Modele.Utilitaires;
+package fr.afpa.dev.pompey.Utilitaires;
 
 public class Regex {
     public static final String REGEXNUMSECU = "^\\d{15}$";

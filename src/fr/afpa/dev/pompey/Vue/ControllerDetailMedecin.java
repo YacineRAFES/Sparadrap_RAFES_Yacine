@@ -1,14 +1,12 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Verification;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.Verification;
 
 import javax.swing.*;
 import java.awt.*;
-
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.AjouterPlaceholder;
 
 public class ControllerDetailMedecin extends JFrame {
     private JPanel contentPane;
@@ -30,6 +28,7 @@ public class ControllerDetailMedecin extends JFrame {
     private JLabel titreLabel;
     private JButton listesDesOrdonnancesButton;
     private JButton listesDesClientsButton;
+    private JLabel informationLabel;
 
     public ControllerDetailMedecin(Medecin idmedecin) {
         setTitle("Détail Médecin");
@@ -41,19 +40,8 @@ public class ControllerDetailMedecin extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
-        // Remplir les champs de texte
-        AjouterPlaceholder(nomTextField, "Nom");
-        AjouterPlaceholder(prenomTextField, "Prénom");
-        AjouterPlaceholder(cpTextField, "Code postal");
-        AjouterPlaceholder(telephoneTextField, "Numéro de téléphone");
-        AjouterPlaceholder(emailTextField, "Email");
-        AjouterPlaceholder(rueTextField, "Rue");
-        AjouterPlaceholder(villeTextField, "Ville");
-        AjouterPlaceholder(numAgreementTextField, "Numéro d'agreement");
-        AjouterPlaceholder(specialisteTextField, "Spécialiste");
-
-        setTextFieldData(nomTextField, idmedecin.getNom());
-        setTextFieldData(prenomTextField, idmedecin.getPrenom());
+        setTextFieldData(nomTextField, idmedecin.getNomMedecin());
+        setTextFieldData(prenomTextField, idmedecin.getPrenomMedecin());
         setTextFieldData(cpTextField, idmedecin.getCodePostal());
         setTextFieldData(rueTextField, idmedecin.getRue());
         setTextFieldData(villeTextField, idmedecin.getVille());
@@ -90,6 +78,7 @@ public class ControllerDetailMedecin extends JFrame {
         try{
             updateMedecinInfo(idmedecin, medecin);
             Fenetre.Fenetre("Medecin modifié avec succès");
+
             this.dispose();
         }catch (SaisieException e){
             Fenetre.Fenetre("Erreur lors de la modification du medecin");
@@ -113,8 +102,8 @@ public class ControllerDetailMedecin extends JFrame {
 
     // Met à jour les informations du client
     private void updateMedecinInfo(Medecin idmedecin, Medecin updatedMedecin) throws SaisieException {
-        idmedecin.setNom(updatedMedecin.getNom());
-        idmedecin.setPrenom(updatedMedecin.getPrenom());
+        idmedecin.setNomMedecin(updatedMedecin.getNomMedecin());
+        idmedecin.setPrenomMedecin(updatedMedecin.getPrenomMedecin());
         idmedecin.setRue(updatedMedecin.getRue());
         idmedecin.setCodePostal(updatedMedecin.getCodePostal());
         idmedecin.setVille(updatedMedecin.getVille());

@@ -1,18 +1,16 @@
-package fr.afpa.dev.pompey.Controller;
+package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.AchatSansOrdonnance;
 import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Tables.ListeClientTable;
-import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentTableModel;
-import fr.afpa.dev.pompey.Modele.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Modele.Utilitaires.button;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.button;
 
 import javax.swing.*;
 import java.awt.event.*;
 
-import static fr.afpa.dev.pompey.Modele.Utilitaires.InterfaceModel.Refresh;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.Refresh;
 
 public class ControllerListeClient extends JFrame {
     private JTable listeClientTable;
@@ -21,6 +19,8 @@ public class ControllerListeClient extends JFrame {
     private JPanel contentPane;
     private JButton creerUnClientButton;
     private JButton fermerButton;
+    private JPanel affichageAlertePanel;
+    private JLabel informationLabel;
 
     public ControllerListeClient() {
         setTitle("Liste des clients");
