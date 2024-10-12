@@ -41,10 +41,7 @@ public class ControllerAchat extends JFrame {
     private JLabel informationLabel;
 
     public ControllerAchat() {
-        //TODO Faire l'historique des achats
-        //TODO quand on crée un médicament avec la quantité, dans la tabletemporaire, la quantité est à 0
-        //TODO AJOUTER LE PRIX DANS LA TABLE TEMPORAIRE
-
+        // Initialisation de la fenêtre
         setTitle("Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);

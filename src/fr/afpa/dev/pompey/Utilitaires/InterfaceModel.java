@@ -120,28 +120,28 @@ public class InterfaceModel extends JFrame {
      * Sets the background color of a JComboBox
      *
      * @param comboBox The JComboBox to set the color of
-     * @param color    The color to set
+     * @param blinkColor    The color to set
      */
-    public static void setComboBoxColor(JComboBox comboBox, Color color) {
-        //il clignote pendant 3 secondes puis s'arrete
+    public static void setComboBoxColor(JComboBox<?> comboBox, Color blinkColor) {
+        Color originalColor = comboBox.getBackground(); // Store the original background color
+
+        // it blinks for 3 seconds then stops
         Timer blinkTimer = new Timer(500, new ActionListener() {
             private boolean isVisible = true;
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 isVisible = !isVisible;
-                comboBox.setBackground(isVisible ? color : Color.WHITE);
+                comboBox.setBackground(isVisible ? blinkColor : originalColor);
             }
         });
         blinkTimer.start();
 
         Timer stopTimer = new Timer(3000, new ActionListener() {
-            private boolean isVisible = true;
-
             @Override
             public void actionPerformed(ActionEvent e) {
-                isVisible = !isVisible;
-                comboBox.setBackground(isVisible ? color : Color.WHITE);
+                blinkTimer.stop();
+                comboBox.setBackground(originalColor); // Revert to the original background color
             }
         });
         stopTimer.setRepeats(false); // Ensure this timer only runs once

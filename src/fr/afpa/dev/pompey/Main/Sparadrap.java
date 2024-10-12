@@ -6,7 +6,6 @@ import fr.afpa.dev.pompey.Exception.SaisieException;
 
 public class Sparadrap {
     //TODO enlever les exceptions inutiles, sauf les saisies
-    //TODO à la création d'un client, on peut mettre la date de naissance du jour
     //TODO Faire les placeholders pour les champs de saisie
     //TODO Remplacer les alertes de fenetres en showlabel
 

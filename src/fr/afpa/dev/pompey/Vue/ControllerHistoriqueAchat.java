@@ -27,7 +27,6 @@ public class ControllerHistoriqueAchat extends JFrame {
     private JLabel informationLabel;
 
     public ControllerHistoriqueAchat() {
-        // TODO A FAIRE
         setTitle("Historique d'Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
