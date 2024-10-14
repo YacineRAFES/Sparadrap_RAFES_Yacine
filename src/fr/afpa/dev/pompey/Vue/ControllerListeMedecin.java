@@ -9,11 +9,13 @@ import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.button;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
 import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.Refresh;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ShowLabelWithBlinker;
 
 public class ControllerListeMedecin extends JFrame {
     private JPanel contentPane;
@@ -72,7 +74,7 @@ public class ControllerListeMedecin extends JFrame {
                         boolean medecinLieClient = GestionListe.getClient().stream().anyMatch(client -> client.getMedecin() != null && client.getMedecin().equals(medecin));
                         boolean medecinLieOrdonnance = GestionListe.getOrdonnance().stream().anyMatch(ordonnance -> ordonnance.getMedecin() != null && ordonnance.getMedecin().equals(medecin));
                         if (medecinLieClient || medecinLieOrdonnance) {
-                            Fenetre.Fenetre("Le médecin est lié à un client ou une ordonnance, impossible de le supprimer");
+                            ShowLabelWithBlinker(informationLabel, "Le médecin est lié à un client ou une ordonnance, impossible de le supprimer", Color.RED);
                         } else {
                             GestionListe.removeMedecin(medecin);
                             Fenetre.Fenetre("Medecin supprimé");

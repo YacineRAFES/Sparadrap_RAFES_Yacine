@@ -76,7 +76,6 @@ public class InterfaceModel extends JFrame {
         label.setForeground(color);
         Timer blinkTimer = new Timer(500, new ActionListener() {
             private boolean isVisible = true;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 isVisible = !isVisible;
@@ -85,11 +84,21 @@ public class InterfaceModel extends JFrame {
         });
         blinkTimer.start();
 
-        Timer stopTimer = new Timer(3000, new ActionListener() {
+        Timer stopTimer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 blinkTimer.stop();
                 label.setVisible(true); // Ensure the label is visible after stopping
+
+                // Timer to hide the label 2 seconds after stopping the blink
+                Timer hideTimer = new Timer(2000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        label.setVisible(false);
+                    }
+                });
+                hideTimer.setRepeats(false); // Ensure this timer only runs once
+                hideTimer.start();
             }
         });
         stopTimer.setRepeats(false); // Ensure this timer only runs once
