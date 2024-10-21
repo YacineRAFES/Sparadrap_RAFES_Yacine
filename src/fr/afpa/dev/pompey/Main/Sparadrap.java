@@ -38,6 +38,8 @@ public class Sparadrap {
         Client client3 = new Client("Semiremorque", "Leroutier", "1 rue de la paix", "54000", "Nancy", "0372000000", "semiremorque@gmail.com", "123456789012345", "13/01/1920", mutuelle2, medecin1.getNomMedecin(), medecin1.getPrenomMedecin());
         Client client4 = new Client("Vié", "Maxime", "10 rue des champs", "75000", "Paris", "0172000000", "maximevie@mail.com", "543216789012345", "13/01/1920", mutuelle1, medecin1.getNomMedecin(), medecin1.getPrenomMedecin());
 
+
+
         GestionListe.addClient(client);
         GestionListe.addClient(client2);
         GestionListe.addClient(client3);

@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * La classe ControllerDetailMutuelle est le contrôleur de la fenêtre de détail de la mutuelle
+ */
 public class ControllerDetailMutuelle extends JFrame {
     private JPanel contentPane;
     private JLabel NomMutuelle;
@@ -18,6 +21,11 @@ public class ControllerDetailMutuelle extends JFrame {
     private JLabel TxMutuelle;
     private JButton fermerButton;
 
+    /**
+     * Constructeur de la classe ControllerDetailMutuelle
+     *
+     * @param mutuelle La mutuelle
+     */
     public ControllerDetailMutuelle(Mutuelle mutuelle) {
         setTitle("Détail Mutuelle");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

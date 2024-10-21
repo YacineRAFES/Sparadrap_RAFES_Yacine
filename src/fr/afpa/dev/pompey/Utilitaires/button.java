@@ -6,6 +6,9 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+/**
+ * Une classe qui contient un rendu de bouton et un éditeur de bouton pour JTable
+ */
 public class button {
     public static class ButtonRenderer extends JButton implements TableCellRenderer {
 

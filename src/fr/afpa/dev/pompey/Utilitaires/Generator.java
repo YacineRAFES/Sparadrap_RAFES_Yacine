@@ -12,6 +12,12 @@ public class Generator {
         return LocalDate.now();
     }
 
+
+    /**
+     * Generates a random date between 1900 and 2100
+     *
+     * @return A random date
+     */
     public static LocalDate generateRandomDate() {
         Random random = new Random();
 

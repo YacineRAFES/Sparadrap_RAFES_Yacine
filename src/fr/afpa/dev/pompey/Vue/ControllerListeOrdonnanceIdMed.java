@@ -11,6 +11,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * La classe ControllerListeOrdonnanceIdMed est le contrôleur de la fenêtre de liste des ordonnances par identifiant du médecin
+ */
 public class ControllerListeOrdonnanceIdMed extends JFrame {
     private JPanel contentPane;
     private JLabel titreLabel;
@@ -20,6 +23,11 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
     private JLabel rechercheLabel;
     private JButton fermerButton;
 
+    /**
+     * Constructeur de la classe ControllerListeOrdonnanceIdMed
+     *
+     * @param medecin Le médecin
+     */
     public ControllerListeOrdonnanceIdMed(Medecin medecin) {
         setTitle("Historiques des ordonnances de " + medecin.getNomMedecin() + " " + medecin.getPrenomMedecin());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

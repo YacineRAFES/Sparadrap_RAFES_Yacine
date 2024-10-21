@@ -1,6 +1,9 @@
 package fr.afpa.dev.pompey.Utilitaires;
 
 public class Regex {
+    /**
+     * Regex for the different types of data
+     */
     public static final String REGEXNUMSECU = "^\\d{15}$";
     public static final String REGEXINT = "^[0-9]+$";
     public static final String REGEXSTRING = "^[a-zA-Z0-9_.-]*$";

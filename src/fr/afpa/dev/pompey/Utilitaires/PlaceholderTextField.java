@@ -6,9 +6,17 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
+/**
+ * A JTextField with a placeholder
+ */
 public class PlaceholderTextField extends JTextField {
     private String placeholder;
 
+    /**
+     * Creates a new PlaceholderTextField
+     *
+     * @param placeholder The placeholder text
+     */
     public PlaceholderTextField(String placeholder) {
         this.placeholder = placeholder;
         this.addFocusListener(new FocusAdapter() {
@@ -38,6 +46,12 @@ public class PlaceholderTextField extends JTextField {
         }
     }
 
+    /**
+     * Sets a placeholder for a JTextField
+     *
+     * @param textField   The JTextField to set the placeholder for
+     * @param placeholder The placeholder text
+     */
     public static void setPlaceholder(JTextField textField, String placeholder) {
         textField.addFocusListener(new FocusAdapter() {
             @Override

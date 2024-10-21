@@ -25,6 +25,12 @@ public class ControllerDetailAchat extends JFrame {
 
     private Ordonnance ordonnance;
 
+    /**
+     * Constructeur de la classe ControllerDetailAchat
+     *
+     * @param idAchat L'identifiant de l'achat
+     * @throws SaisieException
+     */
     public ControllerDetailAchat(int idAchat) throws SaisieException {
         setTitle("Détail d'Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -83,6 +89,11 @@ public class ControllerDetailAchat extends JFrame {
         }
     }
 
+    /**
+     * Remplir le tableau des médicaments
+     *
+     * @param medicamentList La liste des médicaments
+     */
     private void remplirTableMedicament(String[][] medicamentList) {
         ListeMedicamentDetailAchat tableModel = new ListeMedicamentDetailAchat(medicamentList);
         listeDeMedicamentTable.setModel(tableModel);
@@ -93,6 +104,11 @@ public class ControllerDetailAchat extends JFrame {
         });
     }
 
+    /**
+     * Remplir le tableau des médicaments
+     *
+     * @param ordonnance l'Ordonnance associée à l'achat
+     */
     public ControllerDetailAchat(Ordonnance ordonnance) throws SaisieException{
         this.ordonnance = ordonnance;
         setTitle("Détail d'Achat");

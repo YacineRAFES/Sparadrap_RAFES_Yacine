@@ -17,7 +17,9 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * La classe ControllerAchat est le contrôleur de la fenêtre d'achat
+ */
 public class ControllerAchat extends JFrame {
     private JPanel contentPane;
 
@@ -40,6 +42,9 @@ public class ControllerAchat extends JFrame {
     private JLabel prixLabel;
     private JLabel informationLabel;
 
+    /**
+     * Constructeur de la classe ControllerAchat
+     */
     public ControllerAchat() {
         // Initialisation de la fenêtre
         setTitle("Achat");
@@ -65,11 +70,7 @@ public class ControllerAchat extends JFrame {
 
         //On écoute les changements dans la table si on ajoute ou supprime un médicament, on recalcule le prix total
         model1.addTableModelListener(e -> {
-            try {
-                PrixTotalLabel();
-            } catch (SaisieException ex) {
-                throw new RuntimeException(ex);
-            }
+            PrixTotalLabel();
         });
 
         // Actualiser les combobox
@@ -94,11 +95,7 @@ public class ControllerAchat extends JFrame {
                     TableMedicamentTemporaire temp = GestionListe.getTableMedicamentTemporaire().get(row);
                     GestionListe.removeTableMedicamentTemporaire(temp);
                     Refresh(listeDeMedocTable);
-                    try {
-                        PrixTotalLabel();
-                    } catch (SaisieException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    PrixTotalLabel();
                     ShowLabelWithTimer(informationLabel, "Médicament supprimé de la liste", Color.RED);
                 }
             }
@@ -180,17 +177,14 @@ public class ControllerAchat extends JFrame {
                     medecinLabel.setForeground(Color.BLACK);
                     creerUnMedecinButton.setEnabled(true);
                 }
-                try {
-                    PrixTotalLabel();
-                } catch (SaisieException ex) {
-                    throw new RuntimeException(ex);
-                }
+                PrixTotalLabel();
             }
         });
     }
 
-    // les actions
-    // Ajouter un client
+    /**
+     * Méthode pour ouvrir la fenêtre pour créer un client
+     */
     private void client() {
         ControllerClient clientController = new ControllerClient();
         clientController.setVisible(true);
@@ -203,7 +197,9 @@ public class ControllerAchat extends JFrame {
         });
     }
 
-    // Ajouter un médecin
+    /**
+     * Méthode pour ouvrir la fenêtre pour créer un médecin
+     */
     private void medecin(){
         ControllerMedecin controllerMedecin = new ControllerMedecin();
         controllerMedecin.setVisible(true);
@@ -215,7 +211,9 @@ public class ControllerAchat extends JFrame {
         });
     }
 
-    // Créer un médicament
+    /**
+     * Méthode pour créer un médicament
+     */
     private void medicament(){
         ControllerMedicament controllerMedicament = new ControllerMedicament();
         controllerMedicament.setVisible(true);
@@ -227,7 +225,10 @@ public class ControllerAchat extends JFrame {
         });
     }
 
-    // Ajouter un médicament dans la liste
+    /**
+     * Méthode pour rafraîchir la table
+     *
+     */
     private void ajouterUnMedicament() throws SaisieException {
         // Vérifier si un médicament est sélectionné dans la combobox
 
@@ -286,7 +287,9 @@ public class ControllerAchat extends JFrame {
         Refresh(listeDeMedocTable);
     }
 
-    //Validation de l'achat
+    /**
+     * Valider l'achat
+     */
     private void valider() throws SaisieException {
         Refresh(listeDeMedocTable);
         int typeAchat = typeAchatCombobox.getSelectedIndex();
@@ -336,7 +339,9 @@ public class ControllerAchat extends JFrame {
         PrixTotalLabel();
     }
 
-    //Annuler l'achat
+    /**
+     * Annuler l'achat
+     */
     private void annuler() throws SaisieException {
         if (typeAchatCombobox.getItemCount() > 0) {
             typeAchatCombobox.setSelectedIndex(0);
@@ -360,7 +365,11 @@ public class ControllerAchat extends JFrame {
         actualiserComboMedicament();
     }
 
-    // Récupérer le client
+    /**
+     * Récupérer le client
+     *
+     * @return Le client
+     */
     private Client GetClient() throws SaisieException {
         Object selectedClient = clientCombobox.getSelectedItem();
         if (!(selectedClient instanceof Client)) {
@@ -381,7 +390,11 @@ public class ControllerAchat extends JFrame {
 
     }
 
-    // Récupérer le médecin
+    /**
+     * Récupérer le médecin
+     *
+     * @return Le médecin
+     */
     private Medecin GetMedecin() throws SaisieException {
         Object selectedMedecin = medecinCombobox.getSelectedItem();
 
@@ -420,49 +433,45 @@ public class ControllerAchat extends JFrame {
         }
     }
 
-    // Récupérer la table temporaire
+    /**
+     * Récupérer la table temporaire des médicaments
+     *
+     * @return La table temporaire des médicaments
+     */
     public ListeMedicamentTableModel getTableModel() {
         return (ListeMedicamentTableModel) listeDeMedocTable.getModel();
     }
 
-    // Calculer le prix total
-    public void PrixTotalLabel() throws SaisieException {
+    /**
+     * Calculer le prix total et l'afficher
+     *
+     * @throws SaisieException
+     */
+    public void PrixTotalLabel(){
         double prixTotal = 0.0;
         for (TableMedicamentTemporaire prix : getTableMedicamentTemporaire()) {
             String prixStr = prix.getPrix();
-            int qantity = prix.getQuantite();
             if (prixStr != null && !prixStr.trim().isEmpty()) {
-                prixStr = prixStr.replace(",", ".");
-                prixTotal += Double.parseDouble(prixStr) * qantity;
+                prixTotal += Double.parseDouble(prixStr.replace(",", ".")) * prix.getQuantite();
             }
         }
 
-        //si le client a une mutuelle on applique la réduction sinon on affiche le prix total
-        int typeAchat = typeAchatCombobox.getSelectedIndex();
-        if(clientCombobox.getSelectedItem() instanceof Client){
-            Client client = (Client) clientCombobox.getSelectedItem();
-            if(client.getMutuelle() != null){
-                if(typeAchat == 2) {
-                    BigDecimal total = new BigDecimal(prixTotal).setScale(2, RoundingMode.HALF_UP);
-                    BigDecimal apresMutuelle = total.multiply(BigDecimal.valueOf(1 - (Double.parseDouble(client.getMutuelle().getTauxDePriseEnCharge()) / 100)))
-                            .setScale(2, RoundingMode.HALF_UP);
-
-                    prixLabel.setText("Prix total : " + total + " €, Après la mutuelle : " + apresMutuelle + " €");
-                }else{
-                    BigDecimal total = new BigDecimal(prixTotal).setScale(2, RoundingMode.HALF_UP);
-                    prixLabel.setText("Prix total : " + total + " €");
-                }
-            }else{
-                BigDecimal total = new BigDecimal(prixTotal).setScale(2, RoundingMode.HALF_UP);
-                prixLabel.setText("Prix total : " + total + " €");
-            }
-        }else{
-            BigDecimal total = new BigDecimal(prixTotal).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal total = BigDecimal.valueOf(prixTotal).setScale(2, RoundingMode.HALF_UP);
+        Client client = (Client) clientCombobox.getSelectedItem();
+        if (client != null && client.getMutuelle() != null && typeAchatCombobox.getSelectedIndex() == 2) {
+            BigDecimal apresMutuelle = total.multiply(BigDecimal.valueOf(1 - Double.parseDouble(client.getMutuelle().getTauxDePriseEnCharge()) / 100))
+                    .setScale(2, RoundingMode.HALF_UP);
+            prixLabel.setText("Prix total : " + total + " €, Après la mutuelle : " + apresMutuelle + " €");
+        } else {
             prixLabel.setText("Prix total : " + total + " €");
         }
     }
 
-    // Calculer le prix total
+    /**
+     * Calculer le prix total
+     *
+     * @return Le prix total
+     */
     public double PrixTotal() {
         double prixTotal = 0.0;
         for (TableMedicamentTemporaire prix : getTableMedicamentTemporaire()) {
@@ -476,7 +485,9 @@ public class ControllerAchat extends JFrame {
 
     }
 
-    // Actualiser la combobox des clients
+    /**
+     * Actualiser la combobox des clients
+     */
     private void actualiserComboClient() {
         DefaultComboBoxModel<Client> comboBoxModel1 = new DefaultComboBoxModel<>();
         comboBoxModel1.removeAllElements();
@@ -486,7 +497,9 @@ public class ControllerAchat extends JFrame {
         clientCombobox.setModel(comboBoxModel1);
     }
 
-    // Actualiser la combobox des médecins
+    /**
+     * Actualiser la combobox des médecins
+     */
     private void actualiserComboMedecin() {
         DefaultComboBoxModel<Medecin> comboBoxModel2 = new DefaultComboBoxModel<>();
         comboBoxModel2.removeAllElements();
@@ -496,7 +509,9 @@ public class ControllerAchat extends JFrame {
         medecinCombobox.setModel(comboBoxModel2);
     }
 
-    // Actualiser la combobox des médicaments
+    /**
+     * Actualiser la combobox des médicaments
+     */
     private void actualiserComboMedicament() {
         DefaultComboBoxModel<Medicament> comboBoxModel3 = new DefaultComboBoxModel<>();
         comboBoxModel3.removeAllElements();

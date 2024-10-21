@@ -12,6 +12,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * La classe ControllerListeMutuelle est le contrôleur de la fenêtre de liste des mutuelles
+ */
 public class ControllerListeMutuelle extends JFrame {
     private JPanel contentPane;
     private JTextField barDeRechercheTextField;
@@ -22,6 +25,9 @@ public class ControllerListeMutuelle extends JFrame {
     private JPanel affichageAlertePanel;
     private JLabel informationLabel;
 
+    /**
+     * Constructeur de la classe ControllerListeMutuelle
+     */
     public ControllerListeMutuelle() {
         setTitle("Liste des Mutuelles");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

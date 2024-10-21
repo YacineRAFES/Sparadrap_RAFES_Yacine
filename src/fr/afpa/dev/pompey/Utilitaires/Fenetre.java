@@ -8,11 +8,21 @@ public class Fenetre extends JFrame {
 
     }
 
+    /**
+     * Crée une fenêtre avec un message
+     *
+     * @param message Le message à afficher
+     */
     public static void Fenetre(String message){
         JOptionPane.showMessageDialog(null, message);
     }
 
-    //Créer un constructeur avec une fenetre avec une confirmation
+    /**
+     * Crée une fenêtre de confirmation
+     *
+     * @param message Le message à afficher
+     * @return true si l'utilisateur clique sur "Oui", false sinon
+     */
     public static boolean Confirmation(String message){
         int choix = JOptionPane.showConfirmDialog(null, message, "Confirmation", JOptionPane.YES_NO_OPTION);
         return choix == JOptionPane.YES_OPTION;

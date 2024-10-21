@@ -11,6 +11,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * La classe ControllerMedecin est le contrôleur de la fenêtre de création d'un médecin
+ */
 public class ControllerMedecin extends JFrame {
     private JPanel contentPane;
     private JTextField nomTextField;
@@ -30,6 +33,9 @@ public class ControllerMedecin extends JFrame {
     private JLabel specialisteLabel;
 
 
+    /**
+     * Constructeur de la classe ControllerMedecin
+     */
     public ControllerMedecin(){
         setTitle("Medecin");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

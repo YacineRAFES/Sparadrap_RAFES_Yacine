@@ -15,6 +15,9 @@ import java.util.Objects;
 import static fr.afpa.dev.pompey.Modele.GestionListe.*;
 import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
+/**
+ * La classe ControllerMedicament est le contrôleur de la fenêtre de création d'un médicament
+ */
 public class ControllerMedicament extends javax.swing.JFrame {
     private JPanel contentPane;
     private JTextField nomTextField;
@@ -39,6 +42,9 @@ public class ControllerMedicament extends javax.swing.JFrame {
             "Antiviraux",
             "Cardiologie"};
 
+    /**
+     * Constructeur de la classe ControllerMedicament
+     */
     public ControllerMedicament(){
         setTitle("Medicament");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -84,7 +90,11 @@ public class ControllerMedicament extends javax.swing.JFrame {
         });
     }
 
-    //Méthode pour valider la création d'un médicament
+    /**
+     * Méthode pour valider la création d'un médicament
+     *
+     * @throws SaisieException
+     */
     private void valider() throws SaisieException {
         String nomMedoc = nomTextField.getText();
         String categorieMedoc = Objects.requireNonNull(categorieCombobox.getSelectedItem()).toString();
@@ -115,7 +125,9 @@ public class ControllerMedicament extends javax.swing.JFrame {
         annuler();
     }
 
-    //Méthode pour annuler la création d'un médicament
+    /**
+     * Méthode pour annuler la création d'un médicament
+     */
     private void annuler() {
         nomTextField.setText("");
         categorieCombobox.setSelectedItem(0);

@@ -7,11 +7,17 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * A class that contains utility methods for creating and managing interfaces
+ */
 public class InterfaceModel extends JFrame {
     private static JTextField barRecherche;
     private static TableRowSorter<TableModel> rowSorter;
     private static boolean isVisibleBlink = true;
 
+    /**
+     * Creates a new InterfaceModel
+     */
     public InterfaceModel() {
 
     }

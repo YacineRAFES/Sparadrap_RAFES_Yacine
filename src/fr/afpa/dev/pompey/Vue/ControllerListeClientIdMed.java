@@ -9,6 +9,9 @@ import java.awt.event.ActionListener;
 
 import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.filterTable;
 
+/**
+ * La classe ControllerListeClientIdMed est le contrôleur de la fenêtre de liste des clients par identifiant du médecin
+ */
 public class ControllerListeClientIdMed extends JFrame {
     private JPanel contentPane;
     private JTextField barreDeRecherche;
@@ -17,6 +20,11 @@ public class ControllerListeClientIdMed extends JFrame {
     private JLabel rechercheLabel;
     private JButton fermerButton;
 
+    /**
+     * Constructeur de la classe ControllerListeClientIdMed
+     *
+     * @param medecin Le médecin
+     */
     public ControllerListeClientIdMed(Medecin medecin){
         setTitle("Liste des clients de " + medecin.getNomMedecin() + " " + medecin.getPrenomMedecin());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

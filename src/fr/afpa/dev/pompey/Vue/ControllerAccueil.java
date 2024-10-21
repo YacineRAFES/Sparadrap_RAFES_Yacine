@@ -10,6 +10,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * La classe ControllerAccueil est le contrôleur de la fenêtre d'accueil
+ */
 public class ControllerAccueil extends JFrame {
     private JPanel contentPane;
     private JButton achatButton;
@@ -19,7 +22,10 @@ public class ControllerAccueil extends JFrame {
     private JButton mutuelleButton;
     private JTable listeDeMedocTable;
 
-    public ControllerAccueil() throws SaisieException {
+    /**
+     * Constructeur de la classe ControllerAccueil
+     */
+    public ControllerAccueil(){
 
         setTitle("Accueil");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,12 +40,7 @@ public class ControllerAccueil extends JFrame {
         achatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    achat();
-                } catch (SaisieException ex) {
-                    Fenetre.Fenetre("Erreur lors d'ouvrir la fenêtre d'achat");
-                    throw new RuntimeException(ex);
-                }
+                achat();
             }
         });
         //Les Listeners
@@ -47,55 +48,36 @@ public class ControllerAccueil extends JFrame {
         historiqueDAchatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    historiqueDAchat();
-                }catch (SaisieException ex){
-                    Fenetre.Fenetre("Erreur lors d'ouvrir la fenêtre d'Historique d'Achat");
-                    throw new RuntimeException(ex);
-                }
+                historiqueDAchat();
             }
         });
         //Bouton Detail Client
         detailClientButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    listeClient();
-                } catch (SaisieException ex) {
-                    Fenetre.Fenetre("Erreur lors d'ouvrir la fenêtre de liste de client");
-                    throw new RuntimeException(ex);
-                }
+                listeClient();
             }
         });
         //Bouton Detail Medecin
         detailMedecinButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    listeMdecin();
-                } catch (SaisieException ex) {
-                    Fenetre.Fenetre("Erreur lors d'ouvrir la fenêtre de liste de médecin");
-                    throw new RuntimeException(ex);
-                }
+                listeMdecin();
             }
         });
         //Bouton Detail Mutuelle
         mutuelleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    listeMutuelle();
-                }catch (SaisieException ex){
-                    Fenetre.Fenetre("Erreur lors d'ouvrir la fenêtre de liste de mutuelle");
-                    throw new RuntimeException(ex);
-                }
+                listeMutuelle();
             }
         });
     }
 
-    //Les méthodes
-    //Méthode pour ouvrir la fenêtre d'achat
-    private void achat() throws SaisieException {
+    /**
+     * Méthode pour afficher la fenêtre
+     */
+    private void achat() {
         ControllerAchat controllerAchat = new ControllerAchat();
         controllerAchat.setVisible(true);
         controllerAchat.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -111,26 +93,34 @@ public class ControllerAccueil extends JFrame {
         });
     }
 
-    //Méthode pour ouvrir la fenêtre d'historique d'achat
-    private void historiqueDAchat() throws SaisieException {
+    /**
+     * Méthode pour ouvrir la fenêtre de l'historique d'achat
+     */
+    private void historiqueDAchat() {
         ControllerHistoriqueAchat historiqueAchat = new ControllerHistoriqueAchat();
         historiqueAchat.setVisible(true);
     }
 
-    //Méthode pour ouvrir la fenêtre de liste de client
-    private void listeClient() throws SaisieException{
+    /**
+     * Méthode pour ouvrir la fenêtre de liste de client
+     */
+    private void listeClient(){
         ControllerListeClient listeClient = new ControllerListeClient();
         listeClient.setVisible(true);
     }
 
-    //Méthode pour ouvrir la fenêtre de liste de médecin
-    private void listeMdecin() throws SaisieException{
+    /**
+     * Méthode pour ouvrir la fenêtre de liste de médecin
+     */
+    private void listeMdecin(){
         ControllerListeMedecin listeMedecin = new ControllerListeMedecin();
         listeMedecin.setVisible(true);
     }
 
-    //Méthode pour ouvrir la fenêtre de liste de mutuelle
-    private void listeMutuelle() throws SaisieException{
+    /**
+     * Méthode pour ouvrir la fenêtre de liste de mutuelle
+     */
+    private void listeMutuelle(){
         ControllerListeMutuelle listeMutuelle = new ControllerListeMutuelle();
         listeMutuelle.setVisible(true);
     }

@@ -14,9 +14,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
-import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.Refresh;
-import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ShowLabelWithBlinker;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
+/**
+ * La classe ControllerListeMedecin est le contrôleur de la fenêtre de liste des médecins
+ */
 public class ControllerListeMedecin extends JFrame {
     private JPanel contentPane;
     private JLabel titreListeMedecin;
@@ -27,6 +29,9 @@ public class ControllerListeMedecin extends JFrame {
     private JLabel informationLabel;
     private JPanel affichageAlertePanel;
 
+    /**
+     * Constructeur de la classe ControllerListeMedecin
+     */
     public ControllerListeMedecin() {
         setTitle("Liste des Médecins");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -74,20 +79,29 @@ public class ControllerListeMedecin extends JFrame {
                         boolean medecinLieClient = GestionListe.getClient().stream().anyMatch(client -> client.getMedecin() != null && client.getMedecin().equals(medecin));
                         boolean medecinLieOrdonnance = GestionListe.getOrdonnance().stream().anyMatch(ordonnance -> ordonnance.getMedecin() != null && ordonnance.getMedecin().equals(medecin));
                         if (medecinLieClient || medecinLieOrdonnance) {
-                            ShowLabelWithBlinker(informationLabel, "Le médecin est lié à un client ou une ordonnance, impossible de le supprimer", Color.RED);
+                            ShowLabelWithTimer(
+                                    informationLabel,
+                                    "<html><p>Le médecin est lié à un client ou une ordonnance,<br> impossible de le supprimer</p></html>",
+                                    Color.RED);
                         } else {
                             GestionListe.removeMedecin(medecin);
-                            Fenetre.Fenetre("Medecin supprimé");
+                            ShowLabelWithTimer(
+                                    informationLabel,
+                                    "Le médecin a été supprimé avec succès",
+                                    Color.GREEN);
                         }
                     } else {
-                        Fenetre.Fenetre("Médecin n'existe pas");
+                        ShowLabelWithTimer(
+                                informationLabel,
+                                "Le médecin n'existe",
+                                Color.RED);
                     }
                     Refresh(listeMedecinTable1); // Rafraîchir la table après la suppression
                 }
             }
         }));
 
-        //Boton Creer un Medecin
+        //Bouton Creer un Medecin
         creerUnMedecinButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

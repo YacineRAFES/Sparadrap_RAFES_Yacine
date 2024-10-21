@@ -16,6 +16,9 @@ import java.awt.event.ActionListener;
 import static fr.afpa.dev.pompey.Modele.GestionListe.getMedecin;
 import static fr.afpa.dev.pompey.Modele.GestionListe.getMutuelle;
 
+/**
+ * La classe ControllerDetailClient est le contrôleur de la fenêtre de détail du client
+ */
 public class ControllerDetailClient extends JFrame{
     private JLabel coordonneeLabel;
     private JTextField nomTextField;
@@ -36,6 +39,11 @@ public class ControllerDetailClient extends JFrame{
     private JComboBox mutuelleComboBox;
     private JButton mutuelleDuClientButton;
 
+    /**
+     * Constructeur de la classe ControllerDetailClient
+     *
+     * @param idclient L'identifiant du client
+     */
     public ControllerDetailClient(Client idclient) {
         setTitle("Détail Client");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -108,14 +116,23 @@ public class ControllerDetailClient extends JFrame{
         });
     }
 
-    // Ouvre la fenêtre de détail de la mutuelle du client
+    /**
+     * Ouvre la fenêtre de détail de la mutuelle du client
+     *
+     * @throws SaisieException si une erreur survient lors de l'ouverture de la fenêtre de mutuelle
+     */
     private void mutuelleDuClient() throws SaisieException {
         Mutuelle mutuelle = (Mutuelle) mutuelleComboBox.getSelectedItem();
         ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(mutuelle);
         controllerDetailMutuelle.setVisible(true);
     }
 
-    // La modification du client a été effectué avec succès sinon une exception est levée
+    /**
+     * Modifie les informations du client
+     *
+     * @param idclient Le client à modifier
+     * @throws SaisieException si une erreur survient lors de la modification du client
+     */
     private void modifier(Client idclient) throws SaisieException {
         Client client = buildClient();
         if (client == null) return; // Saisie incorrecte
@@ -128,7 +145,12 @@ public class ControllerDetailClient extends JFrame{
         }
     }
 
-    // Crée un client à partir des champs de texte
+    /**
+     * Construit un client à partir des données saisies
+     *
+     * @return Le client construit
+     * @throws SaisieException si une erreur survient lors de la construction du client
+     */
     private Client buildClient() throws SaisieException {
         String nom = Verification.NomPrenom(nomTextField.getText(), "Nom");
         String prenom = Verification.NomPrenom(prenomTextField.getText(), "Prénom");
@@ -146,7 +168,13 @@ public class ControllerDetailClient extends JFrame{
 
     }
 
-    // Met à jour les informations du client
+    /**
+     * Met à jour les informations du client
+     *
+     * @param idclient      Le client à mettre à jour
+     * @param updatedClient Le client mis à jour
+     * @throws SaisieException si une erreur survient lors de la mise à jour du client
+     */
     private void updateClientInfo(Client idclient, Client updatedClient) throws SaisieException {
         idclient.setNom(updatedClient.getNom());
         idclient.setPrenom(updatedClient.getPrenom());
@@ -161,7 +189,12 @@ public class ControllerDetailClient extends JFrame{
         idclient.setMedecin(updatedClient.getMedecin());
     }
 
-    // Remplir les champs de texte avec les données du client
+    /**
+     * Définit les données du client dans les champs de texte
+     *
+     * @param textField Le champ de texte
+     * @param data      Les données du client
+     */
     private void setTextFieldData(JTextField textField, String data) {
         if (data != null && !data.isEmpty()) {
             textField.setText(data);

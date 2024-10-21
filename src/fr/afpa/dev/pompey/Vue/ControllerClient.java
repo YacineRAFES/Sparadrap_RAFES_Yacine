@@ -34,6 +34,9 @@ public class ControllerClient extends JFrame {
     private JComboBox medTraitantComboBox;
     private JComboBox mutuelleComboBox;
 
+    /**
+     * Constructeur de la classe ControllerClient
+     */
     public ControllerClient(){
 
         setTitle("Client");
@@ -89,7 +92,11 @@ public class ControllerClient extends JFrame {
         });
     }
 
-    //Méthode pour enregistrer un client
+    /**
+     * Méthode pour enregistrer un client
+     *
+     * @throws SaisieException
+     */
     private void enregistrerClient() throws SaisieException {
         //Récupération des valeurs des champs
         String nom = nomTextField.getText().trim();
@@ -143,12 +150,16 @@ public class ControllerClient extends JFrame {
 
     }
 
-    //Méthode pour annuler l'enregistrement d'un client
+    /**
+     * Méthode pour annuler l'ajout d'un client
+     */
     private void annulerClient() {
         effaceToutLesChamps();
     }
 
-    //Méthode pour effacer tous les champs
+    /**
+     * Méthode pour effacer tous les champs
+     */
     private void effaceToutLesChamps(){
         nomTextField.setText("");
         prenomTextField.setText("");

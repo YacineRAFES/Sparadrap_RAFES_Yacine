@@ -8,6 +8,9 @@ import fr.afpa.dev.pompey.Utilitaires.Verification;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * La classe ControllerDetailMedecin est le contrôleur de la fenêtre de détail du médecin
+ */
 public class ControllerDetailMedecin extends JFrame {
     private JPanel contentPane;
     private JLabel coordonneeLabel;
@@ -30,6 +33,11 @@ public class ControllerDetailMedecin extends JFrame {
     private JButton listesDesClientsButton;
     private JLabel informationLabel;
 
+    /**
+     * Constructeur de la classe ControllerDetailMedecin
+     *
+     * @param idmedecin L'identifiant du médecin
+     */
     public ControllerDetailMedecin(Medecin idmedecin) {
         setTitle("Détail Médecin");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -71,7 +79,12 @@ public class ControllerDetailMedecin extends JFrame {
         });
     }
 
-    // La modification du client a été effectué avec succès sinon une exception est levée
+    /**
+     * Méthode pour modifier un médecin
+     *
+     * @param idmedecin L'identifiant du médecin
+     * @throws SaisieException
+     */
     private void modifier(Medecin idmedecin) throws SaisieException {
         Medecin medecin = buildMedecin();
         if (medecin == null) return; // Saisie incorrecte
@@ -85,7 +98,12 @@ public class ControllerDetailMedecin extends JFrame {
         }
     }
 
-    // Crée un client à partir des champs de texte
+    /**
+     * Construire un médecin
+     *
+     * @return Le médecin
+     * @throws SaisieException
+     */
     private Medecin buildMedecin() throws SaisieException {
         String nom = Verification.NomPrenom(nomTextField.getText(), "Nom");
         String prenom = Verification.NomPrenom(prenomTextField.getText(), "Prénom");
@@ -100,7 +118,13 @@ public class ControllerDetailMedecin extends JFrame {
         return new Medecin(nom, prenom, rue, cp, ville, telephone, email, numAgreement, specialiste);
     }
 
-    // Met à jour les informations du client
+    /**
+     * Mettre à jour les informations du médecin
+     *
+     * @param idmedecin     L'identifiant du médecin
+     * @param updatedMedecin Le médecin mis à jour
+     * @throws SaisieException
+     */
     private void updateMedecinInfo(Medecin idmedecin, Medecin updatedMedecin) throws SaisieException {
         idmedecin.setNomMedecin(updatedMedecin.getNomMedecin());
         idmedecin.setPrenomMedecin(updatedMedecin.getPrenomMedecin());
@@ -113,7 +137,12 @@ public class ControllerDetailMedecin extends JFrame {
         idmedecin.setSpecialite(updatedMedecin.getSpecialite());
     }
 
-    // Remplir les champs de texte
+    /**
+     * Mettre les données dans les champs de texte
+     *
+     * @param textField Le champ de texte
+     * @param data      Les données
+     */
     private void setTextFieldData(JTextField textField, String data) {
         if (data != null && !data.isEmpty()) {
             textField.setText(data);

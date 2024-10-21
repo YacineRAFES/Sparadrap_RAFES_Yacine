@@ -8,6 +8,12 @@ import java.time.format.DateTimeFormatter;
 public class Verification {
     public Verification() {}
 
+    /**
+     * Vérifie si la saisie correspond à string pour le nom et prénom
+     * @param saisie
+     * @return
+     * @throws SaisieException
+     */
     public static String NomPrenom(String saisie, String type) throws SaisieException {
         if(!saisie.matches(Regex.REGEXNOMPRENOM)) {
             Fenetre.Fenetre("Le " + type + " ne correspond pas");
@@ -16,6 +22,12 @@ public class Verification {
         return saisie.toUpperCase();
     }
 
+    /**
+     * Vérifie si la saisie correspond à un string
+     * @param saisie
+     * @return
+     * @throws SaisieException
+     */
     public static String String(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXSTRING)) {
             Fenetre.Fenetre("La saisie ne corresponds pas, seuls les caractères sont acceptés");
@@ -38,6 +50,12 @@ public class Verification {
         return saisie;
     }
 
+    /**
+     * Vérifie si la saisie correspond à une date de naissance
+     * @param saisie
+     * @return
+     * @throws SaisieException
+     */
     public static String BirthDate(String saisie) throws SaisieException {
         //get the current date
         LocalDate dateActuel = LocalDate.now();
@@ -56,6 +74,12 @@ public class Verification {
         return saisie;
     }
 
+    /**
+     * Vérifie si la saisie correspond à un numéro de sécurité social
+     * @param saisie
+     * @return
+     * @throws SaisieException
+     */
     public static String SecuSocial(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXNUMSECU)){
             Fenetre.Fenetre("Vérifier le numéro de la sécurité social si il est bien composé de 15 chiffres");
@@ -64,6 +88,12 @@ public class Verification {
         return saisie;
     }
 
+    /**
+     * Vérifie si la saisie correspond à un code postal
+     * @param saisie
+     * @return
+     * @throws SaisieException
+     */
     public static String CodePostal(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXCODEPOSTAL)) {
             Fenetre.Fenetre("Le code postal ne corresponds pas");
@@ -72,6 +102,12 @@ public class Verification {
         return saisie;
     }
 
+    /**
+     * Vérifie si la saisie correspond à un téléphone
+     * @param saisie
+     * @return
+     * @throws SaisieException
+     */
     public static String Telephone(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXNUMTEL)){
             Fenetre.Fenetre("Le telephone ne corresponds pas");
@@ -80,6 +116,12 @@ public class Verification {
         return saisie;
     }
 
+    /**
+     * Vérifie si la saisie correspond à un prix
+     * @param saisie
+     * @return
+     * @throws SaisieException
+     */
     public static String Prix(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXPRIX)) {
             Fenetre.Fenetre("Le prix ne corresponds pas");
@@ -88,6 +130,12 @@ public class Verification {
         return saisie;
     }
 
+    /**
+     * Vérifie si la saisie correspond à une quantité
+     * @param saisie
+     * @return
+     * @throws SaisieException
+     */
     public static int Quantite(String saisie) throws SaisieException {
         if(!saisie.matches(Regex.REGEXQUANTITE)) {
             Fenetre.Fenetre("La quantite ne corresponds pas, seuls les entiers sont acceptés");

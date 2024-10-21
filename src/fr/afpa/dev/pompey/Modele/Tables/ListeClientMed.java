@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * La classe ListeClientMed est le modèle de la table de la liste des clients par identifiant du médecin
+ */
 public class ListeClientMed extends AbstractTableModel  {
 
     private final String[] ENTETE = new String[] {
@@ -18,6 +21,11 @@ public class ListeClientMed extends AbstractTableModel  {
 
     private List<Client> clients;
 
+    /**
+     * Constructeur de la classe ListeClientMed
+     *
+     * @param medecin Le médecin
+     */
     public ListeClientMed(Medecin medecin) {
 
         Set<Client> uniqueClients = new LinkedHashSet<>();

@@ -15,6 +15,9 @@ import java.awt.event.ActionListener;
 
 import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
+/**
+ * La classe ControllerHistoriqueAchat est le contrôleur de la fenêtre de l'historique d'achat
+ */
 public class ControllerHistoriqueAchat extends JFrame {
     private JTable tableHistoriqueAchat;
     private JPanel contentPane;
@@ -26,6 +29,9 @@ public class ControllerHistoriqueAchat extends JFrame {
     private JPanel affichageAlertePanel;
     private JLabel informationLabel;
 
+    /**
+     * Constructeur de la classe ControllerHistoriqueAchat
+     */
     public ControllerHistoriqueAchat() {
         setTitle("Historique d'Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

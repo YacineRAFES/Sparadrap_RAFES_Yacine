@@ -12,6 +12,9 @@ import java.awt.event.*;
 
 import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.Refresh;
 
+/**
+ * La classe ControllerListeClient est le contrôleur de la fenêtre de la liste des clients
+ */
 public class ControllerListeClient extends JFrame {
     private JTable listeClientTable;
     private JScrollPane scrollPane;
@@ -22,6 +25,9 @@ public class ControllerListeClient extends JFrame {
     private JPanel affichageAlertePanel;
     private JLabel informationLabel;
 
+    /**
+     * Constructeur de la classe ControllerListeClient
+     */
     public ControllerListeClient() {
         setTitle("Liste des clients");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
