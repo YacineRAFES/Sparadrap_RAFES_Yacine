@@ -22,13 +22,13 @@ Sparadrap est une application de gestion de pharmacie permettant de gérer les a
 3. Utilisez les boutons pour naviguer entre les différentes sections de l'application.
 
 ## Structure du projet
-- **src/fr/afpa/dev/pompey/Controller** : Contient les contrôleurs pour les différentes fenêtres de l'application.
+- **src/fr/afpa/dev/pompey/Controller** : 
 - **src/fr/afpa/dev/pompey/Modele** : Contient les modèles de données utilisés par l'application.
 - **src/fr/afpa/dev/pompey/Modele/Tables** : Contient les modèles de table pour les affichages dans les JTable.
-- **src/fr/afpa/dev/pompey/Modele/Utilitaires** : Contient les classes utilitaires pour les outils.
+- **src/fr/afpa/dev/pompey/Utilitaires** : Contient les classes utilitaires pour les outils.
 - **src/fr/afpa/dev/pompey/Exception** : Contient les exceptions personnalisées utilisées dans l'application.
 - **src/fr/afpa/dev/pompey/Main** : Contient la classe principale pour démarrer l'application.
-- **src/fr/afpa/dev/pompey/Vue** : Contient les différentes fenêtres de l'application.
+- **src/fr/afpa/dev/pompey/Vue** : Contient les différentes fenêtres et les controllers de l'application.
 
 ## Auteurs
 - **Yacine RAFES**
