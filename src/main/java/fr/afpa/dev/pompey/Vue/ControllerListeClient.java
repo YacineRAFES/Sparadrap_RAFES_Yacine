@@ -5,12 +5,15 @@ import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Tables.ListeClientTable;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.InterfaceModel;
 import fr.afpa.dev.pompey.Utilitaires.button;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.Refresh;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ShowLabelWithBlinker;
 
 /**
  * La classe ControllerListeClient est le contrôleur de la fenêtre de la liste des clients
@@ -64,8 +67,7 @@ public class ControllerListeClient extends JFrame {
                             }
                         });
                     } else {
-                        Fenetre.Fenetre("Le client n'existe pas");
-                        new SaisieException("Le client n'existe pas");
+                        ShowLabelWithBlinker(informationLabel, "Client n'existe pas", Color.RED);
                     }
                 }
             }
@@ -90,7 +92,7 @@ public class ControllerListeClient extends JFrame {
 
                         if (ordonnanceLie || achatSansOrdonnanceLie) {
                             // Si le client est lié à une ordonnance ou à un achat sans ordonnance, on affiche un message d'erreur
-                            Fenetre.Fenetre("Client lié à une ordonnance ou un achat sans ordonnance, impossible de le supprimer");
+                            ShowLabelWithBlinker(informationLabel, "Client lié à une ordonnance ou un achat sans ordonnance", Color.RED);
                         } else {
                             // Supprimer le client de la liste des clients
                             GestionListe.getClient().remove(client);
@@ -100,10 +102,10 @@ public class ControllerListeClient extends JFrame {
 
                             // Rafraîchir la table après la suppression
                             Refresh(listeClientTable);
-                            Fenetre.Fenetre("Client supprimé");
+                            ShowLabelWithBlinker(informationLabel, "Client supprimé", Color.GREEN);
                         }
                     } else {
-                        Fenetre.Fenetre("Client n'existe pas");
+                        ShowLabelWithBlinker(informationLabel, "Client n'existe pas", Color.RED);
                     }
                 }
             }

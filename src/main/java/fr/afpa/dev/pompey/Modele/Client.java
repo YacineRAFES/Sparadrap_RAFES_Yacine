@@ -10,6 +10,7 @@ import java.util.List;
  * La classe Client est le modèle du client
  */
 public class Client extends Medecin {
+    private int id;
     private String nom;
     private String prenom;
     private String adresse;
@@ -31,6 +32,7 @@ public class Client extends Medecin {
      */
     public Client(Client client, String nomMedecin, String prenomMedecin) {
         super(nomMedecin, prenomMedecin);
+
         this.nom = client.getNom();
         this.prenom = client.getPrenom();
         this.adresse = client.getAdresse();
@@ -70,9 +72,10 @@ public class Client extends Medecin {
      * @param nomMedecin Le nom du médecin
      * @param prenomMedecin Le prénom du médecin
      */
-    public Client(String nom, String prenom, String adresse, String codePostal, String ville, String telephone, String email,
+    public Client(int id, String nom, String prenom, String adresse, String codePostal, String ville, String telephone, String email,
                   String numeroSecuClient, String dateNaissance, Mutuelle mutuelle, String nomMedecin, String prenomMedecin) {
         super(nomMedecin, prenomMedecin);
+        this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.adresse = adresse;
@@ -93,6 +96,14 @@ public class Client extends Medecin {
     }
 
     //GETTER ET SETTER
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     /**
      * Permet d'obtenir la liste des clients
      *

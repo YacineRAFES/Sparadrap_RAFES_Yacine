@@ -47,7 +47,7 @@ public class ControllerClient extends JFrame {
 
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
-
+        
         // Placeholder
         PlaceholderTextField.setPlaceholder(nomTextField, "Nom");
         PlaceholderTextField.setPlaceholder(prenomTextField, "Prénom");
@@ -113,6 +113,8 @@ public class ControllerClient extends JFrame {
 
 
         //Vérification des champs
+        //trouver un champs de saisie vide et le transformer en rouge
+
         if(nom.isEmpty() || prenom.isEmpty() || dateNaissance.isEmpty() || secusocial.isEmpty() || cp.isEmpty() ||
                 telephone.isEmpty() || email.isEmpty() || rue.isEmpty() || ville.isEmpty()){
             Fenetre.Fenetre("Veuillez remplir tous les champs");
@@ -121,6 +123,7 @@ public class ControllerClient extends JFrame {
 
         //Création d'un client
         Client client = new Client(
+                int id,
                 Verification.NomPrenom(nom, "Nom"),
                 Verification.NomPrenom(prenom, "Prénom"),
                 rue,

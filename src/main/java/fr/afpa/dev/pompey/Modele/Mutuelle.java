@@ -4,6 +4,7 @@ import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Utilitaires.Regex;
 
 public class Mutuelle {
+    private int id;
     private String nom;
     private String adresse;
     private String codePostal;
@@ -21,7 +22,8 @@ public class Mutuelle {
         this.nom = nom;
     }
 
-    public Mutuelle(String nom, String adresse, String codePostal, String ville, String telephone, String email, String departement, String tauxDePriseEnCharge) throws SaisieException {
+    public Mutuelle(int id, String nom, String adresse, String codePostal, String ville, String telephone, String email, String departement, String tauxDePriseEnCharge) throws SaisieException {
+        setId(id);
         setNom(nom);
         setAdresse(adresse);
         setCodePostal(codePostal);
@@ -33,6 +35,14 @@ public class Mutuelle {
     }
 
     //GETTER ET SETTER
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getNom() {
         return nom;
     }
