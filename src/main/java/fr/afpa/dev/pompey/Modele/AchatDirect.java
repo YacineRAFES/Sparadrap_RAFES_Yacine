@@ -116,16 +116,5 @@ public class AchatSansOrdonnance {
         return prixTotal;
     }
 
-    /**
-     * Permet de définir le prix total
-     *
-     * @param prixTotal Le prix total
-     */
-    public void setPrixTotal(double prixTotal) throws SaisieException {
-        if(prixTotal < 0.0 || prixTotal == 0.0){
-            throw new SaisieException("Le prix total ne peut pas être négatif ou vide");
-        }
-        this.prixTotal = prixTotal;
-    }
 
 }

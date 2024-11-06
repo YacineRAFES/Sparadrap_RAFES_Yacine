@@ -4,27 +4,24 @@ import fr.afpa.dev.pompey.Exception.SaisieException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public class Ordonnance {
+    private int id;
     private LocalDate date;
-    private String[][] listeMedicament;
-    private Client client;
     private Medecin medecin;
-    private double prixTotal;
-
+    private Client client;
     //CONSTRUCTEURS
 
     public Ordonnance() {
     }
 
-    public Ordonnance(LocalDate date, String[][] listeMedicament, Client client, Medecin medecin, double prixTotal) {
+    public Ordonnance(LocalDate date, Client client, Medecin medecin) {
         this.date = date;
-        this.listeMedicament = listeMedicament;
         this.client = client;
         this.medecin = medecin;
-        this.prixTotal = prixTotal;
     }
 
     public static List<Ordonnance> getOrdonnancesParMedecin(Medecin medecin) {
