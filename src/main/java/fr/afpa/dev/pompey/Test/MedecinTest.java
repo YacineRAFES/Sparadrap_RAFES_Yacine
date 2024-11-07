@@ -26,7 +26,7 @@ class MedecinTest {
     @EmptySource
     void setNomEmpty(String nom) {
         Exception e =  assertThrows(Exception.class, () -> {
-            medecinUnderTest.setNomMedecin(nom);
+            medecinUnderTest.setNom(nom);
         });
         assertEquals("Le nom ne doit pas être vide", e.getMessage());
     }
@@ -35,7 +35,7 @@ class MedecinTest {
     @NullSource
     void setNomNull(String nom) {
         Exception e =  assertThrows(Exception.class, () -> {
-            medecinUnderTest.setNomMedecin(nom);
+            medecinUnderTest.setNom(nom);
         });
         assertEquals("Le nom ne doit pas être vide", e.getMessage());
     }

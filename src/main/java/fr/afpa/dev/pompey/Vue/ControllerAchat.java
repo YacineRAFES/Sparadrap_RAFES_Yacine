@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -320,12 +319,12 @@ public class ControllerAchat extends JFrame {
             throw new SaisieException();
         } else if (typeAchat == 1) {
             GetClient();
-            AchatSansOrdonnance achatSansOrdonnance = new AchatSansOrdonnance(GetClient(), Generator.DateNow(), listeMedicament, PrixTotal());
+            AchatDirect achatSansOrdonnance = new AchatDirect(GetClient(), Generator.DateNow(), listeMedicament, PrixTotal());
             GestionListe.addAchatSansOrdonnance(achatSansOrdonnance);
         } else if (typeAchat == 2) {
             GetClient();
             GetMedecin();
-            Ordonnance ordonnance = new Ordonnance(Generator.DateNow(), listeMedicament, GetClient(), GetMedecin(), PrixTotal());
+            Ordonnances ordonnance = new Ordonnances(Generator.DateNow(), listeMedicament, GetClient(), GetMedecin(), PrixTotal());
             GestionListe.addOrdonnance(ordonnance);
         }
 

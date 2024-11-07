@@ -1,6 +1,6 @@
 package fr.afpa.dev.pompey.Test;
 
-import fr.afpa.dev.pompey.Modele.AchatSansOrdonnance;
+import fr.afpa.dev.pompey.Modele.AchatDirect;
 import fr.afpa.dev.pompey.Modele.Client;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,11 +15,11 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AchatSansOrdonnanceTest {
-    private AchatSansOrdonnance achatSansOrdonnanceUnderTest;
+    private AchatDirect achatSansOrdonnanceUnderTest;
 
     @BeforeEach
     void setUp() {
-        achatSansOrdonnanceUnderTest = new AchatSansOrdonnance();
+        achatSansOrdonnanceUnderTest = new AchatDirect();
     }
 
     @Test

@@ -2,7 +2,7 @@ package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Ordonnance;
+import fr.afpa.dev.pompey.Modele.Ordonnances;
 import fr.afpa.dev.pompey.Modele.Tables.ListeOrdonnancesMed;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.button;
@@ -50,7 +50,7 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int row = tableHistoriqueOrdonnanceidmed.getEditingRow(); // Get the row being edited (clicked)
                 ListeOrdonnancesMed model = (ListeOrdonnancesMed) tableHistoriqueOrdonnanceidmed.getModel();
-                Ordonnance ordonnance = model.getOrdonnanceAt(row); // Utiliser la méthode du modèle pour obtenir l'ordonnance
+                Ordonnances ordonnance = model.getOrdonnanceAt(row); // Utiliser la méthode du modèle pour obtenir l'ordonnance
 
                 if (ordonnance != null) {
                     ControllerDetailAchat controllerDetailAchat = null;

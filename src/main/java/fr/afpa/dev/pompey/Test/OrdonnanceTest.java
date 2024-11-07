@@ -2,7 +2,7 @@ package fr.afpa.dev.pompey.Test;
 
 import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Ordonnance;
+import fr.afpa.dev.pompey.Modele.Ordonnances;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,11 +15,11 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrdonnanceTest {
-    private Ordonnance ordonnanceUnderTest;
+    private Ordonnances ordonnanceUnderTest;
 
     @BeforeEach
     void setUp() {
-        ordonnanceUnderTest = new Ordonnance();
+        ordonnanceUnderTest = new Ordonnances();
     }
 
     @Test

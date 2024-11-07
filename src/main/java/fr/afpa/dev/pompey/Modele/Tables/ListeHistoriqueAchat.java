@@ -1,7 +1,7 @@
 package fr.afpa.dev.pompey.Modele.Tables;
 
-import fr.afpa.dev.pompey.Modele.AchatSansOrdonnance;
-import fr.afpa.dev.pompey.Modele.Ordonnance;
+import fr.afpa.dev.pompey.Modele.AchatDirect;
+import fr.afpa.dev.pompey.Modele.Ordonnances;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -12,10 +12,10 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
             "Date", "Client", "Type d'Achat", "Détail", "Action"
     };
 
-    private final List<AchatSansOrdonnance> achatSansOrdonnances;
-    private final List<Ordonnance> ordonnances;
+    private final List<AchatDirect> achatSansOrdonnances;
+    private final List<Ordonnances> ordonnances;
 
-    public ListeHistoriqueAchat(List<AchatSansOrdonnance> achatSansOrdonnances, List<Ordonnance> ordonnances) {
+    public ListeHistoriqueAchat(List<AchatDirect> achatSansOrdonnances, List<Ordonnances> ordonnances) {
         this.achatSansOrdonnances = achatSansOrdonnances;
         this.ordonnances = ordonnances;
     }
@@ -39,7 +39,7 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         if (rowIndex < achatSansOrdonnances.size()) {
             // Si l'index est dans les limites de achatSansOrdonnances
-            AchatSansOrdonnance achatSansOrdonnance = achatSansOrdonnances.get(rowIndex);
+            AchatDirect achatSansOrdonnance = achatSansOrdonnances.get(rowIndex);
             switch (columnIndex) {
                 case 0:
                     return achatSansOrdonnance.getDate();
@@ -59,7 +59,7 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
         } else {
             // Si l'index dépasse achatSansOrdonnances, il faut accéder à la liste des ordonnances
             int ordonnanceIndex = rowIndex - achatSansOrdonnances.size();  // Calculer l'index relatif pour ordonnance
-            Ordonnance ordonnance = ordonnances.get(ordonnanceIndex);
+            Ordonnances ordonnance = ordonnances.get(ordonnanceIndex);
             switch (columnIndex) {
                 case 0:
                     return ordonnance.getDate();

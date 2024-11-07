@@ -2,7 +2,7 @@ package fr.afpa.dev.pompey.Modele.Tables;
 
 import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Ordonnance;
+import fr.afpa.dev.pompey.Modele.Ordonnances;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.LinkedHashSet;
@@ -29,7 +29,7 @@ public class ListeClientMed extends AbstractTableModel  {
     public ListeClientMed(Medecin medecin) {
 
         Set<Client> uniqueClients = new LinkedHashSet<>();
-        for (Ordonnance ordonnance : medecin.getOrdonnances()) {
+        for (Ordonnances ordonnance : medecin.getOrdonnances()) {
             uniqueClients.add(ordonnance.getClient());
         }
         this.clients = uniqueClients.stream().collect(Collectors.toList());

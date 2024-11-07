@@ -27,6 +27,7 @@ public class ControllerListeClient extends JFrame {
     private JButton fermerButton;
     private JPanel affichageAlertePanel;
     private JLabel informationLabel;
+    private List<Client> clients;
 
     /**
      * Constructeur de la classe ControllerListeClient

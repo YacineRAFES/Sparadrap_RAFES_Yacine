@@ -2,7 +2,7 @@ package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.GestionListe;
-import fr.afpa.dev.pompey.Modele.Ordonnance;
+import fr.afpa.dev.pompey.Modele.Ordonnances;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentDetailAchat;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 
@@ -23,7 +23,7 @@ public class ControllerDetailAchat extends JFrame {
     private JLabel dateAchatLabel;
     private JLabel prixTotalLabel;
 
-    private Ordonnance ordonnance;
+    private Ordonnances ordonnance;
 
     /**
      * Constructeur de la classe ControllerDetailAchat
@@ -109,7 +109,7 @@ public class ControllerDetailAchat extends JFrame {
      *
      * @param ordonnance l'Ordonnance associée à l'achat
      */
-    public ControllerDetailAchat(Ordonnance ordonnance) throws SaisieException{
+    public ControllerDetailAchat(Ordonnances ordonnance) throws SaisieException{
         this.ordonnance = ordonnance;
         setTitle("Détail d'Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

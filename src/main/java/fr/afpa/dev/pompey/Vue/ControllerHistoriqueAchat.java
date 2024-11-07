@@ -1,12 +1,10 @@
 package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.AchatSansOrdonnance;
+import fr.afpa.dev.pompey.Modele.AchatDirect;
 import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Tables.ListeHistoriqueAchat;
-import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.button;
-import fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,7 +77,7 @@ public class ControllerHistoriqueAchat extends JFrame {
                     if (row < GestionListe.getOrdonnance().size()) {
                         GestionListe.removeOrdonnance(row);
                     } else {
-                        AchatSansOrdonnance achatSansOrdonnance = GestionListe.getAchatSansOrdonnance().get(row - GestionListe.getOrdonnance().size());
+                        AchatDirect achatSansOrdonnance = GestionListe.getAchatSansOrdonnance().get(row - GestionListe.getOrdonnance().size());
                         GestionListe.removeAchatSansOrdonnance(achatSansOrdonnance);
                     }
                     Refresh(tableHistoriqueAchat);

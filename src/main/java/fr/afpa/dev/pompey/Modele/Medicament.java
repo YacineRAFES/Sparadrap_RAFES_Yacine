@@ -5,31 +5,44 @@ import fr.afpa.dev.pompey.Utilitaires.Regex;
 
 import java.time.LocalDate;
 
-public class Medicament{
+public class Medicament {
+    private int id;
     private String nom;
-    private String categorie;
-    private String prix;
     private String miseEnService;
     private int quantite;
+    private String prix;
+    private Categorie categorie;
 
     //CONSTRUCTEURS
     public Medicament(){
 
     }
 
-    public Medicament(String nom){
-        this.nom = nom;
+    public Medicament(int id){
+        setId(id);
     }
 
-    public Medicament(String nom, String categorie, String prix, String miseEnService, int quantite){
-        this.nom = nom;
-        this.categorie = categorie;
-        this.prix = prix;
-        this.miseEnService = miseEnService;
-        this.quantite = quantite;
+    public Medicament(String nom, String miseEnService, int quantite, String prix, Categorie categorie) throws SaisieException {
+        setNom(nom);
+        setMiseEnService(miseEnService);
+        setQuantite(quantite);
+        setPrix(prix);
+        setCategorie(new Categorie(categorie.getId()));
     }
 
     //GETTER ET SETTER
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
+    }
+
     public String getNom() {
         return nom;
     }
@@ -43,18 +56,10 @@ public class Medicament{
         this.nom = nom;
     }
 
-    public String getCategorie() {
+    public Categorie getCategorie() {
         return categorie;
     }
 
-    public void setCategorie(String categorie) throws SaisieException {
-        if(categorie == null || categorie.isEmpty()){
-            throw new SaisieException("le nom de catégorie ne doit pas être vide");
-        }else if (categorie.matches(Regex.REGEXNOMPRENOM)) {
-            throw new SaisieException("le nom de catégorie ne corresponds pas.");
-        }
-        this.categorie = categorie;
-    }
 
     public String getPrix() {
         return prix;
@@ -84,6 +89,8 @@ public class Medicament{
         if(miseEnService == null || miseEnService.isEmpty()){
             throw new SaisieException("La mise en service ne doit pas être vide");
         }
+
+        this.miseEnService = miseEnService;
 
     }
 

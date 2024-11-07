@@ -1,19 +1,16 @@
 package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Client;
-import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Mutuelle;
+import fr.afpa.dev.pompey.Modele.*;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.PlaceholderTextField;
 import fr.afpa.dev.pompey.Utilitaires.Verification;
+import fr.afpa.dev.pompey.Modele.DAO.*;
 
 import javax.swing.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import static fr.afpa.dev.pompey.Modele.GestionListe.*;
 
 public class ControllerClient extends JFrame {
     private JPanel contentPane;
@@ -34,10 +31,23 @@ public class ControllerClient extends JFrame {
     private JComboBox medTraitantComboBox;
     private JComboBox mutuelleComboBox;
 
+    private ClientDAO clientDAO;
+    private CoordonneesDAO coordonneesDAO;
+    private AdressesDAO adressesDAO;
+    private MedecinDAO medecinDAO;
+    private MutuelleDAO mutuelleDAO;
+
     /**
      * Constructeur de la classe ControllerClient
      */
     public ControllerClient(){
+        //Initialisation des DAO
+        this.coordonneesDAO = new CoordonneesDAO();
+        this.adressesDAO = new AdressesDAO();
+        this.clientDAO = new ClientDAO();
+        this.medecinDAO = new MedecinDAO();
+        this.mutuelleDAO = new MutuelleDAO();
+
 
         setTitle("Client");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -121,7 +131,26 @@ public class ControllerClient extends JFrame {
             throw new SaisieException();
         }
 
-        //Création d'un client
+        // 1. Créer des coordonnées
+        Coordonnees coordonnees = new Coordonnees(
+                email,
+                telephone);
+        // On récupère l'id des coordonnées
+        int newIdCoordonnees = addCoordonnees(coordonnees);
+        // 2. Créer des adresses
+
+        Adresses adresses = new Adresses(
+                rue,
+                ville);
+        // On récupère l'id des adresses
+        int newIdAdresse = addAdresses(adresses);
+        // newIdAdresse = AdresseDAO.create(adresse);
+        // tester si medecin existe ? si non creer medecin
+        // if comboBoxMedecin.getSelectedItem() == null inertion medecin
+            //sinon  newIdMedecin = comboBoxMedecin.getSelectedItem().getId();
+        // tester si mutuelle existe ? si non creer mutuelle
+
+        //Création d'un client(
         Client client = new Client(
                 int id,
                 Verification.NomPrenom(nom, "Nom"),
@@ -174,4 +203,22 @@ public class ControllerClient extends JFrame {
         rueTextField.setText("");
         villeTextField.setText("");
     }
+
+    public int addCoordonnees(Coordonnees coordonnees) {
+        return coordonneesDAO.create(coordonnees);
+    }
+
+    public int addAdresses(Adresses adresses) {
+        return adressesDAO.create(adresses);
+    }
+
+    public int addClient(Client client) {
+        return clientDAO.create(client);
+    }
+
+    public int addMedecin(Medecin medecin) {
+        return medecinDAO.create(medecin);
+    }
+
+
 }

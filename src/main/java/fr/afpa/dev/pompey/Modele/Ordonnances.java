@@ -3,63 +3,32 @@ package fr.afpa.dev.pompey.Modele;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
-public class Ordonnance {
+public class Ordonnances {
     private int id;
     private LocalDate date;
     private Medecin medecin;
     private Client client;
     //CONSTRUCTEURS
 
-    public Ordonnance() {
+    public Ordonnances() {
     }
 
-    public Ordonnance(LocalDate date, Client client, Medecin medecin) {
-        this.date = date;
-        this.client = client;
-        this.medecin = medecin;
-    }
-
-    public static List<Ordonnance> getOrdonnancesParMedecin(Medecin medecin) {
-        // Supposez que vous avez une liste d'ordonnances en mémoire ou dans une base de données
-        List<Ordonnance> toutesLesOrdonnances = GestionListe.getOrdonnance();
-        List<Ordonnance> ordonnancesParMedecin = new ArrayList<>();
-
-        for (Ordonnance ordonnance : toutesLesOrdonnances) {
-            if (ordonnance.getMedecin().equals(medecin)) {
-                ordonnancesParMedecin.add(ordonnance);
-            }
-        }
-
-        return ordonnancesParMedecin;
+    public Ordonnances(int id, LocalDate date, Client client, Medecin medecin) throws SaisieException {
+        setId(id);
+        setDate(date);
+        setClient(new Client(client.getId()));
+        setMedecin(medecin);
     }
 
     //GETTER ET SETTER
 
-    public Client getClient() {
-        return client;
+    public int getId() {
+        return id;
     }
 
-    public void setClient(Client client) throws SaisieException {
-        if (client == null) {
-            throw new SaisieException("Le client ne doit pas être vide");
-        }
-        this.client = client;
-    }
-
-    public Medecin getMedecin() {
-        return medecin;
-    }
-
-    public void setMedecin(Medecin medecin) throws SaisieException {
-        if (medecin == null) {
-            throw new SaisieException("Le medecin ne doit pas être vide");
-        }
-        this.medecin = medecin;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public LocalDate getDate() {
@@ -79,26 +48,23 @@ public class Ordonnance {
         this.date = date;
     }
 
-    public String[][] getListeMedicament() {
-        return listeMedicament;
+    public Medecin getMedecin() {
+        return medecin;
     }
 
-    public void setListeMedicament(String[][] listeMedicament) throws SaisieException {
-        if (listeMedicament == null || listeMedicament.length == 0) {
-            throw new SaisieException("La liste des médicaments ne doit pas être vide");
-        }
-        this.listeMedicament = listeMedicament;
+    public void setMedecin(Medecin medecin) {
+        this.medecin = medecin;
     }
 
-    public double getPrixTotal() {
-        return prixTotal;
+    public Client getClient() {
+        return client;
     }
 
-    public void setPrixTotal(double prixTotal) throws SaisieException {
-        if (prixTotal < 0 || prixTotal == 0) {
-            throw new SaisieException("Le prix total ne peut pas être négatif");
-        }
-        this.prixTotal = prixTotal;
+    public void setClient(Client client) {
+        this.client = client;
     }
+
+
+
 
 }

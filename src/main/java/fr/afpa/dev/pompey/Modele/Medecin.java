@@ -3,138 +3,104 @@ package fr.afpa.dev.pompey.Modele;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Utilitaires.Regex;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Medecin {
-    private String nomMedecin;
-    private String prenomMedecin;
-    private String rue;
-    private String codePostal;
-    private String ville;
-    private String telephone;
-    private String email;
+public class Medecin implements Serializable {
+    private int id;
     private String numAgreement;
     private String specialite;
+    private String nom;
+    private String prenom;
+    private Adresses adresses;
+    private Coordonnees coordonnees;
+
 
     //CONSTRUCTEURS
     public Medecin(){
 
     }
 
+    public Medecin(int id){
+        setId(id);
+    }
+
+
+    public Medecin(int id, String nom, String prenom, String numAgreement, String specialite,
+                   Adresses adresses, Coordonnees coordonnees) throws SaisieException {
+        setNom(nom);
+        setPrenom(prenom);
+        setNumAgreement(numAgreement);
+        setSpecialite(specialite);
+        setAdresses(new Adresses(adresses.getId()));
+        setCoordonnees(new Coordonnees(coordonnees.getId()));
+    }
 
     public Medecin(String nom, String prenom){
-        this.nomMedecin = nom;
-        this.prenomMedecin = prenom;
+        this.nom = nom;
+        this.prenom = prenom;
     }
 
-    public Medecin(String nom, String prenom, String rue, String codePostal, String ville, String telephone, String email, String numAgreement, String specialite){
-        this.nomMedecin = nom;
-        this.prenomMedecin = prenom;
-        this.rue = rue;
-        this.codePostal = codePostal;
-        this.ville = ville;
-        this.telephone = telephone;
-        this.email = email;
-        this.numAgreement = numAgreement;
-        this.specialite = specialite;
+    public Medecin(Adresses adresses){
+        setAdresses(new Adresses(adresses.getId()));
     }
+
+    public Medecin(Coordonnees coordonnees){
+        setCoordonnees(new Coordonnees(coordonnees.getId()));
+    }
+
 
     //GETTER ET SETTER
-    public List<Ordonnance> getOrdonnances() {
-        return Ordonnance.getOrdonnancesParMedecin(this);
+
+
+    public int getId() {
+        return id;
     }
 
-    public List<Client> getClients() {
-        return Client.getClientsParMedecin(this);
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getNomMedecin() {
-        return nomMedecin;
+    public Adresses getAdresses() {
+        return adresses;
     }
 
-    public void setNomMedecin(String nom) throws SaisieException {
+    public void setAdresses(Adresses adresses) {
+        this.adresses = adresses;
+    }
+
+    public Coordonnees getCoordonnees() {
+        return coordonnees;
+    }
+
+    public void setCoordonnees(Coordonnees coordonnees) {
+        this.coordonnees = coordonnees;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) throws SaisieException {
         if (nom == null || nom.isEmpty()) {
             throw new SaisieException("Le nom ne doit pas être vide");
         } else if (!nom.matches(Regex.REGEXNOMPRENOM)) {
             throw new SaisieException("Le nom ne corresponds pas");
         }
-        this.nomMedecin = nom;
+        this.nom = nom;
     }
 
-    public String getPrenomMedecin() {
-        return prenomMedecin;
+    public String getPrenom() {
+        return prenom;
     }
 
-    public void setPrenomMedecin(String prenom) throws SaisieException {
+    public void setPrenom(String prenom) throws SaisieException {
         if (prenom == null || prenom.isEmpty()) {
             throw new SaisieException("Le prénom ne doit pas être vide");
         }else if (!prenom.matches(Regex.REGEXNOMPRENOM)) {
             throw new SaisieException("Le prenom ne corresponds pas");
         }
-        this.prenomMedecin = prenom;
-    }
-
-    public String getRue() {
-        return rue;
-    }
-
-    public void setRue(String rue) throws SaisieException {
-        if (rue == null || rue.isEmpty()) {
-            throw new SaisieException("L'adresse ne doit pas être vide");
-        }
-        this.rue = rue;
-    }
-
-    public String getCodePostal() {
-        return codePostal;
-    }
-
-    public void setCodePostal(String codePostal) throws SaisieException {
-        if (codePostal == null || codePostal.isEmpty()) {
-            throw new SaisieException("le code postal ne doit pas être vide");
-        } else if (!codePostal.matches(Regex.REGEXCODEPOSTAL)) {
-            throw new SaisieException("le code postal ne corresponds pas");
-        }
-        this.codePostal = codePostal;
-    }
-
-    public String getVille() {
-        return ville;
-    }
-
-    public void setVille(String ville) throws SaisieException {
-        if (ville == null || ville.isEmpty()) {
-            throw new SaisieException("la ville ne doit pas être vide");
-        } else if (!ville.matches(Regex.REGEXNOMPRENOM)) {
-            throw new SaisieException("la ville ne corresponds pas");
-        }
-        this.ville = ville;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) throws SaisieException {
-        if (telephone == null || telephone.isEmpty()) {
-            throw new SaisieException("le numéro de téléphone ne doit pas être vide.");
-        } else if (!telephone.matches(Regex.REGEXNUMTEL)) {
-            throw new SaisieException("le telephone ne corresponds pas");
-        }
-        this.telephone = telephone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) throws SaisieException {
-        if (email == null || email.isEmpty()) {
-            throw new SaisieException("l'email ne doit pas être vide");
-        } else if (!email.matches(Regex.REGEXEMAIL)) {
-            throw new SaisieException("l'email ne corresponds pas");
-        }
-        this.email = email;
+        this.prenom = prenom;
     }
 
     public String getNumAgreement() {
@@ -163,7 +129,7 @@ public class Medecin {
 
     @Override
     public String toString() {
-        return getNomMedecin() + " " + getPrenomMedecin();
+        return getNom() + " " + getPrenom();
     }
 
 

@@ -2,7 +2,7 @@
 package fr.afpa.dev.pompey.Modele.Tables;
 
 import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Ordonnance;
+import fr.afpa.dev.pompey.Modele.Ordonnances;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -13,13 +13,13 @@ public class ListeOrdonnancesMed extends AbstractTableModel {
             "Date", "Client", "Détail"
     };
 
-    private final List<Ordonnance> ordonnances;
+    private final List<Ordonnances> ordonnances;
 
     public ListeOrdonnancesMed(Medecin medecin) {
         this.ordonnances = medecin.getOrdonnances();
     }
 
-    public Ordonnance getOrdonnanceAt(int rowIndex) {
+    public Ordonnances getOrdonnanceAt(int rowIndex) {
         if (rowIndex >= 0 && rowIndex < ordonnances.size()) {
             return ordonnances.get(rowIndex);
         }
@@ -43,7 +43,7 @@ public class ListeOrdonnancesMed extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Ordonnance ordonnance = ordonnances.get(rowIndex);
+        Ordonnances ordonnance = ordonnances.get(rowIndex);
         switch (columnIndex) {
             case 0:
                 return ordonnance.getDate();
