@@ -1,7 +1,5 @@
 package fr.afpa.dev.pompey.Modele.DAO;
 
-import fr.afpa.dev.pompey.Modele.Adresses;
-
 import java.sql.Connection;
 import java.util.List;
 

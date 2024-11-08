@@ -3,14 +3,15 @@ package fr.afpa.dev.pompey.Modele;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Utilitaires.Regex;
 
-import java.time.LocalDate;
+import java.io.Serializable;
+import java.util.Date;
 
-public class Medicament {
+public class Medicament<T> implements Serializable {
     private int id;
     private String nom;
-    private String miseEnService;
+    private Date miseEnService;
     private int quantite;
-    private String prix;
+    private double prix;
     private Categorie categorie;
 
     //CONSTRUCTEURS
@@ -22,7 +23,7 @@ public class Medicament {
         setId(id);
     }
 
-    public Medicament(String nom, String miseEnService, int quantite, String prix, Categorie categorie) throws SaisieException {
+    public Medicament(String nom, Date miseEnService, int quantite, double prix, Categorie categorie) throws SaisieException {
         setNom(nom);
         setMiseEnService(miseEnService);
         setQuantite(quantite);
@@ -61,35 +62,31 @@ public class Medicament {
     }
 
 
-    public String getPrix() {
+    public double getPrix() {
         return prix;
     }
 
-    public void setPrix(String prix) throws SaisieException {
-        if(!prix.matches(Regex.REGEXPRIX)){
-            throw new SaisieException("le prix ne corresponds pas.");
-        }
-        if(prix == null || prix.isEmpty()){
-            throw new SaisieException("Le prix ne doit pas être vide");
+    public void setPrix(double prix) throws SaisieException {
+        if(prix < 0){
+            throw new SaisieException("Le prix ne peut pas être négatif");
         }
         this.prix = prix;
     }
 
-    public String getMiseEnService() {
+    public java.sql.Date getMiseEnService() {
         return miseEnService;
     }
 
-    public void setMiseEnService(String miseEnService) throws SaisieException {
-        if(!miseEnService.matches(Regex.REGEXDATE)) {
-            throw new SaisieException("la date de mise en service ne corresponds pas.");
+    public void setMiseEnService(Date miseEnService) throws SaisieException {
+        if(miseEnService == null){
+            throw new SaisieException("La date de mise en service ne doit pas être vide");
         }
-        if(LocalDate.parse(miseEnService).isAfter(LocalDate.now())){
-            throw new SaisieException("La date de mise en service ne peut pas être supérieure à la date actuelle");
+        if(miseEnService.after(new Date())){
+            throw new SaisieException("La date de mise en service ne doit pas être dans le futur");
         }
-        if(miseEnService == null || miseEnService.isEmpty()){
-            throw new SaisieException("La mise en service ne doit pas être vide");
+        if (miseEnService.before(new Date())){
+            throw new SaisieException("La date de mise en service ne doit pas être dans le passé");
         }
-
         this.miseEnService = miseEnService;
 
     }

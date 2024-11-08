@@ -2,19 +2,22 @@ package fr.afpa.dev.pompey.Modele;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 
+import java.io.Serializable;
+import java.sql.Date;
 import java.time.LocalDate;
 
-public class Ordonnances {
+public class Ordonnances<T> implements Serializable {
     private int id;
-    private LocalDate date;
+    private Date date;
     private Medecin medecin;
     private Client client;
+
     //CONSTRUCTEURS
 
     public Ordonnances() {
     }
 
-    public Ordonnances(int id, LocalDate date, Client client, Medecin medecin) throws SaisieException {
+    public Ordonnances(int id, Date date, Client client, Medecin medecin) throws SaisieException {
         setId(id);
         setDate(date);
         setClient(new Client(client.getId()));
@@ -31,19 +34,23 @@ public class Ordonnances {
         this.id = id;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) throws SaisieException {
-        if(date == null || date.isBefore(LocalDate.now())){
-            throw new SaisieException("La date n'est pas valide");
-        }
-        if(date.isBefore(LocalDate.now())){
+    public void setDate(Date date) throws SaisieException {
+        if(date == null){
             throw new SaisieException("La date ne doit pas être vide");
         }
-        if(date.isAfter(LocalDate.now())){
-            throw new SaisieException("La date ne doit pas être supérieure à la date du jour");
+        if(date.toString().isEmpty()){
+            throw new SaisieException("La date ne doit pas être vide");
+        }
+        LocalDate localDate = date.toLocalDate();
+        if (localDate.isAfter(LocalDate.now())){
+            throw new SaisieException("La date ne doit pas être dans le futur");
+        }
+        if (localDate.isBefore(LocalDate.now())){
+            throw new SaisieException("La date ne doit pas être avant aujourd'hui");
         }
         this.date = date;
     }

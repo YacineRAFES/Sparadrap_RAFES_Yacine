@@ -1,15 +1,24 @@
 package fr.afpa.dev.pompey.Modele;
 
-public class Demande {
+import java.io.Serializable;
+
+public class Demande<T> implements Serializable {
     private int quantite;
     private Medicament medicament;
     private Ordonnances ordonnances;
+
+    public Demande() {
+    }
 
     public Demande(int quantite, Medicament medicament, Ordonnances ordonnances) {
         setQuantite(quantite);
         setMedicament(medicament);
         setOrdonnances(ordonnances);
     }
+
+    //GETTER ET SETTER
+
+
 
     public int getQuantite() {
         return quantite;

@@ -19,7 +19,7 @@ public class ClientDAO extends DAO<Client> {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         int newId = 0;
-
+        String formattedDate = simpleDateFormat.format(obj.getDateNaissance());
         StringBuilder insertSQL = new StringBuilder();
         insertSQL.append("INSERT INTO client (CLI_nom, CLI_prenom, CLI_dateNaissance, CLI_numero_de_securite_social, COOR_ID, ADRES_ID, MUT_ID, MEDE_ID) ");
         insertSQL.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -37,7 +37,7 @@ public class ClientDAO extends DAO<Client> {
             pstmt.setInt(7, obj.getMutuelle().getId());
             pstmt.setInt(8, obj.getMedecin().getId());
 
-            String formattedDate = simpleDateFormat.format(obj.getDateNaissance());
+
             pstmt.setString(3, formattedDate);
 
             pstmt.executeUpdate();
@@ -75,31 +75,31 @@ public class ClientDAO extends DAO<Client> {
     @Override
     public boolean update(Client obj) {
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            StringBuilder updateSQL = new StringBuilder();
-            updateSQL.append("UPDATE client SET CLI_nom = ?, CLI_prenom = ?, CLI_dateNaissance = ?, CLI_numero_de_securite_social = ?, COOR_ID = ?, ADRES_ID = ?, MUT_ID = ?, MEDE_ID = ? ");
-            updateSQL.append("WHERE CLI_ID = ?");
+        StringBuilder updateSQL = new StringBuilder();
+        updateSQL.append("UPDATE client SET CLI_nom = ?, CLI_prenom = ?, CLI_dateNaissance = ?, CLI_numero_de_securite_social = ?, COOR_ID = ?, ADRES_ID = ?, MUT_ID = ?, MEDE_ID = ? ");
+        updateSQL.append("WHERE CLI_ID = ?");
 
-            try{
-                PreparedStatement pstmt = connect.prepareStatement(updateSQL.toString());
+        try{
+            PreparedStatement pstmt = connect.prepareStatement(updateSQL.toString());
 
-                pstmt.setString(1, obj.getNom());
-                pstmt.setString(2, obj.getPrenom());
-                pstmt.setString(3, simpleDateFormat.format(obj.getDateNaissance()));
-                pstmt.setString(4, obj.getNumeroSecuClient());
-                pstmt.setInt(5, obj.getCoordonnees().getId());
-                pstmt.setInt(6, obj.getAdresses().getId());
-                pstmt.setInt(7, obj.getMutuelle().getId());
-                pstmt.setInt(8, obj.getMedecin().getId());
-                pstmt.setInt(9, obj.getId());
+            pstmt.setString(1, obj.getNom());
+            pstmt.setString(2, obj.getPrenom());
+            pstmt.setString(3, simpleDateFormat.format(obj.getDateNaissance()));
+            pstmt.setString(4, obj.getNumeroSecuClient());
+            pstmt.setInt(5, obj.getCoordonnees().getId());
+            pstmt.setInt(6, obj.getAdresses().getId());
+            pstmt.setInt(7, obj.getMutuelle().getId());
+            pstmt.setInt(8, obj.getMedecin().getId());
+            pstmt.setInt(9, obj.getId());
 
-                pstmt.executeUpdate();
+            pstmt.executeUpdate();
 
-                return true;
-            }catch(SQLException e){
-                throw new RuntimeException(e);
-            }
+            return true;
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
