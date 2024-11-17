@@ -1,6 +1,5 @@
 package fr.afpa.dev.pompey.Test;
 
-import fr.afpa.dev.pompey.Modele.TableMedicamentTemporaire;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

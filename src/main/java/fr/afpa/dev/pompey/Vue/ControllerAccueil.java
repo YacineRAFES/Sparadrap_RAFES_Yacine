@@ -1,10 +1,5 @@
 package fr.afpa.dev.pompey.Vue;
 
-import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.*;
-import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentTableModel;
-import fr.afpa.dev.pompey.Utilitaires.Fenetre;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

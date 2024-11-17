@@ -2,13 +2,12 @@ package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.*;
-import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentTableModel;
 import fr.afpa.dev.pompey.Utilitaires.*;
 
-import static fr.afpa.dev.pompey.Modele.GestionListe.*;
 import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,19 +55,18 @@ public class ControllerAchat extends JFrame {
         this.setLocationRelativeTo(null);
 
         // Ajout des éléments avec ID dans le DefaultComboBoxModel
-        DefaultComboBoxModel<TypeAchat> typeAchatModel = new DefaultComboBoxModel<>();
-        typeAchatModel.addElement(new TypeAchat(0, "Type d'achat"));
-        typeAchatModel.addElement(new TypeAchat(1, "Achat direct"));
-        typeAchatModel.addElement(new TypeAchat(2, "Via ordonnance"));
+        String[] TypeAchat = {"Type d'achat", "Achat direct", "Via ordonnance"};
+        DefaultComboBoxModel<String> typeAchatModel = new DefaultComboBoxModel<>(TypeAchat);
         typeAchatCombobox.setModel(typeAchatModel);
 
-
-        ListeMedicamentTableModel model1 = new ListeMedicamentTableModel(GestionListe.getTableMedicamentTemporaire());
-        this.listeDeMedocTable.setModel(model1);
+        // Création de la table
+        DefaultTableModel model = new DefaultTableModel(new Object[]{"Column1", "Column2"}, 0);
+        JTable listeDeMedocTable = new JTable(model);
+        model.addRow(new Object[]{"Column 1", "Column 2", "Column 3"});
         this.listeDeMedocTable.getTableHeader().setResizingAllowed(false);
 
         //On écoute les changements dans la table si on ajoute ou supprime un médicament, on recalcule le prix total
-        model1.addTableModelListener(e -> {
+        model.addTableModelListener(e -> {
             PrixTotalLabel();
         });
 
@@ -89,12 +87,9 @@ public class ControllerAchat extends JFrame {
         listeDeMedocTable.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int row = listeDeMedocTable.getEditingRow(); // Get the row being edited (clicked)
-                if (row >= 0) { // Ensure the row index is valid
-                    TableMedicamentTemporaire temp = GestionListe.getTableMedicamentTemporaire().get(row);
-                    GestionListe.removeTableMedicamentTemporaire(temp);
+                int row = listeDeMedocTable.getEditingRow();
+                if (row >= 0) {
                     Refresh(listeDeMedocTable);
-                    PrixTotalLabel();
                     ShowLabelWithTimer(informationLabel, "Médicament supprimé de la liste", Color.RED);
                 }
             }

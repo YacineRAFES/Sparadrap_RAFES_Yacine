@@ -2,11 +2,14 @@ package fr.afpa.dev.pompey.Modele;
 
 import java.io.Serializable;
 
-public class Commande implements Serializable {
+public class Commande<T> implements Serializable {
     private Medicament medicament;
     private AchatDirect achatDirect;
     private int quantite;
 
+    public Commande() {
+    }
+    
     public Commande(Medicament medicament, AchatDirect achatDirect) {
         setMedicament(medicament);
         setAchatDirect(achatDirect);

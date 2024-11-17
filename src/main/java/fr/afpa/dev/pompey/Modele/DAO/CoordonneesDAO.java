@@ -66,10 +66,10 @@ public class CoordonneesDAO extends DAO<Coordonnees> {
     @Override
     public Coordonnees find(int id) {
         Coordonnees coordonnees = null;
-        StringBuilder updateSQL = new StringBuilder("SELECT * FROM Coordonnees WHERE COOR_ID = ?");
+        StringBuilder selectSQL = new StringBuilder("SELECT * FROM Coordonnees WHERE COOR_ID = ?");
 
         try {
-            PreparedStatement pstmt = connect.prepareStatement(updateSQL.toString());
+            PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
