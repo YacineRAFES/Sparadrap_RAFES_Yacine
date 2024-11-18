@@ -9,12 +9,20 @@ public class Commande<T> implements Serializable {
 
     public Commande() {
     }
+
+    public Commande(Medicament medicament, AchatDirect achatDirect, int quantite) {
+        setMedicament(medicament);
+        setAchatDirect(achatDirect);
+        setQuantite(quantite);
+    }
     
     public Commande(Medicament medicament, AchatDirect achatDirect) {
         setMedicament(medicament);
         setAchatDirect(achatDirect);
         setQuantite(quantite);
     }
+
+
 
     public AchatDirect getAchatDirect() {
         return achatDirect;

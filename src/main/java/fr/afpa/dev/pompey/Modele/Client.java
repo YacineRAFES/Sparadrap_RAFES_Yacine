@@ -23,15 +23,15 @@ public class Client<T> implements Serializable {
 
     //CONSTRUCTEURS
     public Client(String nom, String prenom, String numeroSecuClient, String dateNaissance,
-                  Medecin medecin, Coordonnees coordonnees, Adresses adresses, Mutuelle mutuelle) throws SaisieException {
+                  int medecin, int coordonnees, int adresses, int mutuelle) throws SaisieException {
         setNom(nom);
         setPrenom(prenom);
         setNumeroSecuClient(numeroSecuClient);
         setDateNaissance(dateNaissance);
-        setMedecin(new Medecin(medecin.getId()));
-        setCoordonnees(new Coordonnees(coordonnees.getId()));
-        setAdresses(new Adresses(adresses.getId()));
-        setMutuelle(new Mutuelle(mutuelle.getId()));
+        setMedecin(new Medecin(medecin));
+        setCoordonnees(new Coordonnees(coordonnees));
+        setAdresses(new Adresses(adresses));
+        setMutuelle(new Mutuelle(mutuelle));
     }
 
     public Client(int id){

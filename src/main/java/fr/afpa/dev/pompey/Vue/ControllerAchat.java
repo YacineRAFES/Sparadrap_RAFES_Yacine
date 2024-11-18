@@ -2,6 +2,7 @@ package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.*;
+import fr.afpa.dev.pompey.Modele.DAO.*;
 import fr.afpa.dev.pompey.Utilitaires.*;
 
 import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
@@ -11,9 +12,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
 
 /**
  * La classe ControllerAchat est le contrôleur de la fenêtre d'achat
@@ -40,10 +38,28 @@ public class ControllerAchat extends JFrame {
     private JLabel prixLabel;
     private JLabel informationLabel;
 
+    private ClientDAO clientDAO;
+    private MedecinDAO medecinDAO;
+    private MedicamentDAO medicamentDAO;
+    private AchatDirectDAO achatDirectDAO;
+    private OrdonnancesDAO ordonnancesDAO;
+    private CommandeDAO commandeDAO;
+    private DemandeDAO demandeDAO;
+
     /**
      * Constructeur de la classe ControllerAchat
      */
     public ControllerAchat() {
+        // Initialisation des DAO
+        clientDAO = new ClientDAO();
+        medecinDAO = new MedecinDAO();
+        medicamentDAO = new MedicamentDAO();
+        achatDirectDAO = new AchatDirectDAO();
+        ordonnancesDAO = new OrdonnancesDAO();
+        commandeDAO = new CommandeDAO();
+        demandeDAO = new DemandeDAO();
+
+
         // Initialisation de la fenêtre
         setTitle("Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -60,15 +76,16 @@ public class ControllerAchat extends JFrame {
         typeAchatCombobox.setModel(typeAchatModel);
 
         // Création de la table
-        DefaultTableModel model = new DefaultTableModel(new Object[]{"Column1", "Column2"}, 0);
-        JTable listeDeMedocTable = new JTable(model);
-        model.addRow(new Object[]{"Column 1", "Column 2", "Column 3"});
-        this.listeDeMedocTable.getTableHeader().setResizingAllowed(false);
 
-        //On écoute les changements dans la table si on ajoute ou supprime un médicament, on recalcule le prix total
-        model.addTableModelListener(e -> {
-            PrixTotalLabel();
-        });
+
+//        String[] medicament = {"Nom de médicament", "Quantité", "Prix"};
+//        String[][] data = {
+//                {"Doliprane", "3", "2.5"},
+//                {"Ibuprofène", "2", "3.5"},
+//                {"Paracétamol", "1", "1.5"}
+//        };
+//        DefaultTableModel model = new DefaultTableModel(data, medicament);
+//        listeDeMedocTable.setModel(model);
 
         // Actualiser les combobox
         actualiserComboClient();
@@ -126,7 +143,6 @@ public class ControllerAchat extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     ajouterUnMedicament();
-                    PrixTotalLabel();
                 } catch (SaisieException ex) {
                     new SaisieException("Erreur d'ajout de médicament");
                 }
@@ -171,13 +187,12 @@ public class ControllerAchat extends JFrame {
                     medecinLabel.setForeground(Color.BLACK);
                     creerUnMedecinButton.setEnabled(true);
                 }
-                PrixTotalLabel();
             }
         });
     }
 
     /**
-     * Méthode pour ouvrir la fenêtre pour créer un client
+     * Méthode pour ouvrir une fenêtre pour créer un client
      */
     private void client() {
         ControllerClient clientController = new ControllerClient();
@@ -192,7 +207,7 @@ public class ControllerAchat extends JFrame {
     }
 
     /**
-     * Méthode pour ouvrir la fenêtre pour créer un médecin
+     * Méthode pour ouvrir une fenêtre pour créer un médecin
      */
     private void medecin(){
         ControllerMedecin controllerMedecin = new ControllerMedecin();
@@ -206,7 +221,7 @@ public class ControllerAchat extends JFrame {
     }
 
     /**
-     * Méthode pour créer un médicament
+     * Méthode pour ouvrir une fenetre pour créer un médicament
      */
     private void medicament(){
         ControllerMedicament controllerMedicament = new ControllerMedicament();
@@ -220,63 +235,47 @@ public class ControllerAchat extends JFrame {
     }
 
     /**
-     * Méthode pour rafraîchir la table
+     * Méthode pour ajouter un médicament dans la table
      *
      */
     private void ajouterUnMedicament() throws SaisieException {
         // Vérifier si un médicament est sélectionné dans la combobox
-
-        Object selectedItem = medicamentCombobox.getSelectedItem();
-        Medicament selectedMedicament = null;
-        if (selectedItem instanceof Medicament) {
-            selectedMedicament = (Medicament) selectedItem;
-        } else if (selectedItem instanceof String) {
-            selectedMedicament = new Medicament((String) selectedItem);
+        Object medicamentSelected = medicamentCombobox.getSelectedItem();
+        Medicament nameMedicament = null;
+        if (medicamentSelected instanceof MedicamentDAO) {
+            nameMedicament = (Medicament) medicamentSelected;
+        } else if (medicamentSelected instanceof String) {
+            nameMedicament = new Medicament((String) medicamentSelected);
+        }
+        int newIdMedicament = 0;
+        for (Medicament medicamentCheck : medicamentDAO.findAll()) {
+            if (medicamentCheck.getNom().equals(nameMedicament.getNom())) {
+                Fenetre.Fenetre("Le médicament existe déjà");
+                throw new SaisieException();
+            } else {
+                Medicament medicament = new Medicament(
+                        nameMedicament.getNom()
+                );
+                newIdMedicament = medicamentDAO.create(medicament);
+            }
         }
 
-        if (selectedMedicament == null) {
+        if (medicamentSelected == null) {
             ShowLabelWithTimer(informationLabel, "Veuillez sélectionner ou ajouter un médicament", Color.RED);
             throw new SaisieException();
         }
 
-        String nomMedicament = selectedMedicament.getNom();
-        Medicament medicament = new Medicament(nomMedicament);
-        TableMedicamentTemporaire tableMedicamentTemporaire = new TableMedicamentTemporaire(selectedMedicament, 0, selectedMedicament.getPrix());
-
-
-        // Vérifier si le médicament est déjà dans la table temporaire
-        for (TableMedicamentTemporaire uniqueMedicamentTemp : getTableMedicamentTemporaire()) {
-            if (uniqueMedicamentTemp.getNom().equals(medicament.getNom())) {
-                ShowLabelWithTimer(informationLabel, "Ce médicament est déjà ajouté", Color.ORANGE);
-                throw new SaisieException();
-            }
-        }
-
-        // Ajouter le médicament à la table temporaire
-        GestionListe.addTableMedicamentTemporaire(tableMedicamentTemporaire);
-
-        // Vérifier si le médicament est déjà dans la liste globale
-        boolean existsInList = false;
-        for (Medicament uniqueMedicament : getMedicament()) {
-            if (uniqueMedicament.getNom().equals(medicament.getNom())) {
-                existsInList = true;
-                break;
-            }
-        }
-
-        // Ajouter le médicament s'il n'existe pas dans la liste
-        if (!existsInList) {
-            GestionListe.addMedicament(medicament);
-        }
-
         // Rafraîchir le modèle de la combobox
         DefaultComboBoxModel<Medicament> comboBoxModel3 = new DefaultComboBoxModel<>();
-        for (Medicament medoc : getMedicament()) {
-            comboBoxModel3.addElement(medoc);
+        for (Medicament medicamentList : medicamentDAO.findAll()) {
+            comboBoxModel3.addElement(medicamentList);
         }
         medicamentCombobox.setModel(comboBoxModel3);
 
-        PrixTotalLabel();
+        //Ajouter une ligne dans la table
+        DefaultTableModel model = (DefaultTableModel) listeDeMedocTable.getModel();
+        model.addRow(new Object[]{nameMedicament.getNom(), 1, nameMedicament.getPrix(), "Supprimer"});
+
         // Rafraîchir la table
         Refresh(listeDeMedocTable);
     }
@@ -285,52 +284,47 @@ public class ControllerAchat extends JFrame {
      * Valider l'achat
      */
     private void valider() throws SaisieException {
+
         Refresh(listeDeMedocTable);
         int typeAchat = typeAchatCombobox.getSelectedIndex();
-        ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
-        List<TableMedicamentTemporaire> medicamentList = model.getMedicamentList();
+        Object clientSelected = clientCombobox.getSelectedItem();
+        Object medecinSelected = medecinCombobox.getSelectedItem();
 
-        String[][] listeMedicament = new String[medicamentList.size()][3];
-        for (int i = 0; i < medicamentList.size(); i++) {
-            listeMedicament[i][0] = medicamentList.get(i).getNom();
-            listeMedicament[i][1] = String.valueOf(medicamentList.get(i).getQuantite());
 
-            double prixMedoc;
-            if(medicamentList.get(i).getPrix() == null || medicamentList.get(i).getPrix().trim().isEmpty()){
-                prixMedoc = 0;
-            }else{
-                prixMedoc = Double.parseDouble(medicamentList.get(i).getPrix());
-            }
 
-            if(medicamentList.get(i).getQuantite() == 0){
-                ShowLabelWithBlinker(informationLabel, "La quantité de médicament ne doit pas être à 0", Color.RED);
-                throw new SaisieException();
-            }
-            listeMedicament[i][2] = String.valueOf(medicamentList.get(i).getQuantite() * prixMedoc);
-        }
         if (typeAchat == 0) {
             ShowLabelWithBlinker(informationLabel, "Veuillez sélectionner un type d'achat valide", Color.RED);
             setComboBoxColor(typeAchatCombobox, Color.RED);
             throw new SaisieException();
         } else if (typeAchat == 1) {
-            GetClient();
-            AchatDirect achatSansOrdonnance = new AchatDirect(GetClient(), Generator.DateNow(), listeMedicament, PrixTotal());
-            GestionListe.addAchatSansOrdonnance(achatSansOrdonnance);
-        } else if (typeAchat == 2) {
-            GetClient();
-            GetMedecin();
-            Ordonnances ordonnance = new Ordonnances(Generator.DateNow(), listeMedicament, GetClient(), GetMedecin(), PrixTotal());
-            GestionListe.addOrdonnance(ordonnance);
-        }
+            AchatDirect achatDirect = new AchatDirect(DateCustom.DateNow(), (Client) clientSelected);
+            Object newIdAchatDirect = achatDirectDAO.create(achatDirect);
 
-        // Vider la table temporaire
-        model.clear();
+            //Faire un boucle for qui lit la table côté client et ajouter dans commandeDAO à chaque fois
+            for(int i = 0; i < listeDeMedocTable.getRowCount(); i++){
+                //On récupère les informations du tableau
+                Medicament medicament = new Medicament();
+                medicament.setId((Integer) listeDeMedocTable.getValueAt(i, 0));
+                int quantite = Integer.parseInt(listeDeMedocTable.getValueAt(i, 1).toString());
+                Commande commande = new Commande(medicament, (AchatDirect) newIdAchatDirect, quantite);
+                commandeDAO.create(commande);
+            }
+        } else if (typeAchat == 2) {
+            Ordonnances ordonnances = new Ordonnances(DateCustom.DateNow(), (Client) clientSelected, (Medecin) medecinSelected);
+            ordonnancesDAO.create(ordonnances);
+            //Faire un boucle for qui lit la table côté client et ajouter dans commandeDAO à chaque fois
+            for(int i = 0; i < listeDeMedocTable.getRowCount(); i++){
+                Medicament medicament = new Medicament();
+                medicament.setId((Integer) listeDeMedocTable.getValueAt(i, 0));
+                int quantite = Integer.parseInt(listeDeMedocTable.getValueAt(i, 1).toString());
+                Demande demande = new Demande(quantite, medicament, ordonnances);
+                demandeDAO.create(demande);
+            }
+        }
         // Afficher un message de confirmation
         ShowLabelWithTimer(informationLabel, "Achat effectué", Color.GREEN);
         // Actualiser les saisies
         annuler();
-        // Rafraîchir le prix total
-        PrixTotalLabel();
     }
 
     /**
@@ -350,134 +344,13 @@ public class ControllerAchat extends JFrame {
             medecinCombobox.setSelectedIndex(0);
         }
 
-        // Vide la liste de médicaments
-        ListeMedicamentTableModel model = (ListeMedicamentTableModel) listeDeMedocTable.getModel();
-        model.clear();
-
         actualiserComboClient();
         actualiserComboMedecin();
         actualiserComboMedicament();
     }
 
-    /**
-     * Récupérer le client
-     *
-     * @return Le client
-     */
-    private Client GetClient() throws SaisieException {
-        Object selectedClient = clientCombobox.getSelectedItem();
-        if (!(selectedClient instanceof Client)) {
-            String[] clientSplit = ((String) selectedClient).split("\\s+", 2);// Limiter à deux parties
-            if (clientSplit.length != 2) {
-                ShowLabelWithBlinker(informationLabel, "Le nom/prénom du client doivent être séparés par un espace", Color.RED);
-                throw new SaisieException();
-            }
 
-            String clientNom = clientSplit[0].trim();
-            String clientPrenom = clientSplit[1].trim();
 
-            Client client = new Client(clientNom, clientPrenom);
-            addClient(client);
-            clientCombobox.setSelectedItem(client);
-        }
-        return (Client) clientCombobox.getSelectedItem();
-
-    }
-
-    /**
-     * Récupérer le médecin
-     *
-     * @return Le médecin
-     */
-    private Medecin GetMedecin() throws SaisieException {
-        Object selectedMedecin = medecinCombobox.getSelectedItem();
-
-        // Si aucun médecin n'est sélectionné ou saisi
-        if (selectedMedecin == null || selectedMedecin.toString().trim().isEmpty()) {
-            Fenetre.Fenetre("Veuillez sélectionner ou saisir un médecin valide");
-            throw new SaisieException("Médecin non sélectionné ou saisi.");
-        }
-
-        // Vérifier si l'élément est déjà un objet Medecin
-        if (selectedMedecin instanceof Medecin) {
-            return (Medecin) selectedMedecin; // Retourner le médecin sélectionné
-        } else {
-            // Si c'est une chaîne de caractères, essayer de créer un nouveau médecin
-            String medecinText = selectedMedecin.toString().trim();
-            String[] medecinSplit = medecinText.split("\\s+", 2); // Diviser en nom et prénom
-
-            if (medecinSplit.length != 2) {
-                Fenetre.Fenetre("Le nom et prénom du médecin doivent être séparés par un espace.");
-                throw new SaisieException("Format de saisie incorrect.");
-            }
-
-            String medecinNom = medecinSplit[0].trim();
-            String medecinPrenom = medecinSplit[1].trim();
-
-            // Créer un nouveau médecin
-            Medecin nouveauMedecin = new Medecin(medecinNom, medecinPrenom);
-
-            // Ajouter le nouveau médecin à la liste et actualiser le ComboBox
-            addMedecin(nouveauMedecin);
-
-            // Sélectionner le nouveau médecin dans le ComboBox
-            medecinCombobox.setSelectedItem(nouveauMedecin);
-
-            return nouveauMedecin;
-        }
-    }
-
-    /**
-     * Récupérer la table temporaire des médicaments
-     *
-     * @return La table temporaire des médicaments
-     */
-    public ListeMedicamentTableModel getTableModel() {
-        return (ListeMedicamentTableModel) listeDeMedocTable.getModel();
-    }
-
-    /**
-     * Calculer le prix total et l'afficher
-     *
-     * @throws SaisieException
-     */
-    public void PrixTotalLabel(){
-        double prixTotal = 0.0;
-        for (TableMedicamentTemporaire prix : getTableMedicamentTemporaire()) {
-            String prixStr = prix.getPrix();
-            if (prixStr != null && !prixStr.trim().isEmpty()) {
-                prixTotal += Double.parseDouble(prixStr.replace(",", ".")) * prix.getQuantite();
-            }
-        }
-
-        BigDecimal total = BigDecimal.valueOf(prixTotal).setScale(2, RoundingMode.HALF_UP);
-        Client client = (Client) clientCombobox.getSelectedItem();
-        if (client != null && client.getMutuelle() != null && typeAchatCombobox.getSelectedIndex() == 2) {
-            BigDecimal apresMutuelle = total.multiply(BigDecimal.valueOf(1 - Double.parseDouble(client.getMutuelle().getTauxDePriseEnCharge()) / 100))
-                    .setScale(2, RoundingMode.HALF_UP);
-            prixLabel.setText("Prix total : " + total + " €, Après la mutuelle : " + apresMutuelle + " €");
-        } else {
-            prixLabel.setText("Prix total : " + total + " €");
-        }
-    }
-
-    /**
-     * Calculer le prix total
-     *
-     * @return Le prix total
-     */
-    public double PrixTotal() {
-        double prixTotal = 0.0;
-        for (TableMedicamentTemporaire prix : getTableMedicamentTemporaire()) {
-            String prixStr = prix.getPrix();
-            int qantity = prix.getQuantite();
-            if (prixStr != null && !prixStr.trim().isEmpty()) {
-                prixTotal += Double.parseDouble(prixStr) * qantity;
-            }
-        }
-        return prixTotal;
-
-    }
 
     /**
      * Actualiser la combobox des clients
@@ -485,7 +358,7 @@ public class ControllerAchat extends JFrame {
     private void actualiserComboClient() {
         DefaultComboBoxModel<Client> comboBoxModel1 = new DefaultComboBoxModel<>();
         comboBoxModel1.removeAllElements();
-        for (Client client : GestionListe.getClient()) {
+        for (Client client : clientDAO.findAll()) {
             comboBoxModel1.addElement(client);
         }
         clientCombobox.setModel(comboBoxModel1);
@@ -497,7 +370,7 @@ public class ControllerAchat extends JFrame {
     private void actualiserComboMedecin() {
         DefaultComboBoxModel<Medecin> comboBoxModel2 = new DefaultComboBoxModel<>();
         comboBoxModel2.removeAllElements();
-        for (Medecin medecin : GestionListe.getMedecin()) {
+        for (Medecin medecin : medecinDAO.findAll()) {
             comboBoxModel2.addElement(medecin);
         }
         medecinCombobox.setModel(comboBoxModel2);
@@ -509,12 +382,9 @@ public class ControllerAchat extends JFrame {
     private void actualiserComboMedicament() {
         DefaultComboBoxModel<Medicament> comboBoxModel3 = new DefaultComboBoxModel<>();
         comboBoxModel3.removeAllElements();
-        for (Medicament medicament : getMedicament()) {
+        for (Medicament medicament : medicamentDAO.findAll()) {
             comboBoxModel3.addElement(medicament);
         }
         medicamentCombobox.setModel(comboBoxModel3);
     }
-
-
-
 }

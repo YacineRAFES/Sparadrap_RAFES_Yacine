@@ -17,6 +17,12 @@ public class Ordonnances<T> implements Serializable {
     public Ordonnances() {
     }
 
+    public Ordonnances(Date date, Client client, Medecin medecin) throws SaisieException {
+        setDate(date);
+        setClient(client);
+        setMedecin(medecin);
+    }
+
     public Ordonnances(int id, Date date, Client client, Medecin medecin) throws SaisieException {
         setId(id);
         setDate(date);

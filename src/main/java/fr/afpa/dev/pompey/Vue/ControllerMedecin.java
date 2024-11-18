@@ -1,8 +1,8 @@
 package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.GestionListe;
-import fr.afpa.dev.pompey.Modele.Medecin;
+import fr.afpa.dev.pompey.Modele.*;
+import fr.afpa.dev.pompey.Modele.DAO.*;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.PlaceholderTextField;
 import fr.afpa.dev.pompey.Utilitaires.Verification;
@@ -31,12 +31,25 @@ public class ControllerMedecin extends JFrame {
     private JButton creerButton;
     private JTextField specialisteTextField;
     private JLabel specialisteLabel;
+    private JComboBox regionComboBox;
 
+    private CoordonneesDAO coordonneesDAO;
+    private AdressesDAO adressesDAO;
+    private MedecinDAO medecinDAO;
+    private RegionDAO regionDAO;
+    private VilleDAO villeDAO;
 
     /**
      * Constructeur de la classe ControllerMedecin
      */
     public ControllerMedecin(){
+        //Initialisation des DAO
+        coordonneesDAO = new CoordonneesDAO();
+        adressesDAO = new AdressesDAO();
+        medecinDAO = new MedecinDAO();
+        regionDAO = new RegionDAO();
+        villeDAO = new VilleDAO();
+
         setTitle("Medecin");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
@@ -56,8 +69,6 @@ public class ControllerMedecin extends JFrame {
         PlaceholderTextField.setPlaceholder(telephoneTextField, "Téléphone");
         PlaceholderTextField.setPlaceholder(emailTextField, "Email");
         PlaceholderTextField.setPlaceholder(specialisteTextField, "Spécialiste");
-
-        //Créer un medecin
 
         //Bouton Créer
         creerButton.addActionListener(new ActionListener() {
@@ -95,32 +106,101 @@ public class ControllerMedecin extends JFrame {
         String nom = nomTextField.getText();
         String prenom = prenomTextField.getText();
         String numAgreement = numAgreementTextField.getText();
-        String rue = rueTextField.getText();
-        String cp = cpTextField.getText();
-        String ville = villeTextField.getText();
+        String rueName = rueTextField.getText();
+        Integer cp = Integer.valueOf(cpTextField.getText().trim());
+        String villeName = villeTextField.getText();
+        Object regionSelected = regionComboBox.getSelectedItem();
         String telephone = telephoneTextField.getText();
         String email = emailTextField.getText();
         String specialiste = specialisteTextField.getText();
 
-        //Vérification des champs
-        if (nom.isEmpty() || prenom.isEmpty() || numAgreement.isEmpty() || rue.isEmpty() || cp.isEmpty() || ville.isEmpty() || telephone.isEmpty() || email.isEmpty() || specialiste.isEmpty()) {
-            Fenetre.Fenetre("Veuillez remplir tous les champs");
-        } else {
-            Medecin medecin = new Medecin(
-                    Verification.NomPrenom(nom, "Nom"),
-                    Verification.NomPrenom(prenom, "Prénom"),
-                    rue,
-                    Verification.CodePostal(cp),
-                    Verification.NomPrenom(ville, "Ville"),
-                    Verification.Telephone(telephone),
-                    Verification.Email(email),
-                    numAgreement,
-                    Verification.NomPrenom(specialiste, "Spécialiste"));
+        //Récupération de la région
+        int newIdCoordonnees = 0;
+        boolean coordonnesExist = false;
 
-            //Ajout du médecin à la liste
-            GestionListe.getMedecin().add(medecin);
-            Fenetre.Fenetre("Medecin créé");
-            this.dispose();
+        for (Coordonnees coordonneesCheck : coordonneesDAO.findAll()) {
+            if (coordonneesCheck.getEmail().equals(email) || coordonneesCheck.getTelephone().equals(telephone)) {
+                coordonnesExist = true;
+                break;
+            }
         }
+        if (coordonnesExist) {
+            Fenetre.Fenetre("Les coordonnées existent déjà");
+            throw new SaisieException();
+        } else {
+            Coordonnees coordonnees = new Coordonnees(
+                    email,
+                    telephone
+            );
+            // On récupère l'id des coordonnées
+            newIdCoordonnees = coordonneesDAO.create(coordonnees);
+        }
+
+
+        // 2. Créer des adresses
+        // on crée le nom de la région
+        Region nameRegion = null;
+        if (regionSelected instanceof RegionDAO) {
+            nameRegion = (Region) regionSelected;
+        } else if (regionSelected instanceof String) {
+            nameRegion = new Region((String) regionSelected);
+        }
+        int newIdRegion = 0;
+        for (Region regionCheck : regionDAO.findAll()) {
+            if (regionCheck.getNom().equals(nameRegion.getNom())) {
+                Fenetre.Fenetre("La région existe déjà");
+                throw new SaisieException();
+            } else {
+                Region region = new Region(
+                        String.valueOf(nameRegion)
+                );
+                newIdRegion = regionDAO.create(region);
+            }
+        }
+        //on crée le nom de la ville
+
+        int newIdVille = 0;
+        boolean villeExist = false;
+        for (Ville villeCheck : villeDAO.findAll()) {
+            if (villeCheck.getNom().equals(villeName)) {
+                villeExist = true;
+                break;
+            }
+        }
+        if(villeExist){
+            Fenetre.Fenetre("La ville existe déjà");
+            throw new SaisieException();
+        } else {
+            Ville ville = new Ville(
+                    villeName,
+                    cp,
+                    newIdRegion
+            );
+            newIdVille = villeDAO.create(ville);
+        }
+
+        //On créee l'adresse
+        int newIdAdresse = 0;
+        Adresses adresses = new Adresses(
+                rueName,
+                newIdVille);
+        // On récupère l'id des adresses
+        newIdAdresse = adressesDAO.create(adresses);
+
+        //Vérification des champs
+        Medecin medecin = new Medecin(
+                Verification.NomPrenom(nom, "Nom"),
+                Verification.NomPrenom(prenom, "Prénom"),
+                numAgreement,
+                specialiste,
+                newIdAdresse,
+                newIdCoordonnees
+        );
+
+        medecinDAO.create(medecin);
+
+        Fenetre.Fenetre("Medecin créé");
+        this.dispose();
+
     }
 }

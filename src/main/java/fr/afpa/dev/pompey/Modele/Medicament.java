@@ -12,7 +12,7 @@ public class Medicament<T> implements Serializable {
     private Date miseEnService;
     private int quantite;
     private double prix;
-    private Categorie categorie;
+    private int categorie;
 
     //CONSTRUCTEURS
     public Medicament(){
@@ -23,12 +23,16 @@ public class Medicament<T> implements Serializable {
         setId(id);
     }
 
-    public Medicament(String nom, Date miseEnService, int quantite, double prix, Categorie categorie) throws SaisieException {
+    public Medicament(String nom) throws SaisieException {
+        setNom(nom);
+    }
+
+    public Medicament(String nom, Date miseEnService, int quantite, double prix, int categorie) throws SaisieException {
         setNom(nom);
         setMiseEnService(miseEnService);
         setQuantite(quantite);
         setPrix(prix);
-        setCategorie(new Categorie(categorie.getId()));
+        setCategorie(categorie);
     }
 
     //GETTER ET SETTER
@@ -40,7 +44,7 @@ public class Medicament<T> implements Serializable {
         this.id = id;
     }
 
-    public void setCategorie(Categorie categorie) {
+    public void setCategorie(int categorie) {
         this.categorie = categorie;
     }
 
@@ -57,7 +61,7 @@ public class Medicament<T> implements Serializable {
         this.nom = nom;
     }
 
-    public Categorie getCategorie() {
+    public int getCategorie() {
         return categorie;
     }
 
@@ -74,7 +78,7 @@ public class Medicament<T> implements Serializable {
     }
 
     public java.sql.Date getMiseEnService() {
-        return miseEnService;
+        return (java.sql.Date) miseEnService;
     }
 
     public void setMiseEnService(Date miseEnService) throws SaisieException {

@@ -25,6 +25,12 @@ public class Ville extends Region {
         setNom(nom);
     }
 
+    public Ville(String nom, int cp, int idRegion){
+        setNom(nom);
+        setCp(cp);
+        setRegion(new Region(idRegion));
+    }
+
     public int getId() {
         return id;
     }

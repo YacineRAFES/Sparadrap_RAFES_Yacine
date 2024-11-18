@@ -26,14 +26,14 @@ public class Medecin implements Serializable {
     }
 
 
-    public Medecin(int id, String nom, String prenom, String numAgreement, String specialite,
-                   Adresses adresses, Coordonnees coordonnees) throws SaisieException {
+    public Medecin(String nom, String prenom, String numAgreement, String specialite,
+                   int adresses, int coordonnees) throws SaisieException {
         setNom(nom);
         setPrenom(prenom);
         setNumAgreement(numAgreement);
         setSpecialite(specialite);
-        setAdresses(new Adresses(adresses.getId()));
-        setCoordonnees(new Coordonnees(coordonnees.getId()));
+        setAdresses(new Adresses(adresses));
+        setCoordonnees(new Coordonnees(coordonnees));
     }
 
     public Medecin(String nom, String prenom){
