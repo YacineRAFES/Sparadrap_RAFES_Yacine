@@ -21,11 +21,16 @@ public class Mutuelle<T> implements Serializable {
         setId(id);
     }
 
+    public Mutuelle(String nom, int tauxDePriseEnCharge) throws SaisieException {
+        setNom(nom);
+        setTauxDePriseEnCharge(tauxDePriseEnCharge);
+    }
+
     public Mutuelle(String nom) throws SaisieException {
         setNom(nom);
     }
 
-    public Mutuelle(int idAdresses, int idCoordonnees) {
+    public Mutuelle(int idAdresses, int idCoordonnees) throws SaisieException {
         setAdresses(new Adresses(idAdresses));
         setCoordonnees(new Coordonnees(idCoordonnees));
     }
@@ -34,7 +39,7 @@ public class Mutuelle<T> implements Serializable {
         setAdresses(new Adresses(adresses.getId()));
     }
 
-    public Mutuelle(Coordonnees coordonnees){
+    public Mutuelle(Coordonnees coordonnees) throws SaisieException {
         setCoordonnees(new Coordonnees(coordonnees.getId()));
     }
 

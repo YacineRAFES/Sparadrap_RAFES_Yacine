@@ -1,5 +1,6 @@
 package fr.afpa.dev.pompey.Vue;
 
+import fr.afpa.dev.pompey.Modele.DAO.MutuelleDAO;
 import fr.afpa.dev.pompey.Modele.Mutuelle;
 
 import javax.swing.*;
@@ -21,12 +22,17 @@ public class ControllerDetailMutuelle extends JFrame {
     private JLabel TxMutuelle;
     private JButton fermerButton;
 
+    private MutuelleDAO mutuelleDAO;
+
     /**
      * Constructeur de la classe ControllerDetailMutuelle
      *
      * @param mutuelle La mutuelle
      */
     public ControllerDetailMutuelle(Mutuelle mutuelle) {
+        //Initialisation des DAO
+        mutuelleDAO = new MutuelleDAO();
+
         setTitle("Détail Mutuelle");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
@@ -37,13 +43,14 @@ public class ControllerDetailMutuelle extends JFrame {
         this.setLocationRelativeTo(null);
 
         // Remplir les champs de texte
+
+
         NomMutuelle.setText(mutuelle.getNom());
-        AdresseMutuelle.setText(mutuelle.getAdresse());
-        CodepostalMutuelle.setText(mutuelle.getCodePostal());
-        VilleMutuelle.setText(mutuelle.getVille());
-        TelephoneMutuelle.setText(mutuelle.getTelephone());
-        EmailMutuelle.setText(mutuelle.getEmail());
-        DepartementMutuelle.setText(mutuelle.getDepartement());
+        AdresseMutuelle.setText(mutuelle.getAdresses().getRue());
+        CodepostalMutuelle.setText(String.valueOf(mutuelle.getAdresses().getVille().getCp()));
+        VilleMutuelle.setText(mutuelle.getAdresses().getVille().getNom());
+        TelephoneMutuelle.setText(mutuelle.getCoordonnees().getTelephone());
+        EmailMutuelle.setText(mutuelle.getCoordonnees().getEmail());
         TxMutuelle.setText(mutuelle.getTauxDePriseEnCharge() + " %");
 
         // Fermer la fenêtre

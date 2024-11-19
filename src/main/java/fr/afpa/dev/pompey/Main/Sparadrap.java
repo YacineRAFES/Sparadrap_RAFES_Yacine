@@ -1,6 +1,8 @@
 package fr.afpa.dev.pompey.Main;
 
 import fr.afpa.dev.pompey.Modele.*;
+import fr.afpa.dev.pompey.Modele.DAO.ClientDAO;
+import fr.afpa.dev.pompey.Modele.DAO.Singleton;
 import fr.afpa.dev.pompey.Vue.ControllerAccueil;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 
@@ -28,6 +30,7 @@ public class Sparadrap {
         //TODO : ControllerListeOrdonnanceIdMed A FAIRE!
         //TODO : ControllerMedecin A FAIRE!
         //TODO : ControllerMedicament A FAIRE!
+        //TODO : LES TESTS A FAIRE!
 
     }
 
@@ -35,6 +38,5 @@ public class Sparadrap {
     public void start() throws SaisieException {
         ControllerAccueil accueil = new ControllerAccueil();
         accueil.setVisible(true);
-
     }
 }

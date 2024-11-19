@@ -48,6 +48,7 @@ public class ControllerDetailMedecin extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
+        // TODO SELECT * FROM medecin WHERE idmedecin = idmedecin
         setTextFieldData(nomTextField, idmedecin.getNomMedecin());
         setTextFieldData(prenomTextField, idmedecin.getPrenomMedecin());
         setTextFieldData(cpTextField, idmedecin.getCodePostal());

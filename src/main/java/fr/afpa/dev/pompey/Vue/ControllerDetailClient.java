@@ -13,9 +13,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static fr.afpa.dev.pompey.Modele.GestionListe.getMedecin;
-import static fr.afpa.dev.pompey.Modele.GestionListe.getMutuelle;
-
 /**
  * La classe ControllerDetailClient est le contrôleur de la fenêtre de détail du client
  */
@@ -68,12 +65,14 @@ public class ControllerDetailClient extends JFrame{
 
         // Remplir les combobox
         DefaultComboBoxModel<Medecin> MedTraitantModel = new DefaultComboBoxModel<>();
+        // TODO : Refactor this to DAO medecin
         for (Medecin medecin : getMedecin()) {
             MedTraitantModel.addElement(medecin);
         }
         medTraitantComboBox.setModel(MedTraitantModel);
 
         DefaultComboBoxModel<Mutuelle> mutuelleModel = new DefaultComboBoxModel<>();
+        // TODO : Refactor this to DAO mutuelle
         for (Mutuelle mutuelle : getMutuelle()) {
             mutuelleModel.addElement(mutuelle);
         }
@@ -175,6 +174,8 @@ public class ControllerDetailClient extends JFrame{
      * @param updatedClient Le client mis à jour
      * @throws SaisieException si une erreur survient lors de la mise à jour du client
      */
+
+    // TODO : DAO Update CLIENT
     private void updateClientInfo(Client idclient, Client updatedClient) throws SaisieException {
         idclient.setNom(updatedClient.getNom());
         idclient.setPrenom(updatedClient.getPrenom());

@@ -75,17 +75,6 @@ public class ControllerAccueil extends JFrame {
     private void achat() {
         ControllerAchat controllerAchat = new ControllerAchat();
         controllerAchat.setVisible(true);
-        controllerAchat.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                ListeMedicamentTableModel modelListeDeMedoc = controllerAchat.getTableModel();
-                // Vider le modèle
-                if (modelListeDeMedoc != null) {
-                    modelListeDeMedoc.clear();
-                }
-
-            }
-        });
     }
 
     /**

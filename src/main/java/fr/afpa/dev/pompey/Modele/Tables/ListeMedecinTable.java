@@ -32,9 +32,9 @@ public class ListeMedecinTable extends AbstractTableModel {
         Medecin medecin = medecins.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return medecin.getNomMedecin();
+                return medecin.getNom();
             case 1:
-                return medecin.getPrenomMedecin();
+                return medecin.getPrenom();
             case 2:
                 return "Détail";
             case 3:

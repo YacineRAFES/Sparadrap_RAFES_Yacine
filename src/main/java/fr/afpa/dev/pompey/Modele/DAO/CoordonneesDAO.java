@@ -1,5 +1,6 @@
 package fr.afpa.dev.pompey.Modele.DAO;
 
+import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Coordonnees;
 
 import java.sql.PreparedStatement;
@@ -78,6 +79,8 @@ public class CoordonneesDAO extends DAO<Coordonnees> {
                     coordonnees.setEmail(rs.getString("email"));
                     coordonnees.setTelephone(rs.getString("telephone"));
                 }
+            } catch (SaisieException e) {
+                throw new RuntimeException(e);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -101,6 +104,8 @@ public class CoordonneesDAO extends DAO<Coordonnees> {
                     coordonnees.setTelephone(rs.getString("telephone"));
                     coordonneesList.add(coordonnees);
                 }
+            } catch (SaisieException e) {
+                throw new RuntimeException(e);
             }
         } catch (SQLException e) {
             e.printStackTrace();

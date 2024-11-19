@@ -1,7 +1,7 @@
 package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.GestionListe;
+import fr.afpa.dev.pompey.Modele.DAO.AchatDirectDAO;
 import fr.afpa.dev.pompey.Modele.Ordonnances;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentDetailAchat;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
@@ -46,6 +46,7 @@ public class ControllerDetailAchat extends JFrame {
         });
 
         // Vérifiez si idAchat est dans la liste des AchatSansOrdonnance
+        // TODO: Refactor this to DAO
         if (idAchat < GestionListe.getAchatSansOrdonnance().size()) {
             typeAchatLabel.setText("Achat sans ordonnance");
             nomLabel.setText(GestionListe.getAchatSansOrdonnance().get(idAchat).getClient().getNom());

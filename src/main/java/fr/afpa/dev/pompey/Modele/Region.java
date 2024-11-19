@@ -26,6 +26,7 @@ public class Region{
     }
 
     public void setId(int id) {
+
         this.id = id;
     }
 
@@ -34,6 +35,9 @@ public class Region{
     }
 
     public void setNom(String nom) {
+        if(nom == null || nom.isEmpty()){
+            throw new IllegalArgumentException("Le nom de la région ne doit pas être vide");
+        }
         this.nom = nom;
     }
 }

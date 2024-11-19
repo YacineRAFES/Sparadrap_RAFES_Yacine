@@ -138,7 +138,7 @@ public class ControllerMedicament extends javax.swing.JFrame {
                     DateCustom.convertStringToDate(miseEnService),
                     quantite,
                     prix,
-                    newIdCategorie
+                    new Categorie(newIdCategorie)
             );
             medicamentDAO.create(medicament);
         }

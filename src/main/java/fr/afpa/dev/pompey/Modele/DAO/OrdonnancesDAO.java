@@ -37,17 +37,53 @@ public class OrdonnancesDAO extends DAO<Ordonnances> {
 
         @Override
         public boolean delete(Ordonnances obj) {
-            return false;
+            StringBuilder deleteSQL = new StringBuilder("DELETE FROM Ordonnances WHERE ORDO_ID = ?");
+            try {
+                PreparedStatement pstmt = connect.prepareStatement(deleteSQL.toString());
+                pstmt.setInt(1, obj.getId());
+                pstmt.executeUpdate();
+                pstmt.close();
+                return true;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         @Override
         public boolean update(Ordonnances obj) {
-            return false;
+            StringBuilder updateSQL = new StringBuilder("UPDATE Ordonnances SET ORDO_date = ?, MEDE_ID = ?, CLI_ID = ? WHERE ORDO_ID = ?");
+            try {
+                PreparedStatement pstmt = connect.prepareStatement(updateSQL.toString());
+                pstmt.setDate(1, obj.getDate());
+                pstmt.setInt(2, obj.getMedecin().getId());
+                pstmt.setInt(3, obj.getClient().getId());
+                pstmt.setInt(4, obj.getId());
+                pstmt.executeUpdate();
+                pstmt.close();
+                return true;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         @Override
         public Ordonnances find(int id) {
-            return null;
+            Ordonnances ordonnance = new Ordonnances();
+            StringBuilder selectSQL = new StringBuilder("SELECT * FROM Ordonnances WHERE ORDO_ID = ?");
+            try {
+                PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
+                pstmt.setInt(1, id);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    ordonnance.setId(rs.getInt("ORDO_ID"));
+                    ordonnance.setDate(rs.getDate("ORDO_date"));
+                    ordonnance.setMedecin(new MedecinDAO().find(rs.getInt("MEDE_ID")));
+                    ordonnance.setClient(new ClientDAO().find(rs.getInt("CLI_ID")));
+                }
+                return ordonnance;
+            } catch (SQLException | SaisieException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     /**
@@ -59,6 +95,25 @@ public class OrdonnancesDAO extends DAO<Ordonnances> {
         StringBuilder selectSQL = new StringBuilder("SELECT * FROM Ordonnances");
         try {
             PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Ordonnances ordonnance = new Ordonnances();
+                ordonnance.setId(rs.getInt("ORDO_ID"));
+                ordonnance.setDate(rs.getDate("ORDO_date"));
+                ordonnances.add(ordonnance);
+            }
+        }catch (SQLException | SaisieException e){
+            throw new RuntimeException(e);
+        }
+        return ordonnances;
+    }
+
+    public List<Ordonnances> findAllByIdMed(int id){
+        List<Ordonnances> ordonnances = new ArrayList<>();
+        StringBuilder selectSQL = new StringBuilder("SELECT * FROM Ordonnances WHERE MEDE_ID = ?");
+        try {
+            PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
+            pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Ordonnances ordonnance = new Ordonnances();

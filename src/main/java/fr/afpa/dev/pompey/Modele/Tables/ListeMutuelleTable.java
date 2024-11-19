@@ -1,5 +1,6 @@
 package fr.afpa.dev.pompey.Modele.Tables;
 
+import fr.afpa.dev.pompey.Modele.DAO.MutuelleDAO;
 import fr.afpa.dev.pompey.Modele.Mutuelle;
 
 import javax.swing.table.AbstractTableModel;
@@ -35,12 +36,13 @@ public class ListeMutuelleTable extends AbstractTableModel {
             case 0:
                 return mutuelle.getNom() != null ? mutuelle.getNom() : "Non renseigné";
             case 1:
-                return mutuelle.getAdresse() != null ? mutuelle.getAdresse() : "Non renseigné";
+                return mutuelle.getAdresses() != null ? mutuelle.getAdresses() : "Non renseigné";
             case 2:
-                return mutuelle.getVille() != null ? mutuelle.getVille() : "Non renseigné";
+                return mutuelle.getAdresses().getVille() != null ? mutuelle.getAdresses().getVille() : "Non renseigné";
             case 3:
-                return mutuelle.getCodePostal() != null ? mutuelle.getCodePostal() : "Non renseigné";
+                return mutuelle.getAdresses().getCodePostal() != 0 ? mutuelle.getAdresses().getCodePostal() : "Non renseigné";
             case 4:
+                //boutton détail avec id mutuelle
                 return "Détails";
             default:
                 return null;

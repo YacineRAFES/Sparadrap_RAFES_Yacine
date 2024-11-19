@@ -1,6 +1,7 @@
 package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
+import fr.afpa.dev.pompey.Modele.DAO.*;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Ordonnances;
 import fr.afpa.dev.pompey.Modele.Tables.ListeOrdonnancesMed;
@@ -10,6 +11,8 @@ import fr.afpa.dev.pompey.Utilitaires.button;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ButtonDetail;
 
 /**
  * La classe ControllerListeOrdonnanceIdMed est le contrôleur de la fenêtre de liste des ordonnances par identifiant du médecin
@@ -23,13 +26,19 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
     private JLabel rechercheLabel;
     private JButton fermerButton;
 
+    private OrdonnancesDAO ordonnancesDAO;
+    private MedecinDAO medecinDAO;
     /**
      * Constructeur de la classe ControllerListeOrdonnanceIdMed
      *
      * @param medecin Le médecin
      */
     public ControllerListeOrdonnanceIdMed(Medecin medecin) {
-        setTitle("Historiques des ordonnances de " + medecin.getNomMedecin() + " " + medecin.getPrenomMedecin());
+        ordonnancesDAO = new OrdonnancesDAO();
+        medecinDAO = new MedecinDAO();
+
+        setTitle("Historiques des ordonnances de " + medecinDAO.find(medecin.getId()).getNom() + " " +
+                medecinDAO.find(medecin.getId()).getPrenom());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
         this.setResizable(false);
@@ -38,36 +47,19 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
-        titreLabel.setText("Historiques des ordonnances de " + medecin.getNomMedecin() + " " + medecin.getPrenomMedecin());
+        titreLabel.setText("Historiques des ordonnances de " + medecinDAO.find(medecin.getId()).getNom() + " " +
+                medecinDAO.find(medecin.getId()).getPrenom());
 
         // Affichage des ordonnances du médecin
-        tableHistoriqueOrdonnanceidmed.setModel(new ListeOrdonnancesMed(medecin));
+        tableHistoriqueOrdonnanceidmed.setModel(new ListeOrdonnancesMed((Medecin) ordonnancesDAO.findAllByIdMed(medecin.getId())));
 
         //Bouton Détail
         tableHistoriqueOrdonnanceidmed.getColumn("Détail").setCellRenderer(new button.ButtonRenderer());
-        tableHistoriqueOrdonnanceidmed.getColumn("Détail").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = tableHistoriqueOrdonnanceidmed.getEditingRow(); // Get the row being edited (clicked)
-                ListeOrdonnancesMed model = (ListeOrdonnancesMed) tableHistoriqueOrdonnanceidmed.getModel();
-                Ordonnances ordonnance = model.getOrdonnanceAt(row); // Utiliser la méthode du modèle pour obtenir l'ordonnance
-
-                if (ordonnance != null) {
-                    ControllerDetailAchat controllerDetailAchat = null;
-                    try {
-                        // Passez l'ordonnance au contrôleur de détail, pas juste l'index
-                        controllerDetailAchat = new ControllerDetailAchat(ordonnance);
-                    } catch (SaisieException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    controllerDetailAchat.setVisible(true);
-                } else {
-                    Fenetre.Fenetre("Ordonnance n'existe pas");
-                    new SaisieException("Ordonnance n'existe pas");
-                }
-
-            }
+        tableHistoriqueOrdonnanceidmed.getColumn("Détail").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
+            ButtonDetail(e, ordonnancesDAO, ControllerDetailAchat.class);
         }));
+
+        //A fix!
 
         // Fermer la fenêtre
         fermerButton.addActionListener(new ActionListener() {

@@ -2,7 +2,8 @@ package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.AchatDirect;
-import fr.afpa.dev.pompey.Modele.GestionListe;
+import fr.afpa.dev.pompey.Modele.DAO.AchatDirectDAO;
+import fr.afpa.dev.pompey.Modele.DAO.OrdonnancesDAO;
 import fr.afpa.dev.pompey.Modele.Tables.ListeHistoriqueAchat;
 import fr.afpa.dev.pompey.Utilitaires.button;
 
@@ -40,8 +41,11 @@ public class ControllerHistoriqueAchat extends JFrame {
         //le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
+        AchatDirectDAO achatDirectDAO = new AchatDirectDAO();
+        OrdonnancesDAO ordonnancesDAO = new OrdonnancesDAO();
+
         // Remplir le tableau
-        ListeHistoriqueAchat model1 = new ListeHistoriqueAchat(GestionListe.getAchatSansOrdonnance(), GestionListe.getOrdonnance());
+        ListeHistoriqueAchat model1 = new ListeHistoriqueAchat(achatDirectDAO.findAll(), ordonnancesDAO.findAll());
         this.tableHistoriqueAchat.setModel(model1);
         this.tableHistoriqueAchat.getTableHeader().setResizingAllowed(false);
 
@@ -72,13 +76,17 @@ public class ControllerHistoriqueAchat extends JFrame {
         tableHistoriqueAchat.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // recupere l'objet de la ligne selectionnée
                 int row = tableHistoriqueAchat.getEditingRow(); // Get the row being edited (clicked)
                 if (row >= 0) { // Ensure the row index is valid
-                    if (row < GestionListe.getOrdonnance().size()) {
-                        GestionListe.removeOrdonnance(row);
+                    if (row < ordonnancesDAO.findAll().size()) {
+                        // TODO : Delete the Ordonnances object
+                        //ordonnancesDAO.delete(obj.getID());
+                        //GestionListe.removeOrdonnance(row);
                     } else {
-                        AchatDirect achatSansOrdonnance = GestionListe.getAchatSansOrdonnance().get(row - GestionListe.getOrdonnance().size());
-                        GestionListe.removeAchatSansOrdonnance(achatSansOrdonnance);
+                        // TODO: Delete the AchatSansOrdonnance object
+                        //AchatDirect achatSansOrdonnance = GestionListe.getAchatSansOrdonnance().get(row - GestionListe.getOrdonnance().size());
+                        //GestionListe.removeAchatSansOrdonnance(achatSansOrdonnance);
                     }
                     Refresh(tableHistoriqueAchat);
                     ShowLabelWithTimer(informationLabel, "Achat supprimé dans l'historique", Color.RED);

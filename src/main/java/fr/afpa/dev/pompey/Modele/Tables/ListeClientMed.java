@@ -59,13 +59,13 @@ public class ListeClientMed extends AbstractTableModel  {
             case 1:
                 return client.getPrenom() != null ? client.getPrenom() : "Non renseigné";
             case 2:
-                return client.getEmail() != null ? client.getEmail() : "Non renseigné";
+                return client.getCoordonnees().getEmail() != null ? client.getCoordonnees().getEmail() : "Non renseigné";
             case 3:
-                return client.getTelephone() != null ? client.getTelephone() : "Non renseigné";
+                return client.getCoordonnees().getTelephone() != null ? client.getCoordonnees().getTelephone() : "Non renseigné";
             case 4:
-                return client.getCodePostal() != null ? client.getCodePostal() : "Non renseigné";
+                return client.getAdresses().getCodePostal() != 0 ? client.getAdresses().getCodePostal() : "Non renseigné";
             case 5:
-                return client.getVille() != null ? client.getVille() : "Non renseigné";
+                return client.getAdresses().getVille() != null ? client.getAdresses().getVille() : "Non renseigné";
             case 6:
                 return client.getNumeroSecuClient() != null ? client.getNumeroSecuClient() : "Non renseigné";
             default:

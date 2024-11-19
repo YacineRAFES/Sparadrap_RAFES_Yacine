@@ -5,6 +5,7 @@ import fr.afpa.dev.pompey.Exception.SaisieException;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * La classe AchatSansOrdonnance est le modèle de l'achat sans ordonnance
@@ -13,6 +14,7 @@ public class AchatDirect<T> implements Serializable {
     private int id;
     private Date date;
     private Client client;
+    private List<Commande> commandes;
 
     //CONSTRUCTEURS
 

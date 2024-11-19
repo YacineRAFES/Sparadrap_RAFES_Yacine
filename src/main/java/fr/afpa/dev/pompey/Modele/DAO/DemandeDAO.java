@@ -1,5 +1,6 @@
 package fr.afpa.dev.pompey.Modele.DAO;
 
+import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Demande;
 
 import java.sql.PreparedStatement;
@@ -80,6 +81,8 @@ public class DemandeDAO extends DAO<Demande> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (SaisieException e) {
+            throw new RuntimeException(e);
         }
         return demande;
     }
@@ -104,6 +107,8 @@ public class DemandeDAO extends DAO<Demande> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (SaisieException e) {
+            new SaisieException(e.getMessage());
         }
         return demandes;
     }

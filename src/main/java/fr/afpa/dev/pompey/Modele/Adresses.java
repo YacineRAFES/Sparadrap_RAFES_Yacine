@@ -6,6 +6,7 @@ public class Adresses<T> extends Ville implements Serializable {
     private int id;
     private String rue;
     private Ville ville;
+    private int codePostal;
 
     public Adresses() {
 
@@ -23,6 +24,10 @@ public class Adresses<T> extends Ville implements Serializable {
 
     public Adresses(String rue, int idVille) {
         super(idVille);
+        setRue(rue);
+    }
+
+    public Adresses(String rue){
         setRue(rue);
     }
 
@@ -51,5 +56,9 @@ public class Adresses<T> extends Ville implements Serializable {
 
     public void setVille(Ville ville) {
         this.ville = ville;
+    }
+
+    public int getCodePostal() {
+        return codePostal;
     }
 }

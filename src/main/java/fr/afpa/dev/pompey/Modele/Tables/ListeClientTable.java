@@ -35,9 +35,9 @@ public class ListeClientTable extends AbstractTableModel {
             case 1:
                 return client.getPrenom();
             case 2:
-                return client.getEmail();
+                return client.getCoordonnees().getEmail();
             case 3:
-                return client.getTelephone();
+                return client.getCoordonnees().getTelephone();
             case 4:
                 return "Détail";
             case 5:

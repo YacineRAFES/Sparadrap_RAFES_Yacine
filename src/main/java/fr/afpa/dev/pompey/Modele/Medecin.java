@@ -14,6 +14,7 @@ public class Medecin implements Serializable {
     private String prenom;
     private Adresses adresses;
     private Coordonnees coordonnees;
+    private List<Ordonnances> ordonnances;
 
 
     //CONSTRUCTEURS
@@ -45,7 +46,7 @@ public class Medecin implements Serializable {
         setAdresses(new Adresses(adresses.getId()));
     }
 
-    public Medecin(Coordonnees coordonnees){
+    public Medecin(Coordonnees coordonnees) throws SaisieException {
         setCoordonnees(new Coordonnees(coordonnees.getId()));
     }
 
@@ -125,6 +126,10 @@ public class Medecin implements Serializable {
             throw new SaisieException("Le nom de spécialité ne corresponds pas");
         }
         this.specialite = specialite;
+    }
+
+    public List<Ordonnances> getOrdonnances() {
+        return ordonnances;
     }
 
     @Override

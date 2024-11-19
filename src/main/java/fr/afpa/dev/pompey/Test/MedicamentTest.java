@@ -1,129 +1,104 @@
 package fr.afpa.dev.pompey.Test;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
+import fr.afpa.dev.pompey.Modele.Categorie;
 import fr.afpa.dev.pompey.Modele.Medicament;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MedicamentTest {
-    private Medicament medicamentUnderTest;
 
-    @BeforeEach
-    void setUp() {
-        medicamentUnderTest = new Medicament();
+    @Test
+    void constructorShouldInitializeFields() throws SaisieException {
+        Categorie categorie = new Categorie();
+        Medicament medicament = new Medicament("Aspirin", new java.util.Date(), 10, 5.0, categorie);
+
+        assertEquals("Aspirin", medicament.getNom());
+        assertNotNull(medicament.getMiseEnService());
+        assertEquals(10, medicament.getQuantite());
+        assertEquals(5.0, medicament.getPrix());
+        assertEquals(categorie, medicament.getCategorie());
     }
 
     @Test
-    void getNom() {
-    }
-
-    @ParameterizedTest
-    @NullSource
-    void setNomNull(String nom) {
-        SaisieException e =  assertThrows(SaisieException.class, () -> {
-            medicamentUnderTest.setNom(nom);
-        });
-        assertEquals("le nom de médicament ne doit pas être vide", e.getMessage());
-    }
-
-    @ParameterizedTest
-    @EmptySource
-    void setNomEmpty(String nom) {
-        SaisieException e =  assertThrows(SaisieException.class, () -> {
-            medicamentUnderTest.setNom(nom);
-        });
-        assertEquals("le nom de médicament ne doit pas être vide", e.getMessage());
+    void setNomShouldThrowExceptionWhenNomIsNull() {
+        Medicament medicament = new Medicament();
+        SaisieException exception = assertThrows(SaisieException.class, () -> medicament.setNom(null));
+        assertEquals("le nom de médicament ne doit pas être vide", exception.getMessage());
     }
 
     @Test
-    void getCategorie() {
-    }
-
-    @ParameterizedTest
-    @NullSource
-    void setCategorieNull(String categorie) {
-        SaisieException e =  assertThrows(SaisieException.class, () -> {
-            medicamentUnderTest.setCategorie(categorie);
-        });
-        assertEquals("le nom de catégorie ne doit pas être vide", e.getMessage());
-    }
-
-    @ParameterizedTest
-    @EmptySource
-    void setCategorieEmpty(String categorie) {
-        SaisieException e =  assertThrows(SaisieException.class, () -> {
-            medicamentUnderTest.setCategorie(categorie);
-        });
-        assertEquals("le nom de catégorie ne doit pas être vide", e.getMessage());
+    void setNomShouldThrowExceptionWhenNomIsEmpty() {
+        Medicament medicament = new Medicament();
+        SaisieException exception = assertThrows(SaisieException.class, () -> medicament.setNom(""));
+        assertEquals("le nom de médicament ne doit pas être vide", exception.getMessage());
     }
 
     @Test
-    void getPrix() {
-    }
-
-    @ParameterizedTest
-    @EmptySource
-    void setPrixEmpty(String prix) {
-        SaisieException e =  assertThrows(SaisieException.class, () -> {
-            medicamentUnderTest.setPrix(prix);
-        });
-        assertEquals("le prix ne corresponds pas.", e.getMessage());
+    void setNomShouldUpdateNom() throws SaisieException {
+        Medicament medicament = new Medicament();
+        medicament.setNom("Ibuprofen");
+        assertEquals("Ibuprofen", medicament.getNom());
     }
 
     @Test
-    void getMiseEnService() {
-    }
-
-    @ParameterizedTest
-    @EmptySource
-    void setMiseEnServiceEmpty(String miseEnService) {
-        SaisieException e =  assertThrows(SaisieException.class, () -> {
-            medicamentUnderTest.setMiseEnService(miseEnService);
-        });
-        assertEquals("la date de mise en service ne corresponds pas.", e.getMessage());
-    }
-    //fais moi un test pour le setMiseEnService si il est supérieur qu'aujourd'hui
-    @Test
-    void setMiseEnServiceUnJourApres() {
-        SaisieException e =  assertThrows(SaisieException.class, () -> {
-            medicamentUnderTest.setMiseEnService(LocalDate.now().plusDays(1).toString());
-        });
-        assertEquals("la date de mise en service ne corresponds pas.", e.getMessage());
+    void setMiseEnServiceShouldThrowExceptionWhenMiseEnServiceIsNull() {
+        Medicament medicament = new Medicament();
+        SaisieException exception = assertThrows(SaisieException.class, () -> medicament.setMiseEnService(null));
+        assertEquals("La date de mise en service ne doit pas être vide", exception.getMessage());
     }
 
     @Test
-    void getQuantite() {
+    void setMiseEnServiceShouldThrowExceptionWhenMiseEnServiceIsInFuture() {
+        Medicament medicament = new Medicament();
+        SaisieException exception = assertThrows(SaisieException.class, () -> medicament.setMiseEnService(new Date(System.currentTimeMillis() + 86400000)));
+        assertEquals("La date de mise en service ne doit pas être dans le futur", exception.getMessage());
     }
 
     @Test
-    void setQuantiteNull() {
-        SaisieException e =  assertThrows(SaisieException.class, () -> {
-            medicamentUnderTest.setQuantite(0);
-        });
-        assertEquals("La quantité ne peut pas être négative", e.getMessage());
+    void setMiseEnServiceShouldUpdateMiseEnService() throws SaisieException {
+        Medicament medicament = new Medicament();
+        java.util.Date date = new java.util.Date();
+        medicament.setMiseEnService(date);
+        assertEquals(date, medicament.getMiseEnService());
     }
 
     @Test
-    void setQuantiteEmpty() {
-        SaisieException e =  assertThrows(SaisieException.class, () -> {
-            medicamentUnderTest.setQuantite(0);
-        });
-        assertEquals("La quantité ne peut pas être négative", e.getMessage());
+    void setQuantiteShouldThrowExceptionWhenQuantiteIsNegative() {
+        Medicament medicament = new Medicament();
+        SaisieException exception = assertThrows(SaisieException.class, () -> medicament.setQuantite(-1));
+        assertEquals("La quantité ne peut pas être négative", exception.getMessage());
     }
 
     @Test
-    void testToString() {
+    void setQuantiteShouldUpdateQuantite() throws SaisieException {
+        Medicament medicament = new Medicament();
+        medicament.setQuantite(5);
+        assertEquals(5, medicament.getQuantite());
     }
 
-    @AfterEach
-    void tearDown() {
+    @Test
+    void setPrixShouldThrowExceptionWhenPrixIsNegative() {
+        Medicament medicament = new Medicament();
+        SaisieException exception = assertThrows(SaisieException.class, () -> medicament.setPrix(-1.0));
+        assertEquals("Le prix ne peut pas être négatif", exception.getMessage());
+    }
+
+    @Test
+    void setPrixShouldUpdatePrix() throws SaisieException {
+        Medicament medicament = new Medicament();
+        medicament.setPrix(10.0);
+        assertEquals(10.0, medicament.getPrix());
+    }
+
+    @Test
+    void setCategorieShouldUpdateCategorie() {
+        Medicament medicament = new Medicament();
+        Categorie categorie = new Categorie();
+        medicament.setCategorie(categorie);
+        assertEquals(categorie, medicament.getCategorie());
     }
 }

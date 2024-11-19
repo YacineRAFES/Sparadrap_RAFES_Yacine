@@ -2,7 +2,6 @@ package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Client;
-import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Tables.ListeClientTable;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.InterfaceModel;
@@ -12,8 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.Refresh;
-import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ShowLabelWithBlinker;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
 /**
  * La classe ControllerListeClient est le contrôleur de la fenêtre de la liste des clients
@@ -27,7 +25,7 @@ public class ControllerListeClient extends JFrame {
     private JButton fermerButton;
     private JPanel affichageAlertePanel;
     private JLabel informationLabel;
-    private List<Client> clients;
+    private List clients;
 
     /**
      * Constructeur de la classe ControllerListeClient
@@ -49,36 +47,15 @@ public class ControllerListeClient extends JFrame {
 
         //Bouton Détail
         listeClientTable.getColumn("Détail").setCellRenderer(new button.ButtonRenderer());
-        listeClientTable.getColumn("Détail").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = listeClientTable.getEditingRow(); // Get the row being edited (clicked)
-                if (row >= 0) { // Ensure the row index is valid
-                    if (row < GestionListe.getClient().size()) {
-                        Client client = GestionListe.getClient().get(row);
-                        ControllerDetailClient controllerDetailClient = new ControllerDetailClient(client);
-                        controllerDetailClient.setVisible(true);
-
-                        // Écouteur pour rafraîchir la table quand la fenêtre se ferme
-                        controllerDetailClient.addWindowListener(new WindowAdapter() {
-                            @Override
-                            public void windowClosed(WindowEvent e) {
-                                // Rafraîchir la table une fois la fenêtre fermée
-                                Refresh(listeClientTable);
-                            }
-                        });
-                    } else {
-                        ShowLabelWithBlinker(informationLabel, "Client n'existe pas", Color.RED);
-                    }
-                }
-            }
+        listeClientTable.getColumn("Détail").setCellEditor(new button.ButtonEditor(new JCheckBox(), e ->  {
+            ButtonDetail(e, listeClientTable, ControllerDetailClient.class);
         }));
 
         //Bouton Supprimer
         listeClientTable.getColumn("Action").setCellRenderer(new button.ButtonRenderer());
-        listeClientTable.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        listeClientTable.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), e ->  {
+            //Obtenir l'id client de la ligne sélectionnée
+            int idClient = (int) listeClientTable.getModel().getValueAt(listeClientTable.getSelectedRow(), 0);
                 int row = listeClientTable.getEditingRow(); // Obtenez la ligne en cours d'édition (cliquée)
                 if (row >= 0) { // Vérifiez que l'index de la ligne est valide
                     if (row < GestionListe.getClient().size()) {
@@ -108,7 +85,7 @@ public class ControllerListeClient extends JFrame {
                     } else {
                         ShowLabelWithBlinker(informationLabel, "Client n'existe pas", Color.RED);
                     }
-                }
+
             }
         }));
 

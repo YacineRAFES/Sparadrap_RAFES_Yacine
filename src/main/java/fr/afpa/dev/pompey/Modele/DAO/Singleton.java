@@ -24,11 +24,13 @@ public class Singleton {
         }
 
         try{
-            Class.forName(props.getProperty("jdbc.driver.class"));
-
             String url = props.getProperty("jdbc.url");
             String user = props.getProperty("jdbc.login");
             String password = props.getProperty("jdbc.password");
+
+            Class.forName(props.getProperty("jdbc.driver.class"));
+
+
 
             connection = DriverManager.getConnection(url,user,password);
 
@@ -64,4 +66,9 @@ public class Singleton {
     private static Connection getConnection() {
         return connection;
     }
+
+
+   // public static void main(String[] args) {
+    //    Singleton.getInstanceDB();
+  //  }
 }

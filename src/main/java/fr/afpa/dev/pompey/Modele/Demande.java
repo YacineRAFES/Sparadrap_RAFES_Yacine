@@ -1,5 +1,7 @@
 package fr.afpa.dev.pompey.Modele;
 
+import fr.afpa.dev.pompey.Exception.SaisieException;
+
 import java.io.Serializable;
 
 public class Demande<T> implements Serializable {
@@ -10,7 +12,7 @@ public class Demande<T> implements Serializable {
     public Demande() {
     }
 
-    public Demande(int quantite, Medicament medicament, Ordonnances ordonnances) {
+    public Demande(int quantite, Medicament medicament, Ordonnances ordonnances) throws SaisieException {
         setQuantite(quantite);
         setMedicament(medicament);
         setOrdonnances(ordonnances);
@@ -32,7 +34,10 @@ public class Demande<T> implements Serializable {
         return medicament;
     }
 
-    public void setMedicament(Medicament medicament) {
+    public void setMedicament(Medicament medicament) throws SaisieException {
+        if(medicament == null){
+            throw new SaisieException("Le médicament ne doit pas être vide");
+        }
         this.medicament = medicament;
     }
 
@@ -40,7 +45,10 @@ public class Demande<T> implements Serializable {
         return ordonnances;
     }
 
-    public void setOrdonnances(Ordonnances ordonnances) {
+    public void setOrdonnances(Ordonnances ordonnances) throws SaisieException {
+        if(ordonnances == null){
+            throw new SaisieException("L'ordonnance ne doit pas être vide");
+        }
         this.ordonnances = ordonnances;
     }
 }

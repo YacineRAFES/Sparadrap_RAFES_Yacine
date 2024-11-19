@@ -1,5 +1,6 @@
 package fr.afpa.dev.pompey.Modele.DAO;
 
+import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Categorie;
 
 import java.sql.PreparedStatement;
@@ -76,6 +77,8 @@ public class CategorieDAO extends DAO<Categorie> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (SaisieException e) {
+            throw new RuntimeException(e);
         }
         return categorie;
     }
@@ -94,7 +97,7 @@ public class CategorieDAO extends DAO<Categorie> {
                 categorie.setNom(rs.getString("CAT_nom"));
                 categories.add(categorie);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | SaisieException e) {
             e.printStackTrace();
         }
         return categories;

@@ -1,5 +1,7 @@
 package fr.afpa.dev.pompey.Modele;
 
+import fr.afpa.dev.pompey.Exception.SaisieException;
+
 import java.io.Serializable;
 
 public class Coordonnees<T> implements Serializable {
@@ -9,12 +11,12 @@ public class Coordonnees<T> implements Serializable {
     private String telephone;
 
 
-    public Coordonnees(String email, String telephone) {
+    public Coordonnees(String email, String telephone) throws SaisieException {
         setEmail(email);
         setTelephone(telephone);
     }
 
-    public Coordonnees(int id) {
+    public Coordonnees(int id) throws SaisieException {
         setId(id);
     }
 
@@ -22,7 +24,10 @@ public class Coordonnees<T> implements Serializable {
 
     }
 
-    public void setTelephone(String telephone) {
+    public void setTelephone(String telephone) throws SaisieException {
+        if(telephone == null && telephone.isEmpty()){
+            throw new SaisieException("Le téléphone ne doit pas être vide");
+        }
         this.telephone = telephone;
     }
 
@@ -30,11 +35,14 @@ public class Coordonnees<T> implements Serializable {
         return telephone;
     }
 
-    public String getEmail() {
+    public String getEmail(){
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) throws SaisieException {
+        if(email == null && email.isEmpty()){
+            throw new SaisieException("L'email ne doit pas être vide");
+        }
         this.email = email;
     }
 
@@ -42,7 +50,10 @@ public class Coordonnees<T> implements Serializable {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(int id) throws SaisieException {
+        if(id < 0){
+            throw new SaisieException("L'id doit être supérieur à 0");
+        }
         this.id = id;
     }
 

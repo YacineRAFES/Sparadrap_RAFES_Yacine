@@ -19,16 +19,16 @@ public class Commande<T> implements Serializable {
     public Commande(Medicament medicament, AchatDirect achatDirect) {
         setMedicament(medicament);
         setAchatDirect(achatDirect);
-        setQuantite(quantite);
     }
-
-
 
     public AchatDirect getAchatDirect() {
         return achatDirect;
     }
 
     public void setAchatDirect(AchatDirect achatDirect) {
+        if(achatDirect == null){
+            throw new IllegalArgumentException("L'achat direct ne doit pas être vide");
+        }
         this.achatDirect = achatDirect;
     }
 
@@ -37,6 +37,9 @@ public class Commande<T> implements Serializable {
     }
 
     public void setMedicament(Medicament medicament) {
+        if(medicament == null){
+            throw new IllegalArgumentException("Le médicament ne doit pas être vide");
+        }
         this.medicament = medicament;
     }
 
@@ -45,6 +48,9 @@ public class Commande<T> implements Serializable {
     }
 
     public void setQuantite(int quantite) {
+        if(quantite < 0){
+            throw new IllegalArgumentException("La quantité doit être supérieure à 0");
+        }
         this.quantite = quantite;
     }
 }

@@ -1,8 +1,8 @@
 package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
+import fr.afpa.dev.pompey.Modele.DAO.MutuelleDAO;
 import fr.afpa.dev.pompey.Modele.Mutuelle;
-import fr.afpa.dev.pompey.Modele.GestionListe;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMutuelleTable;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.InterfaceModel;
@@ -11,6 +11,8 @@ import fr.afpa.dev.pompey.Utilitaires.button;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ButtonDetail;
 
 /**
  * La classe ControllerListeMutuelle est le contrôleur de la fenêtre de liste des mutuelles
@@ -25,10 +27,14 @@ public class ControllerListeMutuelle extends JFrame {
     private JPanel affichageAlertePanel;
     private JLabel informationLabel;
 
+    private MutuelleDAO mutuelleDAO;
     /**
      * Constructeur de la classe ControllerListeMutuelle
      */
     public ControllerListeMutuelle() {
+        //Initialisation des DAO
+        mutuelleDAO = new MutuelleDAO();
+
         setTitle("Liste des Mutuelles");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
@@ -39,7 +45,7 @@ public class ControllerListeMutuelle extends JFrame {
         this.setLocationRelativeTo(null);
 
         // Affichage des mutuelles
-        ListeMutuelleTable model1 = new ListeMutuelleTable(GestionListe.getMutuelle());
+        ListeMutuelleTable model1 = new ListeMutuelleTable(mutuelleDAO.findAll());
         this.mutuelleTable.setModel(model1);
         this.mutuelleTable.getTableHeader().setResizingAllowed(false);
 
@@ -49,17 +55,7 @@ public class ControllerListeMutuelle extends JFrame {
         // Bouton Détail
         mutuelleTable.getColumn("Détails").setCellRenderer(new button.ButtonRenderer());
         mutuelleTable.getColumn("Détails").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
-            int row = mutuelleTable.getEditingRow(); // Get the row being edited (clicked)
-            if (row >= 0) { // Ensure the row index is valid
-                if (row < GestionListe.getMutuelle().size()){
-                    Mutuelle mutuelle = GestionListe.getMutuelle().get(row);
-                    ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(mutuelle);
-                    controllerDetailMutuelle.setVisible(true);
-                } else {
-                    Fenetre.Fenetre("la Mutuelle n'existe pas");
-                    new SaisieException("la Mutuelle n'existe pas");
-                }
-            }
+            ButtonDetail(e, mutuelleDAO, ControllerDetailMutuelle.class);
         }));
 
         // Fermer la fenêtre

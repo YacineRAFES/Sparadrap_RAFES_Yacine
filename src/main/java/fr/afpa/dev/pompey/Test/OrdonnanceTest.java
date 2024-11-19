@@ -1,136 +1,79 @@
 package fr.afpa.dev.pompey.Test;
 
+import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.Medecin;
+import fr.afpa.dev.pompey.Modele.Medicament;
 import fr.afpa.dev.pompey.Modele.Ordonnances;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrdonnanceTest {
-    private Ordonnances ordonnanceUnderTest;
 
-    @BeforeEach
-    void setUp() {
-        ordonnanceUnderTest = new Ordonnances();
+    @Test
+    void constructorShouldInitializeFields() throws SaisieException {
+        Date date = new Date(System.currentTimeMillis());
+        Client client = new Client(1);
+        Medecin medecin = new Medecin();
+        Ordonnances<Medicament> ordonnances = new Ordonnances<>(date, client, medecin);
+
+        assertEquals(date, ordonnances.getDate());
+        assertEquals(client, ordonnances.getClient());
+        assertEquals(medecin, ordonnances.getMedecin());
     }
 
     @Test
-    void getClient() {
-    }
-
-    // fais moi un test pour le setClient si il est null et empty
-
-    @ParameterizedTest
-    @NullSource
-    void setClientNull(Client client) {
-        Exception e =  assertThrows(Exception.class, () -> {
-            ordonnanceUnderTest.setClient(client);
-        });
-        assertEquals("Le client ne doit pas être vide", e.getMessage());
+    void setDateShouldThrowExceptionWhenDateIsNull() {
+        Ordonnances<Medicament> ordonnances = new Ordonnances<>();
+        SaisieException exception = assertThrows(SaisieException.class, () -> ordonnances.setDate(null));
+        assertEquals("La date ne doit pas être vide", exception.getMessage());
     }
 
     @Test
-    void setClientEmpty() {
-        Exception e =  assertThrows(Exception.class, () -> {
-            ordonnanceUnderTest.setClient(null);
-        });
-        assertEquals("Le client ne doit pas être vide", e.getMessage());
+    void setDateShouldThrowExceptionWhenDateIsEmpty() {
+        Ordonnances<Medicament> ordonnances = new Ordonnances<>();
+        SaisieException exception = assertThrows(SaisieException.class, () -> ordonnances.setDate(Date.valueOf("")));
+        assertEquals("La date ne doit pas être vide", exception.getMessage());
     }
 
     @Test
-    void getMedecin() {
-    }
-
-    @ParameterizedTest
-    @NullSource
-    void setMedecinNull(Medecin medecin) {
-        Exception e =  assertThrows(Exception.class, () -> {
-            ordonnanceUnderTest.setMedecin(medecin);
-        });
-        assertEquals("Le medecin ne doit pas être vide", e.getMessage());
+    void setDateShouldThrowExceptionWhenDateIsInFuture() {
+        Ordonnances<Medicament> ordonnances = new Ordonnances<>();
+        SaisieException exception = assertThrows(SaisieException.class, () -> ordonnances.setDate(new Date(System.currentTimeMillis() + 86400000)));
+        assertEquals("La date ne doit pas être dans le futur", exception.getMessage());
     }
 
     @Test
-    void setMedecinEmpty() {
-        Exception e =  assertThrows(Exception.class, () -> {
-            ordonnanceUnderTest.setMedecin(null);
-        });
-        assertEquals("Le medecin ne doit pas être vide", e.getMessage());
+    void setDateShouldThrowExceptionWhenDateIsBeforeToday() {
+        Ordonnances<Medicament> ordonnances = new Ordonnances<>();
+        SaisieException exception = assertThrows(SaisieException.class, () -> ordonnances.setDate(new Date(System.currentTimeMillis() - 86400000)));
+        assertEquals("La date ne doit pas être avant aujourd'hui", exception.getMessage());
     }
 
     @Test
-    void getDate() {
-    }
-
-    @ParameterizedTest
-    @NullSource
-    void setDateNull(LocalDate date) {
-        Exception e =  assertThrows(Exception.class, () -> {
-            ordonnanceUnderTest.setDate(date);
-        });
-        assertEquals("La date n'est pas valide", e.getMessage());
-    }
-
-    //fais moi un test sur le setDate si il est inférieur à la date du jour et supérieur à la date du jour
-    @Test
-    void setDateBeforeNow() {
-        Exception e =  assertThrows(Exception.class, () -> {
-            ordonnanceUnderTest.setDate(LocalDate.now().minusDays(1));
-        });
-        assertEquals("La date n'est pas valide", e.getMessage());
+    void setDateShouldUpdateDate() throws SaisieException {
+        Ordonnances<Medicament> ordonnances = new Ordonnances<>();
+        Date date = new Date(System.currentTimeMillis());
+        ordonnances.setDate(date);
+        assertEquals(date, ordonnances.getDate());
     }
 
     @Test
-    void setDateAfterNow() {
-        Exception e =  assertThrows(Exception.class, () -> {
-            ordonnanceUnderTest.setDate(LocalDate.now().plusDays(1));
-        });
-        assertEquals("La date ne doit pas être supérieure à la date du jour", e.getMessage());
+    void setMedecinShouldUpdateMedecin() {
+        Ordonnances<Medicament> ordonnances = new Ordonnances<>();
+        Medecin medecin = new Medecin();
+        ordonnances.setMedecin(medecin);
+        assertEquals(medecin, ordonnances.getMedecin());
     }
 
     @Test
-    void getListeMedicament() {
-    }
-
-    @ParameterizedTest
-    @NullSource
-    void setListeMedicamentNull(String[][] listeMedicament) {
-        Exception e =  assertThrows(Exception.class, () -> {
-            ordonnanceUnderTest.setListeMedicament(listeMedicament);
-        });
-        assertEquals("La liste des médicaments ne doit pas être vide", e.getMessage());
-    }
-
-    @ParameterizedTest
-    @EmptySource
-    void setListeMedicamentEmpty(String[][] listeMedicament) {
-        Exception e =  assertThrows(Exception.class, () -> {
-            ordonnanceUnderTest.setListeMedicament(listeMedicament);
-        });
-        assertEquals("La liste des médicaments ne doit pas être vide", e.getMessage());
-    }
-
-    @Test
-    void getPrixTotal() {
-    }
-
-    @Test
-    void setPrixTotalNull() {
-        Exception e =  assertThrows(Exception.class, () -> {
-            ordonnanceUnderTest.setPrixTotal(0);
-        });
-        assertEquals("Le prix total ne peut pas être négatif", e.getMessage());
-    }
-
-    @AfterEach
-    void tearDown() {
+    void setClientShouldUpdateClient() {
+        Ordonnances<Medicament> ordonnances = new Ordonnances<>();
+        Client client = new Client(1);
+        ordonnances.setClient(client);
+        assertEquals(client, ordonnances.getClient());
     }
 }

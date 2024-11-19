@@ -1,11 +1,16 @@
 package fr.afpa.dev.pompey.Utilitaires;
 
+import fr.afpa.dev.pompey.Modele.Mutuelle;
+import fr.afpa.dev.pompey.Vue.ControllerDetailMutuelle;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.*;
+import java.awt.event.ActionEvent;
 
 /**
  * A class that contains utility methods for creating and managing interfaces
@@ -161,5 +166,50 @@ public class InterfaceModel extends JFrame {
         });
         stopTimer.setRepeats(false); // Ensure this timer only runs once
         stopTimer.start();
+    }
+
+    public static void ButtonDetail(ActionEvent e, Object NomDeLaDAO, Object NomDuController) {
+        try {
+            // Récupérer le bouton source de l'événement
+            JButton button = (JButton) e.getSource();
+
+            // Récupérer l'ID depuis le bouton
+            int id = (int) button.getClientProperty("id");
+
+            // Appeler la méthode "find" sur l'instance du DAO
+            Object entity = NomDeLaDAO.getClass().getMethod("find", int.class).invoke(NomDeLaDAO, id);
+
+            if (entity != null) {
+                // Créer une nouvelle instance du contrôleur avec l'entité comme paramètre
+                Constructor<?> constructor = NomDuController.getClass().getConstructor(entity.getClass());
+                Object controller = constructor.newInstance(entity);
+
+                // Rendre le contrôleur visible
+                Method setVisibleMethod = controller.getClass().getMethod("setVisible", boolean.class);
+                setVisibleMethod.invoke(controller, true);
+            } else {
+                // Afficher un message d'erreur si l'entité n'existe pas
+                Fenetre.Fenetre("L'entité n'existe pas.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Fenetre.Fenetre("Erreur lors de l'ouverture des détails.");
+        }
+    }
+
+    public static void ButtonDelete(ActionEvent e, Object NomDeLaDAO) {
+        try {
+            // Récupérer le bouton source de l'événement
+            JButton button = (JButton) e.getSource();
+
+            // Récupérer l'ID depuis le bouton
+            int id = (int) button.getClientProperty("id");
+
+            // Appeler la méthode "delete" sur l'instance du DAO
+            NomDeLaDAO.getClass().getMethod("delete", int.class).invoke(NomDeLaDAO, id);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Fenetre.Fenetre("Erreur lors de la suppression.");
+        }
     }
 }

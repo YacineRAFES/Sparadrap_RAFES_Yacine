@@ -12,7 +12,7 @@ public class Medicament<T> implements Serializable {
     private Date miseEnService;
     private int quantite;
     private double prix;
-    private int categorie;
+    private Categorie categorie;
 
     //CONSTRUCTEURS
     public Medicament(){
@@ -27,7 +27,7 @@ public class Medicament<T> implements Serializable {
         setNom(nom);
     }
 
-    public Medicament(String nom, Date miseEnService, int quantite, double prix, int categorie) throws SaisieException {
+    public Medicament(String nom, Date miseEnService, int quantite, double prix, Categorie categorie) throws SaisieException {
         setNom(nom);
         setMiseEnService(miseEnService);
         setQuantite(quantite);
@@ -44,7 +44,7 @@ public class Medicament<T> implements Serializable {
         this.id = id;
     }
 
-    public void setCategorie(int categorie) {
+    public void setCategorie(Categorie categorie) {
         this.categorie = categorie;
     }
 
@@ -61,7 +61,7 @@ public class Medicament<T> implements Serializable {
         this.nom = nom;
     }
 
-    public int getCategorie() {
+    public Categorie getCategorie() {
         return categorie;
     }
 
