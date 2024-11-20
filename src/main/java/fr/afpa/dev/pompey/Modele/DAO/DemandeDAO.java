@@ -112,4 +112,27 @@ public class DemandeDAO extends DAO<Demande> {
         }
         return demandes;
     }
+
+    public List<Demande> findAllByOrdonnance(int id) {
+        List<Demande> demandes = new ArrayList<>();
+        StringBuilder selectSQL = new StringBuilder("SELECT * FROM Demande WHERE ORDO_ID = ?");
+
+        try {
+            PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Demande demande = new Demande();
+                demande.setOrdonnances(new OrdonnancesDAO().find(rs.getInt("ORDO_ID")));
+                demande.setMedicament(new MedicamentDAO().find(rs.getInt("MED_ID")));
+                demande.setQuantite(rs.getInt("quantite"));
+                demandes.add(demande);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (SaisieException e) {
+            new SaisieException(e.getMessage());
+        }
+        return demandes;
+    }
 }

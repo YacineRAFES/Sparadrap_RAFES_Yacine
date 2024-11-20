@@ -1,6 +1,8 @@
 package fr.afpa.dev.pompey.Modele;
 
-public class Region{
+import java.io.Serializable;
+
+public class Region<T> implements Serializable {
     private int id;
     private String nom;
 

@@ -1,9 +1,9 @@
 package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Utilitaires.Fenetre;
-import fr.afpa.dev.pompey.Utilitaires.Verification;
+import fr.afpa.dev.pompey.Modele.*;
+import fr.afpa.dev.pompey.Modele.DAO.*;
+import fr.afpa.dev.pompey.Utilitaires.InterfaceModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,13 +32,27 @@ public class ControllerDetailMedecin extends JFrame {
     private JButton listesDesOrdonnancesButton;
     private JButton listesDesClientsButton;
     private JLabel informationLabel;
+    private JTextField regionTextField;
+
+    private MedecinDAO medecinDAO;
+    private CoordonneesDAO coordonneesDAO;
+    private AdressesDAO adressesDAO;
+    private VilleDAO villeDAO;
+    private RegionDAO regionDAO;
 
     /**
      * Constructeur de la classe ControllerDetailMedecin
      *
      * @param idmedecin L'identifiant du médecin
      */
-    public ControllerDetailMedecin(Medecin idmedecin) {
+    public ControllerDetailMedecin(int idmedecin) {
+        //Initialisation des DAO
+        medecinDAO = new MedecinDAO();
+        coordonneesDAO = new CoordonneesDAO();
+        adressesDAO = new AdressesDAO();
+        villeDAO = new VilleDAO();
+        regionDAO = new RegionDAO();
+
         setTitle("Détail Médecin");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
@@ -49,106 +63,118 @@ public class ControllerDetailMedecin extends JFrame {
         this.setLocationRelativeTo(null);
 
         // TODO SELECT * FROM medecin WHERE idmedecin = idmedecin
-        setTextFieldData(nomTextField, idmedecin.getNomMedecin());
-        setTextFieldData(prenomTextField, idmedecin.getPrenomMedecin());
-        setTextFieldData(cpTextField, idmedecin.getCodePostal());
-        setTextFieldData(rueTextField, idmedecin.getRue());
-        setTextFieldData(villeTextField, idmedecin.getVille());
-        setTextFieldData(telephoneTextField, idmedecin.getTelephone());
-        setTextFieldData(emailTextField, idmedecin.getEmail());
-        setTextFieldData(numAgreementTextField, idmedecin.getNumAgreement());
-        setTextFieldData(specialisteTextField, idmedecin.getSpecialite());
+        Medecin medecin = medecinDAO.find(idmedecin);
+        String nom = setTextFieldData(nomTextField, medecin.getNom());
+        String prenom = setTextFieldData(prenomTextField, medecin.getPrenom());
+        String codepostal = setTextFieldData(cpTextField, medecin.getAdresses().getVille().getCp());
+        String rue = setTextFieldData(rueTextField, medecin.getAdresses().getRue());
+        String ville = setTextFieldData(villeTextField, medecin.getAdresses().getVille().getNom());
+        String region = setTextFieldData(regionTextField, medecin.getAdresses().getVille().getRegion().getNom());
+        String telephone = setTextFieldData(telephoneTextField, medecin.getCoordonnees().getTelephone());
+        String email = setTextFieldData(emailTextField, medecin.getCoordonnees().getEmail());
+        String numAgreement = setTextFieldData(numAgreementTextField, medecin.getNumAgreement());
+        String specialiste = setTextFieldData(specialisteTextField, medecin.getSpecialite());
 
         annulerButton.addActionListener(e -> this.dispose());
 
         modifierButton.addActionListener(e -> {
             try {
-                modifier(idmedecin);
-            } catch (SaisieException ex) {
-                Fenetre.Fenetre("Erreur lors de la saisie");
+                //Vérifier si les données coordonnées sont vides
+                if (telephone != null && !telephone.isEmpty() && email != null && !email.isEmpty()) {
+                    //On vérifie si les données ont été changé
+                    if (!medecin.getCoordonnees().getTelephone().equals(telephone) || !medecin.getCoordonnees().getEmail().equals(email)) {
+                        //Mettre à jour les coordonnées du médecin
+                        Coordonnees coordonnees = new Coordonnees(
+                                medecin.getCoordonnees().getId(),
+                                telephoneTextField.getText(),
+                                emailTextField.getText()
+                        );
+                        coordonneesDAO.update(coordonnees);
+                    }
+                } else {
+                    InterfaceModel.ShowLabelWithTimer(informationLabel, "Veuillez remplir tous les champs", Color.RED);
+                }
+
+                int newIdRegion = 0;
+                if (region != null && !region.isEmpty()) {
+                    if (!medecin.getAdresses().getVille().getRegion().equals(region)) {
+                        //Créer une nouvelle région
+                        Region region1 = new Region(
+                                region
+                        );
+                        newIdRegion = regionDAO.create(region1);
+                    }
+                }
+
+                int newIdVille = 0;
+                if (ville != null && !ville.isEmpty()) {
+                    //On vérifie si les données ont été changé
+                    if (!medecin.getAdresses().getVille().equals(ville)) {
+                        //Créer une nouvelle ville
+                        Ville ville1 = new Ville(
+                                ville,
+                                codepostal,
+                                newIdRegion
+                        );
+                        newIdVille = villeDAO.create(ville1);
+                    }
+                }
+
+                if (rue != null && !rue.isEmpty()) {
+                    if (!medecin.getAdresses().getRue().equals(rue)) {
+                        //Mettre à jour l'adresse du médecin
+                        Adresses adresses = new Adresses(
+                                medecin.getAdresses().getId(),
+                                rue,
+                                newIdVille
+                        );
+                        adressesDAO.update(adresses);
+
+                    }
+                }
+
+                if (nom != null && !nom.isEmpty() && prenom != null && !prenom.isEmpty() && specialiste != null && !specialiste.isEmpty() && numAgreement != null && !numAgreement.isEmpty()) {
+                    //Mettre à jour les informations du médecin
+                    Medecin medecin1 = new Medecin(
+                            medecin.getId(),
+                            nomTextField.getText(),
+                            prenomTextField.getText(),
+                            specialisteTextField.getText(),
+                            numAgreementTextField.getText()
+                    );
+                    medecinDAO.update(medecin1);
+                    informationLabel.setText("Les informations ont été modifiées avec succès");
+                }
+            }catch(SaisieException ex){
+                InterfaceModel.ShowLabelWithTimer(informationLabel, "Une erreur s'est produite lors de la modification des informations", Color.RED);
             }
         });
 
         listesDesOrdonnancesButton.addActionListener(e -> {
-            ControllerListeOrdonnanceIdMed controllerListeOrdonnanceIdMed = new ControllerListeOrdonnanceIdMed(idmedecin);
+            ControllerListeOrdonnanceIdMed controllerListeOrdonnanceIdMed = new ControllerListeOrdonnanceIdMed(medecin.getId());
             controllerListeOrdonnanceIdMed.setVisible(true);
         });
 
         listesDesClientsButton.addActionListener(e -> {
-            ControllerListeClientIdMed controllerListeClientIdMed = new ControllerListeClientIdMed(idmedecin);
+            ControllerListeClientIdMed controllerListeClientIdMed = new ControllerListeClientIdMed(medecin.getId());
             controllerListeClientIdMed.setVisible(true);
         });
     }
 
-    /**
-     * Méthode pour modifier un médecin
-     *
-     * @param idmedecin L'identifiant du médecin
-     * @throws SaisieException
-     */
-    private void modifier(Medecin idmedecin) throws SaisieException {
-        Medecin medecin = buildMedecin();
-        if (medecin == null) return; // Saisie incorrecte
-        try{
-            updateMedecinInfo(idmedecin, medecin);
-            Fenetre.Fenetre("Medecin modifié avec succès");
-
-            this.dispose();
-        }catch (SaisieException e){
-            Fenetre.Fenetre("Erreur lors de la modification du medecin");
-        }
-    }
-
-    /**
-     * Construire un médecin
-     *
-     * @return Le médecin
-     * @throws SaisieException
-     */
-    private Medecin buildMedecin() throws SaisieException {
-        String nom = Verification.NomPrenom(nomTextField.getText(), "Nom");
-        String prenom = Verification.NomPrenom(prenomTextField.getText(), "Prénom");
-        String cp = Verification.CodePostal(cpTextField.getText());
-        String rue = rueTextField.getText();
-        String ville = Verification.NomPrenom(villeTextField.getText(), "Ville");
-        String telephone = Verification.Telephone(telephoneTextField.getText());
-        String email = Verification.Email(emailTextField.getText());
-        String numAgreement = numAgreementTextField.getText();
-        String specialiste = specialisteTextField.getText();
-
-        return new Medecin(nom, prenom, rue, cp, ville, telephone, email, numAgreement, specialiste);
-    }
-
-    /**
-     * Mettre à jour les informations du médecin
-     *
-     * @param idmedecin     L'identifiant du médecin
-     * @param updatedMedecin Le médecin mis à jour
-     * @throws SaisieException
-     */
-    private void updateMedecinInfo(Medecin idmedecin, Medecin updatedMedecin) throws SaisieException {
-        idmedecin.setNomMedecin(updatedMedecin.getNomMedecin());
-        idmedecin.setPrenomMedecin(updatedMedecin.getPrenomMedecin());
-        idmedecin.setRue(updatedMedecin.getRue());
-        idmedecin.setCodePostal(updatedMedecin.getCodePostal());
-        idmedecin.setVille(updatedMedecin.getVille());
-        idmedecin.setTelephone(updatedMedecin.getTelephone());
-        idmedecin.setEmail(updatedMedecin.getEmail());
-        idmedecin.setNumAgreement(updatedMedecin.getNumAgreement());
-        idmedecin.setSpecialite(updatedMedecin.getSpecialite());
-    }
 
     /**
      * Mettre les données dans les champs de texte
      *
      * @param textField Le champ de texte
      * @param data      Les données
+     * @return
      */
-    private void setTextFieldData(JTextField textField, String data) {
+    private String setTextFieldData(JTextField textField, String data) {
         if (data != null && !data.isEmpty()) {
             textField.setText(data);
             textField.setForeground(Color.BLACK); // Texte en noir si les données existent
         }
+        return data;
     }
 
 }

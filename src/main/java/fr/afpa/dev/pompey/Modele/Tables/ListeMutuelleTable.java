@@ -40,7 +40,7 @@ public class ListeMutuelleTable extends AbstractTableModel {
             case 2:
                 return mutuelle.getAdresses().getVille() != null ? mutuelle.getAdresses().getVille() : "Non renseigné";
             case 3:
-                return mutuelle.getAdresses().getCodePostal() != 0 ? mutuelle.getAdresses().getCodePostal() : "Non renseigné";
+                return mutuelle.getAdresses().getVille().getCp() != null ? mutuelle.getAdresses().getVille().getCp() : "Non renseigné";
             case 4:
                 //boutton détail avec id mutuelle
                 return "Détails";

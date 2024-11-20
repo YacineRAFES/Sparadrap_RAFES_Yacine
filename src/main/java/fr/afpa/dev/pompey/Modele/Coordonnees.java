@@ -10,6 +10,11 @@ public class Coordonnees<T> implements Serializable {
     private String email;
     private String telephone;
 
+    public Coordonnees(int id, String email, String telephone) throws SaisieException {
+        setId(id);
+        setEmail(email);
+        setTelephone(telephone);
+    }
 
     public Coordonnees(String email, String telephone) throws SaisieException {
         setEmail(email);

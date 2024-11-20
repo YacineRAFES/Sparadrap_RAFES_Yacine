@@ -2,11 +2,12 @@ package fr.afpa.dev.pompey.Modele;
 
 import java.io.Serializable;
 
-public class Adresses<T> extends Ville implements Serializable {
+public class Adresses<T> implements Serializable {
     private int id;
     private String rue;
     private Ville ville;
-    private int codePostal;
+
+    //CONSTRUCTEURS
 
     public Adresses() {
 
@@ -17,22 +18,17 @@ public class Adresses<T> extends Ville implements Serializable {
     }
 
     public Adresses(int id, String rue, int idVille) {
-        super(idVille);
-        setRue(rue);
         setId(id);
+        setRue(rue);
+        setVille(new Ville(idVille));
     }
 
     public Adresses(String rue, int idVille) {
-        super(idVille);
         setRue(rue);
+        setVille(new Ville(idVille));
     }
 
-    public Adresses(String rue){
-        setRue(rue);
-    }
-
-    public Adresses(String rue, String ville) {
-    }
+    //GETTER ET SETTER
 
     public int getId() {
         return id;
@@ -51,14 +47,11 @@ public class Adresses<T> extends Ville implements Serializable {
     }
 
     public Ville getVille() {
-        return ville;
+        return new Ville<>();
     }
 
     public void setVille(Ville ville) {
         this.ville = ville;
     }
 
-    public int getCodePostal() {
-        return codePostal;
-    }
 }

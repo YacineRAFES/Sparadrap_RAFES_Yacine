@@ -12,11 +12,11 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
             "Date", "Client", "Type d'Achat", "Détail", "Action"
     };
 
-    private final List<AchatDirect> achatSansOrdonnances;
+    private final List<AchatDirect> achatDirect;
     private final List<Ordonnances> ordonnances;
 
-    public ListeHistoriqueAchat(List<AchatDirect> achatSansOrdonnances, List<Ordonnances> ordonnances) {
-        this.achatSansOrdonnances = achatSansOrdonnances;
+    public ListeHistoriqueAchat(List<AchatDirect> achatDirect, List<Ordonnances> ordonnances) {
+        this.achatDirect = achatDirect;
         this.ordonnances = ordonnances;
     }
 
@@ -27,7 +27,7 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return ordonnances.size() + achatSansOrdonnances.size();
+        return ordonnances.size() + achatDirect.size();
     }
 
     @Override
@@ -37,15 +37,15 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        if (rowIndex < achatSansOrdonnances.size()) {
+        if (rowIndex < achatDirect.size()) {
             // Si l'index est dans les limites de achatSansOrdonnances
-            AchatDirect achatSansOrdonnance = achatSansOrdonnances.get(rowIndex);
+            AchatDirect achatDirects = achatDirect.get(rowIndex);
             switch (columnIndex) {
                 case 0:
-                    return achatSansOrdonnance.getDate();
+                    return achatDirects.getDate();
                 case 1:
-                    return achatSansOrdonnance.getClient() != null
-                            ? achatSansOrdonnance.getClient().getPrenom() + " " + achatSansOrdonnance.getClient().getNom()
+                    return achatDirects.getClient() != null
+                            ? achatDirects.getClient().getPrenom() + " " + achatDirects.getClient().getNom()
                             : "Client inconnu";
                 case 2:
                     return "Sans Ordonnance";
@@ -58,7 +58,7 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
             }
         } else {
             // Si l'index dépasse achatSansOrdonnances, il faut accéder à la liste des ordonnances
-            int ordonnanceIndex = rowIndex - achatSansOrdonnances.size();  // Calculer l'index relatif pour ordonnance
+            int ordonnanceIndex = rowIndex - achatDirect.size();  // Calculer l'index relatif pour ordonnance
             Ordonnances ordonnance = ordonnances.get(ordonnanceIndex);
             switch (columnIndex) {
                 case 0:

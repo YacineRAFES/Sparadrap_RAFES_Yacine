@@ -4,6 +4,7 @@ package fr.afpa.dev.pompey.Vue;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.DAO.ClientDAO;
 import fr.afpa.dev.pompey.Modele.DAO.MedecinDAO;
+import fr.afpa.dev.pompey.Modele.DAO.OrdonnancesDAO;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedecinTable;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
@@ -32,12 +33,16 @@ public class ControllerListeMedecin extends JFrame {
 
     private MedecinDAO medecinDAO;
     private ClientDAO clientDAO;
+    private OrdonnancesDAO ordonnancesDAO;
     /**
      * Constructeur de la classe ControllerListeMedecin
      */
     public ControllerListeMedecin() {
         //Initialisation des DAO
         medecinDAO = new MedecinDAO();
+        clientDAO = new ClientDAO();
+        ordonnancesDAO = new OrdonnancesDAO();
+
 
         setTitle("Liste des Médecins");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -62,33 +67,33 @@ public class ControllerListeMedecin extends JFrame {
         //Bouton Supprimer
         listeMedecinTable1.getColumn("Action").setCellRenderer(new button.ButtonRenderer());
         listeMedecinTable1.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
-            int row = listeMedecinTable1.getEditingRow(); // Get the row being edited (clicked)
-            if (row >= 0) { // Ensure the row index is valid
-                if (row < medecinDAO.findAll().size()) {
-                    Medecin medecin = medecinDAO.find(row);
-                    // On vérifie si le médecin est lié à un client ou une ordonnance
-                    boolean medecinLieClient = .getClient().stream().anyMatch(client -> client.getMedecin() != null && client.getMedecin().equals(medecin));
-                    boolean medecinLieOrdonnance = GestionListe.getOrdonnance().stream().anyMatch(ordonnance -> ordonnance.getMedecin() != null && ordonnance.getMedecin().equals(medecin));
-                    if (medecinLieClient || medecinLieOrdonnance) {
-                        ShowLabelWithTimer(
-                                informationLabel,
-                                "<html><p>Le médecin est lié à un client ou une ordonnance,<br> impossible de le supprimer</p></html>",
-                                Color.RED);
-                    } else {
-                        GestionListe.removeMedecin(medecin);
-                        ShowLabelWithTimer(
-                                informationLabel,
-                                "Le médecin a été supprimé avec succès",
-                                Color.GREEN);
-                    }
-                } else {
+            JButton button = (JButton) e.getSource();
+            int id = (int) button.getClientProperty("id");
+
+            Medecin medecin = medecinDAO.find(id);
+            if(medecin != null){
+                // On vérifie si le médecin est lié à un client ou une ordonnance
+                boolean medecinLieClient = clientDAO.findAll().stream().anyMatch(client -> client.getMedecin() != null && client.getMedecin().equals(medecin));
+                boolean medecinLieOrdonnance = ordonnancesDAO.findAll().stream().anyMatch(ordonnance -> ordonnance.getMedecin().equals(medecin));
+                if (medecinLieClient || medecinLieOrdonnance) {
                     ShowLabelWithTimer(
                             informationLabel,
-                            "Le médecin n'existe",
+                            "<html><p>Le médecin est lié à un client ou une ordonnance,<br> impossible de le supprimer</p></html>",
                             Color.RED);
+                } else {
+                    medecinDAO.delete(medecin);
+                    ShowLabelWithTimer(
+                            informationLabel,
+                            "Le médecin a été supprimé avec succès",
+                            Color.GREEN);
                 }
-                Refresh(listeMedecinTable1); // Rafraîchir la table après la suppression
+            } else {
+                ShowLabelWithTimer(
+                        informationLabel,
+                        "Le médecin n'existe",
+                        Color.RED);
             }
+            Refresh(listeMedecinTable1); // Rafraîchir la table après la suppression
         }));
 
         //Bouton Creer un Medecin

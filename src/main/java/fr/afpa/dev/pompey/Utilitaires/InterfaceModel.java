@@ -196,20 +196,4 @@ public class InterfaceModel extends JFrame {
             Fenetre.Fenetre("Erreur lors de l'ouverture des détails.");
         }
     }
-
-    public static void ButtonDelete(ActionEvent e, Object NomDeLaDAO) {
-        try {
-            // Récupérer le bouton source de l'événement
-            JButton button = (JButton) e.getSource();
-
-            // Récupérer l'ID depuis le bouton
-            int id = (int) button.getClientProperty("id");
-
-            // Appeler la méthode "delete" sur l'instance du DAO
-            NomDeLaDAO.getClass().getMethod("delete", int.class).invoke(NomDeLaDAO, id);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Fenetre.Fenetre("Erreur lors de la suppression.");
-        }
-    }
 }

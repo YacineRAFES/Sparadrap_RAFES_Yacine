@@ -107,12 +107,14 @@ public class ControllerMedecin extends JFrame {
         String prenom = prenomTextField.getText();
         String numAgreement = numAgreementTextField.getText();
         String rueName = rueTextField.getText();
-        Integer cp = Integer.valueOf(cpTextField.getText().trim());
+        String cp = cpTextField.getText().trim();
         String villeName = villeTextField.getText();
         Object regionSelected = regionComboBox.getSelectedItem();
         String telephone = telephoneTextField.getText();
         String email = emailTextField.getText();
         String specialiste = specialisteTextField.getText();
+
+        int newIdVille = 0;
 
         //Récupération de la région
         int newIdCoordonnees = 0;
@@ -159,7 +161,7 @@ public class ControllerMedecin extends JFrame {
         }
         //on crée le nom de la ville
 
-        int newIdVille = 0;
+
         boolean villeExist = false;
         for (Ville villeCheck : villeDAO.findAll()) {
             if (villeCheck.getNom().equals(villeName)) {
@@ -183,8 +185,9 @@ public class ControllerMedecin extends JFrame {
         int newIdAdresse = 0;
         Adresses adresses = new Adresses(
                 rueName,
-                newIdVille);
-        // On récupère l'id des adresses
+                newIdVille
+        );
+        // On récupère l'id de l'adresse
         newIdAdresse = adressesDAO.create(adresses);
 
         //Vérification des champs

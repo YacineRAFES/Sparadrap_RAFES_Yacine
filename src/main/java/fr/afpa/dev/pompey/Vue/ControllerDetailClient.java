@@ -2,6 +2,9 @@ package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.Client;
+import fr.afpa.dev.pompey.Modele.DAO.ClientDAO;
+import fr.afpa.dev.pompey.Modele.DAO.MedecinDAO;
+import fr.afpa.dev.pompey.Modele.DAO.MutuelleDAO;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Mutuelle;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
@@ -36,12 +39,23 @@ public class ControllerDetailClient extends JFrame{
     private JComboBox mutuelleComboBox;
     private JButton mutuelleDuClientButton;
 
+    private ClientDAO clientDAO;
+    private MedecinDAO medecinDAO;
+    private MutuelleDAO mutuelleDAO;
+
+
     /**
      * Constructeur de la classe ControllerDetailClient
      *
      * @param idclient L'identifiant du client
      */
     public ControllerDetailClient(Client idclient) {
+        //Initialisation des DAO
+        clientDAO = new ClientDAO();
+        medecinDAO = new MedecinDAO();
+        mutuelleDAO = new MutuelleDAO();
+
+
         setTitle("Détail Client");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
@@ -65,14 +79,14 @@ public class ControllerDetailClient extends JFrame{
 
         // Remplir les combobox
         DefaultComboBoxModel<Medecin> MedTraitantModel = new DefaultComboBoxModel<>();
-        // TODO : Refactor this to DAO medecin
+
         for (Medecin medecin : getMedecin()) {
             MedTraitantModel.addElement(medecin);
         }
         medTraitantComboBox.setModel(MedTraitantModel);
 
         DefaultComboBoxModel<Mutuelle> mutuelleModel = new DefaultComboBoxModel<>();
-        // TODO : Refactor this to DAO mutuelle
+        Medecin medecin = medecinDAO.findAll();
         for (Mutuelle mutuelle : getMutuelle()) {
             mutuelleModel.addElement(mutuelle);
         }

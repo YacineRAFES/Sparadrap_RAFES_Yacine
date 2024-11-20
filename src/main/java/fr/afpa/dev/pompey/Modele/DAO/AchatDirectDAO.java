@@ -108,4 +108,41 @@ public class AchatDirectDAO extends DAO<AchatDirect> {
         }
         return achatDirectList;
     }
+
+    public List<AchatDirect> findAllByIdClient(int id) {
+        List<AchatDirect> achatDirectList = new ArrayList<>();
+        StringBuilder selectSQL = new StringBuilder("SELECT * FROM AchatDirect WHERE CLI_ID = ?");
+
+        try {
+            PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    AchatDirect achatDirect = new AchatDirect();
+                    achatDirect.setId(rs.getInt("ACH_ID"));
+                    achatDirect.setDate(rs.getDate("ACH_date"));
+                    achatDirect.setClient(new ClientDAO().find(rs.getInt("CLI_ID")));
+                    achatDirectList.add(achatDirect);
+                }
+            } catch (SaisieException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return achatDirectList;
+    }
+
+    public boolean deleteAllByIdClient(int id){
+        StringBuilder deleteSQL = new StringBuilder("DELETE FROM AchatDirect WHERE CLI_ID = ?");
+        try {
+            PreparedStatement pstmt = connect.prepareStatement(deleteSQL.toString());
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            pstmt.close();
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

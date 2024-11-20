@@ -1,12 +1,14 @@
 package fr.afpa.dev.pompey.Modele;
 
-public class Ville extends Region {
+import java.io.Serializable;
+
+public class Ville<T> extends Region implements Serializable {
     private int id;
     private String nom;
-    private int cp;
+    private String cp;
     private Region region;
 
-    public Ville(int id, String nom, int cp, int idRegion) {
+    public Ville(int id, String nom, String cp, int idRegion) {
         super(idRegion);
         setId(id);
         setNom(nom);
@@ -25,7 +27,7 @@ public class Ville extends Region {
         setNom(nom);
     }
 
-    public Ville(String nom, int cp, int idRegion){
+    public Ville(String nom, String cp, int idRegion){
         setNom(nom);
         setCp(cp);
         setRegion(new Region(idRegion));
@@ -47,11 +49,11 @@ public class Ville extends Region {
         this.nom = nom;
     }
 
-    public int getCp() {
+    public String getCp() {
         return cp;
     }
 
-    public void setCp(int cp) {
+    public void setCp(String cp) {
         this.cp = cp;
     }
 

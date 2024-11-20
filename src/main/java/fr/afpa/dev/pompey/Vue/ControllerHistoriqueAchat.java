@@ -4,6 +4,7 @@ import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.AchatDirect;
 import fr.afpa.dev.pompey.Modele.DAO.AchatDirectDAO;
 import fr.afpa.dev.pompey.Modele.DAO.OrdonnancesDAO;
+import fr.afpa.dev.pompey.Modele.Ordonnances;
 import fr.afpa.dev.pompey.Modele.Tables.ListeHistoriqueAchat;
 import fr.afpa.dev.pompey.Utilitaires.button;
 
@@ -52,44 +53,44 @@ public class ControllerHistoriqueAchat extends JFrame {
         // Ajouter les boutons dans le tableau
         // Détail
         tableHistoriqueAchat.getColumn("Détail").setCellRenderer(new button.ButtonRenderer());
-        tableHistoriqueAchat.getColumn("Détail").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = tableHistoriqueAchat.getEditingRow(); // Get the row being edited (clicked)
-                if (row >= 0) { // Ensure the row index is valid
-                    ControllerDetailAchat controllerDetailAchat = null;
-                    try {
-                        controllerDetailAchat = new ControllerDetailAchat(row);
-                    } catch (SaisieException ex) {
-                        new RuntimeException(ex);
-                    }
-                    controllerDetailAchat.setVisible(true);
+        tableHistoriqueAchat.getColumn("Détail").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
+            //Comment savoir que c'est un achatdirect ou une ordonnance
+            int id = tableHistoriqueAchat.getEditingRow();
+            String type = (String) tableHistoriqueAchat.getValueAt(id, 2);
 
-                    Refresh(tableHistoriqueAchat);
-
-                }
+            if("Sans Ordonnance".equals(type)) {
+                ControllerDetailAchat controllerDetailAchat = new ControllerDetailAchat(id, 0);
+                controllerDetailAchat.setVisible(true);
+            } else if("Ordonnance".equals(type)) {
+                ControllerDetailAchat controllerDetailAchat = new ControllerDetailAchat(id, 1);
+                controllerDetailAchat.setVisible(true);
             }
         }));
 
         // Supprimer
         tableHistoriqueAchat.getColumn("Action").setCellRenderer(new button.ButtonRenderer());
-        tableHistoriqueAchat.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // recupere l'objet de la ligne selectionnée
-                int row = tableHistoriqueAchat.getEditingRow(); // Get the row being edited (clicked)
-                if (row >= 0) { // Ensure the row index is valid
-                    if (row < ordonnancesDAO.findAll().size()) {
-                        // TODO : Delete the Ordonnances object
-                        //ordonnancesDAO.delete(obj.getID());
-                        //GestionListe.removeOrdonnance(row);
-                    } else {
-                        // TODO: Delete the AchatSansOrdonnance object
-                        //AchatDirect achatSansOrdonnance = GestionListe.getAchatSansOrdonnance().get(row - GestionListe.getOrdonnance().size());
-                        //GestionListe.removeAchatSansOrdonnance(achatSansOrdonnance);
-                    }
+        tableHistoriqueAchat.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
+            JButton button = (JButton) e.getSource();
+            int id = (int) button.getClientProperty("id");
+            String type = (String) tableHistoriqueAchat.getValueAt(id, 2);
+
+            if("Sans Ordonnance".equals(type)) {
+                AchatDirect achatDirect = achatDirectDAO.find(id);
+                if(achatDirect!= null) {
+                    achatDirectDAO.delete(achatDirect);
                     Refresh(tableHistoriqueAchat);
                     ShowLabelWithTimer(informationLabel, "Achat supprimé dans l'historique", Color.RED);
+                }else{
+                    ShowLabelWithTimer(informationLabel, "Achat non trouvé", Color.RED);
+                }
+            } else if("Ordonnance".equals(type)) {
+                Ordonnances ordonnances = ordonnancesDAO.find(id);
+                if(ordonnancesDAO.find(id) != null) {
+                    ordonnancesDAO.delete(ordonnances);
+                    Refresh(tableHistoriqueAchat);
+                    ShowLabelWithTimer(informationLabel, "Ordonnance supprimée dans l'historique", Color.RED);
+                }else{
+                    ShowLabelWithTimer(informationLabel, "Ordonnance non trouvée", Color.RED);
                 }
             }
         }));

@@ -1,12 +1,16 @@
 package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
+import fr.afpa.dev.pompey.Modele.*;
 import fr.afpa.dev.pompey.Modele.DAO.AchatDirectDAO;
-import fr.afpa.dev.pompey.Modele.Ordonnances;
+import fr.afpa.dev.pompey.Modele.DAO.CommandeDAO;
+import fr.afpa.dev.pompey.Modele.DAO.DemandeDAO;
+import fr.afpa.dev.pompey.Modele.DAO.OrdonnancesDAO;
 import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentDetailAchat;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 
 import javax.swing.*;
+import java.util.List;
 
 public class ControllerDetailAchat extends JFrame {
     private String[][] oldData;
@@ -23,15 +27,21 @@ public class ControllerDetailAchat extends JFrame {
     private JLabel dateAchatLabel;
     private JLabel prixTotalLabel;
 
-    private Ordonnances ordonnance;
+    private OrdonnancesDAO ordonnanceDAO;
+    private AchatDirectDAO achatDirectDAO;
+    private CommandeDAO commandeDAO;
+    private DemandeDAO demandeDAO;
 
     /**
      * Constructeur de la classe ControllerDetailAchat
      *
-     * @param idAchat L'identifiant de l'achat
      * @throws SaisieException
      */
-    public ControllerDetailAchat(int idAchat) throws SaisieException {
+    public ControllerDetailAchat(int id, int type){
+        achatDirectDAO = new AchatDirectDAO();
+        ordonnanceDAO = new OrdonnancesDAO();
+        commandeDAO = new CommandeDAO();
+        demandeDAO = new DemandeDAO();
         setTitle("Détail d'Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(contentPane);
@@ -45,112 +55,42 @@ public class ControllerDetailAchat extends JFrame {
             this.dispose();
         });
 
-        // Vérifiez si idAchat est dans la liste des AchatSansOrdonnance
-        // TODO: Refactor this to DAO
-        if (idAchat < GestionListe.getAchatSansOrdonnance().size()) {
+        if(type == 0){
+            //Je récupère les informations du client par l'ID AchatDirect
+            Client InfoClient = achatDirectDAO.find(id).getClient();
             typeAchatLabel.setText("Achat sans ordonnance");
-            nomLabel.setText(GestionListe.getAchatSansOrdonnance().get(idAchat).getClient().getNom());
-            prenomLabel.setText(GestionListe.getAchatSansOrdonnance().get(idAchat).getClient().getPrenom());
+            nomLabel.setText("Nom : "+ InfoClient.getNom());
+            prenomLabel.setText("Prénom : "+ InfoClient.getPrenom());
             medecinLabel.setText("");
-            prixTotalLabel.setText("Prix total : " + GestionListe.getAchatSansOrdonnance().get(idAchat).getPrixTotal() + " €");
-            dateAchatLabel.setText("Date de l'achat : " + GestionListe.getAchatSansOrdonnance().get(idAchat).getDate().toString());
-
-            // Récupérer et afficher les médicaments dans le tableau
-            String[][] listeMedicament = GestionListe.getAchatSansOrdonnance().get(idAchat).getListeMedicament();
-            remplirTableMedicament(listeMedicament);
-        }
-        // Vérifiez si idAchat est dans la liste des Ordonnances
-        else if (idAchat - GestionListe.getAchatSansOrdonnance().size() < GestionListe.getOrdonnance().size()) {
-            int ordonnanceIndex = idAchat - GestionListe.getAchatSansOrdonnance().size();
-            typeAchatLabel.setText("Achat avec ordonnance");
-            nomLabel.setText("Nom : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getNom());
-            prenomLabel.setText("Prénom : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getPrenom());
-            medecinLabel.setText("Medecin : "+GestionListe.getOrdonnance().get(ordonnanceIndex).getMedecin().getNomMedecin() + " " + GestionListe.getOrdonnance().get(ordonnanceIndex).getMedecin().getPrenomMedecin());
-            dateAchatLabel.setText("Date de l'achat : " + GestionListe.getOrdonnance().get(ordonnanceIndex).getDate().toString());
-            //Si le client a une mutuelle, on réduit le prix total sinon on affiche le prix total sans mutuelle
-            if (GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getMutuelle() == null) {
-                prixTotalLabel.setText("Prix total : " + GestionListe.getOrdonnance().get(ordonnanceIndex).getPrixTotal() + " €");
-            } else {
-                double prixTotal = GestionListe.getOrdonnance().get(ordonnanceIndex).getPrixTotal();
-                double tauxDePriseEnCharge = Double.parseDouble(GestionListe.getOrdonnance().get(ordonnanceIndex).getClient().getMutuelle().getTauxDePriseEnCharge()) / 100;
-                double prixApresMutuelle = prixTotal * (1 - tauxDePriseEnCharge);
-                prixTotalLabel.setText(String.format(
-                        "Prix total : %.2f €, Après la mutuelle : %.2f €",
-                        prixTotal,
-                        prixApresMutuelle
-                ));
+            // Je récupère la listes des médicaments par l'ID AchatDirect
+            List<Commande> commandes = commandeDAO.findAllByAchatDirect(id);
+            double prixtotal = 0;
+            //Je calcule la totalité des prix en récupérant les prix des médicaments
+            for (int i = 1; i < commandes.size(); i++) {
+                prixtotal += commandes.get(i).getMedicament().getPrix() * commandes.get(i).getQuantite();
             }
-            // Récupérer et afficher les médicaments dans le tableau
-            String[][] listeMedicament = GestionListe.getOrdonnance().get(ordonnanceIndex).getListeMedicament();
-            remplirTableMedicament(listeMedicament);
-        } else {
-            // Si idAchat dépasse les deux listes, il y a un problème
-            Fenetre.Fenetre("Erreur : Achat introuvable");
-            throw new SaisieException("Erreur lors de la récupération de l'achat");
-        }
-    }
+            prixTotalLabel.setText("Prix total : " + prixtotal + " €");
 
-    /**
-     * Remplir le tableau des médicaments
-     *
-     * @param medicamentList La liste des médicaments
-     */
-    private void remplirTableMedicament(String[][] medicamentList) {
-        ListeMedicamentDetailAchat tableModel = new ListeMedicamentDetailAchat(medicamentList);
-        listeDeMedicamentTable.setModel(tableModel);
-
-        tableModel.addTableModelListener(e -> {
-            // Mettre à jour le prix total
-            prixTotalLabel.setText("Prix total : " + ListeMedicamentDetailAchat.getPrixTotal() + " €");
-        });
-    }
-
-    /**
-     * Remplir le tableau des médicaments
-     *
-     * @param ordonnance l'Ordonnance associée à l'achat
-     */
-    public ControllerDetailAchat(Ordonnances ordonnance) throws SaisieException{
-        this.ordonnance = ordonnance;
-        setTitle("Détail d'Achat");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setContentPane(contentPane);
-        this.setResizable(false);
-        this.pack();
-
-        // Positionnement de la fenêtre
-        this.setLocationRelativeTo(null);
-
-        validerButton.addActionListener(e -> {
-            this.dispose();
-        });
-
-        if(ordonnance != null){
+        }else if(type == 1) {
+            //Je récupère les informations du client par l'ID Ordonnance
+            Client InfoClient = ordonnanceDAO.find(id).getClient();
             typeAchatLabel.setText("Achat avec ordonnance");
-            nomLabel.setText("Nom : "+ordonnance.getClient().getNom());
-            prenomLabel.setText("Prénom : "+ordonnance.getClient().getPrenom());
-            medecinLabel.setText("Medecin : "+ordonnance.getMedecin().getNomMedecin() + " " + ordonnance.getMedecin().getPrenomMedecin());
-            dateAchatLabel.setText("Date de l'achat : " + ordonnance.getDate().toString());
-            prixTotalLabel.setText("Prix total : " + ordonnance.getPrixTotal() + " €");
-            if (ordonnance.getClient().getMutuelle() == null) {
-                prixTotalLabel.setText("Prix total : " +ordonnance.getPrixTotal() + " €");
-            } else {
-                double prixTotal = ordonnance.getPrixTotal();
-                double tauxDePriseEnCharge = Double.parseDouble(ordonnance.getClient().getMutuelle().getTauxDePriseEnCharge()) / 100;
-                double prixApresMutuelle = prixTotal * (1 - tauxDePriseEnCharge);
-                prixTotalLabel.setText(String.format(
-                        "Prix total : %.2f €, Après la mutuelle : %.2f €",
-                        prixTotal,
-                        prixApresMutuelle
-                ));
+            nomLabel.setText("Nom : " + InfoClient.getNom());
+            prenomLabel.setText("Prénom : " + InfoClient.getPrenom());
+            Medecin InfoMedecin = ordonnanceDAO.find(id).getMedecin();
+            medecinLabel.setText("Medecin : " + InfoMedecin.getNom() + " " + InfoMedecin.getPrenom());
+
+            // Je récupère la listes des médicaments par l'ID Demande
+            List<Demande> demandes = demandeDAO.findAllByOrdonnance(id);
+            double prixtotal = 0;
+            //Je calcule la totalité des prix en récupérant les prix des médicaments
+            for (int i = 1; i < demandes.size(); i++) {
+                prixtotal += demandes.get(i).getMedicament().getPrix() * demandes.get(i).getQuantite();
             }
-            // Récupérer et afficher les médicaments dans le tableau
-            String[][] listeMedicament = ordonnance.getListeMedicament();
-            remplirTableMedicament(listeMedicament);
-        } else {
-            // Si idAchat dépasse les deux listes, il y a un problème
-            Fenetre.Fenetre("Erreur : Achat introuvable");
-            throw new SaisieException("Erreur lors de la récupération de l'achat");
+
+            //prixtotal après le taux de prise en charge
+            double prixTotalApresLaCharge = prixtotal - (prixtotal * InfoClient.getMutuelle().getTauxDePriseEnCharge());
+            prixTotalLabel.setText("Prix total : " + prixtotal + " Prix total après la charge : " + prixTotalApresLaCharge + " €");
         }
     }
 }

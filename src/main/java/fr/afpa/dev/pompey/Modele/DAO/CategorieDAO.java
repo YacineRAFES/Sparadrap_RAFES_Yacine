@@ -58,8 +58,8 @@ public class CategorieDAO extends DAO<Categorie> {
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     @Override

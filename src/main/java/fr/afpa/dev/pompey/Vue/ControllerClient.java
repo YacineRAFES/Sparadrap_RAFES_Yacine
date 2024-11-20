@@ -125,7 +125,7 @@ public class ControllerClient extends JFrame {
         String prenom = prenomTextField.getText().trim();
         String dateNaissance = dateNaissanceTextField.getText();
         String secusocial = secusocialTextField.getText();
-        Integer cp = Integer.valueOf(cpTextField.getText().trim());
+        String cp = cpTextField.getText().trim();
         String telephone = telephoneTextField.getText().trim();
         String email = emailTextField.getText().trim();
         String rueName = rueTextField.getText();

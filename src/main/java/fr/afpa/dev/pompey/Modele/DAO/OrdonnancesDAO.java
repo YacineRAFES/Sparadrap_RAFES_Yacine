@@ -126,4 +126,36 @@ public class OrdonnancesDAO extends DAO<Ordonnances> {
         }
         return ordonnances;
     }
+
+    public List<Ordonnances> findAllByIdClient(int id){
+        List<Ordonnances> ordonnances = new ArrayList<>();
+        StringBuilder selectSQL = new StringBuilder("SELECT * FROM Ordonnances WHERE CLI_ID = ?");
+        try {
+            PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Ordonnances ordonnance = new Ordonnances();
+                ordonnance.setId(rs.getInt("ORDO_ID"));
+                ordonnance.setDate(rs.getDate("ORDO_date"));
+                ordonnances.add(ordonnance);
+            }
+        }catch (SQLException | SaisieException e){
+            throw new RuntimeException(e);
+        }
+        return ordonnances;
+    }
+
+    public boolean deleteAllByIdClient(int id){
+        StringBuilder deleteSQL = new StringBuilder("DELETE FROM Ordonnances WHERE CLI_ID = ?");
+        try {
+            PreparedStatement pstmt = connect.prepareStatement(deleteSQL.toString());
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            pstmt.close();
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

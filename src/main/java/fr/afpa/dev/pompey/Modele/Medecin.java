@@ -6,7 +6,7 @@ import fr.afpa.dev.pompey.Utilitaires.Regex;
 import java.io.Serializable;
 import java.util.List;
 
-public class Medecin implements Serializable {
+public class Medecin<T> implements Serializable {
     private int id;
     private String numAgreement;
     private String specialite;
@@ -14,8 +14,6 @@ public class Medecin implements Serializable {
     private String prenom;
     private Adresses adresses;
     private Coordonnees coordonnees;
-    private List<Ordonnances> ordonnances;
-
 
     //CONSTRUCTEURS
     public Medecin(){
@@ -35,6 +33,25 @@ public class Medecin implements Serializable {
         setSpecialite(specialite);
         setAdresses(new Adresses(adresses));
         setCoordonnees(new Coordonnees(coordonnees));
+    }
+
+    public Medecin(int id, String nom, String prenom, String numAgreement, String specialite,
+                   int adresses, int coordonnees) throws SaisieException {
+        setId(id);
+        setNom(nom);
+        setPrenom(prenom);
+        setNumAgreement(numAgreement);
+        setSpecialite(specialite);
+        setAdresses(new Adresses(adresses));
+        setCoordonnees(new Coordonnees(coordonnees));
+    }
+
+    public Medecin(int id, String nom, String prenom, String numAgreement, String specialite) throws SaisieException {
+        setId(id);
+        setNom(nom);
+        setPrenom(prenom);
+        setNumAgreement(numAgreement);
+        setSpecialite(specialite);
     }
 
     public Medecin(String nom, String prenom){
@@ -126,10 +143,6 @@ public class Medecin implements Serializable {
             throw new SaisieException("Le nom de spécialité ne corresponds pas");
         }
         this.specialite = specialite;
-    }
-
-    public List<Ordonnances> getOrdonnances() {
-        return ordonnances;
     }
 
     @Override

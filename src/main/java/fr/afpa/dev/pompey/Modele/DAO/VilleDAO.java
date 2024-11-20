@@ -21,7 +21,7 @@ public class VilleDAO extends DAO<Ville> {
             PreparedStatement pstmt = connect.prepareStatement(insertSQL.toString(),
                     PreparedStatement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, obj.getNom());
-            pstmt.setInt(2, obj.getCp());
+            pstmt.setString(2, obj.getCp());
             pstmt.setInt(3, obj.getRegion().getId());
 
             pstmt.executeUpdate();
@@ -59,7 +59,7 @@ public class VilleDAO extends DAO<Ville> {
         try {
             PreparedStatement pstmt = connect.prepareStatement(updateSQL.toString());
             pstmt.setString(1, obj.getNom());
-            pstmt.setInt(2, obj.getCp());
+            pstmt.setString(2, obj.getCp());
             pstmt.setInt(3, obj.getRegion().getId());
             pstmt.setInt(4, obj.getId());
             pstmt.executeUpdate();
@@ -81,7 +81,7 @@ public class VilleDAO extends DAO<Ville> {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     ville.setNom(rs.getString("VIL_nomVille"));
-                    ville.setCp(rs.getInt("VIL_codePostal"));
+                    ville.setCp(rs.getString("VIL_codePostal"));
                     ville.setRegion(new RegionDAO().find(rs.getInt("REG_ID")));
                 }
             }
@@ -103,7 +103,7 @@ public class VilleDAO extends DAO<Ville> {
                     Ville ville = new Ville();
                     ville.setId(rs.getInt("VIL_ID"));
                     ville.setNom(rs.getString("VIL_nomVille"));
-                    ville.setCp(rs.getInt("VIL_codePostal"));
+                    ville.setCp(rs.getString("VIL_codePostal"));
                     ville.setRegion(new RegionDAO().find(rs.getInt("REG_ID")));
                     villes.add(ville);
                 }
