@@ -33,6 +33,7 @@ public class ControllerClient extends JFrame {
     private JComboBox mutuelleComboBox;
     private JTextField nomRegionField;
     private JComboBox regionComboBox;
+    private JLabel informationLabel;
 
     //Initialisation des DAO
     private final CoordonneesDAO coordonneesDAO;

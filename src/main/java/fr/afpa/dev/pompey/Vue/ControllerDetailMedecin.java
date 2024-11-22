@@ -62,7 +62,28 @@ public class ControllerDetailMedecin extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
-        // TODO SELECT * FROM medecin WHERE idmedecin = idmedecin
+        annulerButton.addActionListener(e -> this.dispose());
+
+        modifierButton.addActionListener(e -> {
+            try {
+                modifier(idmedecin);
+            } catch (SaisieException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        listesDesOrdonnancesButton.addActionListener(e -> {
+            ControllerListeOrdonnanceIdMed controllerListeOrdonnanceIdMed = new ControllerListeOrdonnanceIdMed(idmedecin);
+            controllerListeOrdonnanceIdMed.setVisible(true);
+        });
+
+        listesDesClientsButton.addActionListener(e -> {
+            ControllerListeClientIdMed controllerListeClientIdMed = new ControllerListeClientIdMed(idmedecin);
+            controllerListeClientIdMed.setVisible(true);
+        });
+    }
+
+    private void modifier(int idmedecin) throws SaisieException {
         Medecin medecin = medecinDAO.find(idmedecin);
         String nom = setTextFieldData(nomTextField, medecin.getNom());
         String prenom = setTextFieldData(prenomTextField, medecin.getPrenom());
@@ -74,91 +95,72 @@ public class ControllerDetailMedecin extends JFrame {
         String email = setTextFieldData(emailTextField, medecin.getCoordonnees().getEmail());
         String numAgreement = setTextFieldData(numAgreementTextField, medecin.getNumAgreement());
         String specialiste = setTextFieldData(specialisteTextField, medecin.getSpecialite());
-
-        annulerButton.addActionListener(e -> this.dispose());
-
-        modifierButton.addActionListener(e -> {
-            try {
-                //Vérifier si les données coordonnées sont vides
-                if (telephone != null && !telephone.isEmpty() && email != null && !email.isEmpty()) {
-                    //On vérifie si les données ont été changé
-                    if (!medecin.getCoordonnees().getTelephone().equals(telephone) || !medecin.getCoordonnees().getEmail().equals(email)) {
-                        //Mettre à jour les coordonnées du médecin
-                        Coordonnees coordonnees = new Coordonnees(
-                                medecin.getCoordonnees().getId(),
-                                telephoneTextField.getText(),
-                                emailTextField.getText()
-                        );
-                        coordonneesDAO.update(coordonnees);
-                    }
-                } else {
-                    InterfaceModel.ShowLabelWithTimer(informationLabel, "Veuillez remplir tous les champs", Color.RED);
-                }
-
-                int newIdRegion = 0;
-                if (region != null && !region.isEmpty()) {
-                    if (!medecin.getAdresses().getVille().getRegion().equals(region)) {
-                        //Créer une nouvelle région
-                        Region region1 = new Region(
-                                region
-                        );
-                        newIdRegion = regionDAO.create(region1);
-                    }
-                }
-
-                int newIdVille = 0;
-                if (ville != null && !ville.isEmpty()) {
-                    //On vérifie si les données ont été changé
-                    if (!medecin.getAdresses().getVille().equals(ville)) {
-                        //Créer une nouvelle ville
-                        Ville ville1 = new Ville(
-                                ville,
-                                codepostal,
-                                newIdRegion
-                        );
-                        newIdVille = villeDAO.create(ville1);
-                    }
-                }
-
-                if (rue != null && !rue.isEmpty()) {
-                    if (!medecin.getAdresses().getRue().equals(rue)) {
-                        //Mettre à jour l'adresse du médecin
-                        Adresses adresses = new Adresses(
-                                medecin.getAdresses().getId(),
-                                rue,
-                                newIdVille
-                        );
-                        adressesDAO.update(adresses);
-
-                    }
-                }
-
-                if (nom != null && !nom.isEmpty() && prenom != null && !prenom.isEmpty() && specialiste != null && !specialiste.isEmpty() && numAgreement != null && !numAgreement.isEmpty()) {
-                    //Mettre à jour les informations du médecin
-                    Medecin medecin1 = new Medecin(
-                            medecin.getId(),
-                            nomTextField.getText(),
-                            prenomTextField.getText(),
-                            specialisteTextField.getText(),
-                            numAgreementTextField.getText()
-                    );
-                    medecinDAO.update(medecin1);
-                    informationLabel.setText("Les informations ont été modifiées avec succès");
-                }
-            }catch(SaisieException ex){
-                InterfaceModel.ShowLabelWithTimer(informationLabel, "Une erreur s'est produite lors de la modification des informations", Color.RED);
+        //Vérifier si les données coordonnées sont vides
+        if (telephone != null && !telephone.isEmpty() && email != null && !email.isEmpty()) {
+            //On vérifie si les données ont été changé
+            if (!medecin.getCoordonnees().getTelephone().equals(telephone) || !medecin.getCoordonnees().getEmail().equals(email)) {
+                //Mettre à jour les coordonnées du médecin
+                Coordonnees coordonnees = new Coordonnees(
+                        medecin.getCoordonnees().getId(),
+                        telephoneTextField.getText(),
+                        emailTextField.getText()
+                );
+                coordonneesDAO.update(coordonnees);
             }
-        });
+        } else {
+            InterfaceModel.ShowLabelWithTimer(informationLabel, "Veuillez remplir tous les champs", Color.RED);
+        }
 
-        listesDesOrdonnancesButton.addActionListener(e -> {
-            ControllerListeOrdonnanceIdMed controllerListeOrdonnanceIdMed = new ControllerListeOrdonnanceIdMed(medecin.getId());
-            controllerListeOrdonnanceIdMed.setVisible(true);
-        });
+        int newIdRegion = 0;
+        if (region != null && !region.isEmpty()) {
+            if (!medecin.getAdresses().getVille().getRegion().equals(region)) {
+                //Créer une nouvelle région
+                Region region1 = new Region(
+                        region
+                );
+                newIdRegion = regionDAO.create(region1);
+            }
+        }
 
-        listesDesClientsButton.addActionListener(e -> {
-            ControllerListeClientIdMed controllerListeClientIdMed = new ControllerListeClientIdMed(medecin.getId());
-            controllerListeClientIdMed.setVisible(true);
-        });
+        int newIdVille = 0;
+        if (ville != null && !ville.isEmpty()) {
+            //On vérifie si les données ont été changé
+            if (!medecin.getAdresses().getVille().equals(ville)) {
+                //Créer une nouvelle ville
+                Ville ville1 = new Ville(
+                        ville,
+                        codepostal,
+                        newIdRegion
+                );
+                newIdVille = villeDAO.create(ville1);
+            }
+        }
+
+        if (rue != null && !rue.isEmpty()) {
+            if (!medecin.getAdresses().getRue().equals(rue)) {
+                //Mettre à jour l'adresse du médecin
+                Adresses adresses = new Adresses(
+                        medecin.getAdresses().getId(),
+                        rue,
+                        newIdVille
+                );
+                adressesDAO.update(adresses);
+
+            }
+        }
+
+        if (nom != null && !nom.isEmpty() && prenom != null && !prenom.isEmpty() && specialiste != null && !specialiste.isEmpty() && numAgreement != null && !numAgreement.isEmpty()) {
+            //Mettre à jour les informations du médecin
+            Medecin medecin1 = new Medecin(
+                    medecin.getId(),
+                    nomTextField.getText(),
+                    prenomTextField.getText(),
+                    specialisteTextField.getText(),
+                    numAgreementTextField.getText()
+            );
+            medecinDAO.update(medecin1);
+            informationLabel.setText("Les informations ont été modifiées avec succès");
+        }
     }
 
 

@@ -1,12 +1,8 @@
 package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Client;
-import fr.afpa.dev.pompey.Modele.DAO.ClientDAO;
-import fr.afpa.dev.pompey.Modele.DAO.MedecinDAO;
-import fr.afpa.dev.pompey.Modele.DAO.MutuelleDAO;
-import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Mutuelle;
+import fr.afpa.dev.pompey.Modele.*;
+import fr.afpa.dev.pompey.Modele.DAO.*;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.PlaceholderTextField;
 import fr.afpa.dev.pompey.Utilitaires.Verification;
@@ -16,20 +12,20 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static fr.afpa.dev.pompey.Modele.DAO.DAOUtils.*;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ShowLabelWithBlinker;
+
 /**
  * La classe ControllerDetailClient est le contrôleur de la fenêtre de détail du client
  */
 public class ControllerDetailClient extends JFrame{
-    private JLabel coordonneeLabel;
     private JTextField nomTextField;
     private JTextField secusocialTextField;
-    private JLabel adresseLabel;
     private JTextField cpTextField;
     private JTextField prenomTextField;
     private JTextField dateNaissanceTextField;
     private JTextField rueTextField;
     private JTextField villeTextField;
-    private JLabel contactLabel;
     private JTextField telephoneTextField;
     private JTextField emailTextField;
     private JButton annulerButton;
@@ -38,22 +34,34 @@ public class ControllerDetailClient extends JFrame{
     private JComboBox medTraitantComboBox;
     private JComboBox mutuelleComboBox;
     private JButton mutuelleDuClientButton;
+    private JLabel informationLabel;
+    private JLabel coordonneeLabel;
+    private JLabel adresseLabel;
+    private JLabel contactLabel;
+    private JComboBox regionComboBox;
 
     private ClientDAO clientDAO;
     private MedecinDAO medecinDAO;
     private MutuelleDAO mutuelleDAO;
-
+    private CoordonneesDAO coordonneesDAO;
+    private RegionDAO regionDAO;
+    private VilleDAO villeDAO;
+    private AdressesDAO adressesDAO;
 
     /**
      * Constructeur de la classe ControllerDetailClient
      *
      * @param idclient L'identifiant du client
      */
-    public ControllerDetailClient(Client idclient) {
+    public ControllerDetailClient(int idclient) {
         //Initialisation des DAO
         clientDAO = new ClientDAO();
         medecinDAO = new MedecinDAO();
         mutuelleDAO = new MutuelleDAO();
+        coordonneesDAO = new CoordonneesDAO();
+        regionDAO = new RegionDAO();
+        villeDAO = new VilleDAO();
+        adressesDAO = new AdressesDAO();
 
 
         setTitle("Détail Client");
@@ -79,30 +87,38 @@ public class ControllerDetailClient extends JFrame{
 
         // Remplir les combobox
         DefaultComboBoxModel<Medecin> MedTraitantModel = new DefaultComboBoxModel<>();
-
-        for (Medecin medecin : getMedecin()) {
+        for (Medecin medecin : getMedecins()) {
             MedTraitantModel.addElement(medecin);
         }
         medTraitantComboBox.setModel(MedTraitantModel);
 
         DefaultComboBoxModel<Mutuelle> mutuelleModel = new DefaultComboBoxModel<>();
-        Medecin medecin = medecinDAO.findAll();
-        for (Mutuelle mutuelle : getMutuelle()) {
+        for (Mutuelle mutuelle : getMutuelles()) {
             mutuelleModel.addElement(mutuelle);
         }
         mutuelleComboBox.setModel(mutuelleModel);
 
-        setTextFieldData(nomTextField, idclient.getNom());
-        setTextFieldData(prenomTextField, idclient.getPrenom());
-        setTextFieldData(dateNaissanceTextField, idclient.getDateNaissance());
-        setTextFieldData(secusocialTextField, idclient.getNumeroSecuClient());
-        setTextFieldData(cpTextField, idclient.getCodePostal());
-        setTextFieldData(rueTextField, idclient.getAdresse());
-        setTextFieldData(villeTextField, idclient.getVille());
-        setTextFieldData(telephoneTextField, idclient.getTelephone());
-        setTextFieldData(emailTextField, idclient.getEmail());
-        mutuelleComboBox.setSelectedItem(idclient.getMutuelle());
-        medTraitantComboBox.setSelectedItem(idclient.getMedecin());
+        DefaultComboBoxModel<Region> regionModel = new DefaultComboBoxModel<>();
+        for (Region region : getRegions()) {
+            regionModel.addElement(region);
+        }
+        regionComboBox.setModel(regionModel);
+        regionComboBox.setEditable(true);
+
+        // Récupérer les données du client
+        Client client = clientDAO.find(idclient);
+        setTextFieldData(nomTextField, client.getNom());
+        setTextFieldData(prenomTextField, client.getPrenom());
+        setTextFieldData(dateNaissanceTextField, client.getDateNaissance());
+        setTextFieldData(secusocialTextField, client.getNumeroSecuClient());
+        setTextFieldData(cpTextField, client.getAdresses().getVille().getCp());
+        setTextFieldData(rueTextField, client.getAdresses().getRue());
+        setTextFieldData(villeTextField, client.getAdresses().getVille().getNom());
+        setTextFieldData(telephoneTextField, client.getCoordonnees().getTelephone());
+        setTextFieldData(emailTextField, client.getCoordonnees().getEmail());
+        mutuelleComboBox.setSelectedItem(client.getMutuelle());
+        medTraitantComboBox.setSelectedItem(client.getMedecin());
+        regionComboBox.setSelectedItem(client.getAdresses().getVille().getRegion());
 
         annulerButton.addActionListener(e -> this.dispose());
 
@@ -129,79 +145,99 @@ public class ControllerDetailClient extends JFrame{
         });
     }
 
+    private void modifier(int idclient) throws SaisieException {
+        Client client = clientDAO.find(idclient);
+        String nom = nomTextField.getText();
+        String prenom = prenomTextField.getText();
+        String dateNaissance = dateNaissanceTextField.getText();
+        String secusocial = secusocialTextField.getText();
+        String cp = cpTextField.getText();
+        String rue = rueTextField.getText();
+        String ville = villeTextField.getText();
+        String telephone = telephoneTextField.getText();
+        String email = emailTextField.getText();
+        Medecin medecin = (Medecin) medTraitantComboBox.getSelectedItem();
+        Mutuelle mutuelle = (Mutuelle) mutuelleComboBox.getSelectedItem();
+        Region regionSelected = (Region) regionComboBox.getSelectedItem();
+
+        //Vérifier si les données coordonnées(email, telephone) sont vides
+        if(email != null && email.isEmpty() && telephone.isEmpty()){
+            if(client.getCoordonnees().getEmail().equals(email) && client.getCoordonnees().getTelephone().equals(telephone)){
+                //Mettre à jour les coordonnées du client
+                Coordonnees coordonnees = new Coordonnees(
+                        client.getCoordonnees().getId(),
+                        telephone,
+                        email
+                );
+                coordonneesDAO.update(coordonnees);
+            }
+        }else{
+            ShowLabelWithBlinker(informationLabel, "Veuillez remplir les champs", Color.RED);
+            throw new SaisieException("Veuillez remplir les champs");
+        }
+
+
+        Region nameRegion;
+        if (regionSelected instanceof Region) {
+            nameRegion = regionDAO.find((regionSelected).getId());
+        } else if (regionSelected.getNom() instanceof String) {
+            String getRegionNameString = regionSelected.getNom();
+            nameRegion = new Region(getRegionNameString);
+        }
+
+        int newIdRegion = 0;
+        for (Region regionCheck : getRegions()) {
+            if (regionCheck.getNom().equals((Region) nameRegion)) {
+                break;
+            } else {
+                Region region = new Region(
+                        String.valueOf(nameRegion)
+                );
+                newIdRegion = regionDAO.create(region);
+            }
+        }
+        //on crée la ville dans la base de données
+        int newIdVille = 0;
+        boolean villeExist = false;
+        for (Ville villeCheck : villeDAO.findAll()) {
+            if (villeCheck.getNom().equals(villeName)) {
+                villeExist = true;
+                break;
+            }
+        }
+        if(villeExist){
+            Fenetre.Fenetre("La ville existe déjà");
+            throw new SaisieException();
+        } else {
+            Ville ville = new Ville(
+                    villeName,
+                    cp,
+                    newIdRegion
+            );
+            newIdVille = villeDAO.create(ville);
+        }
+
+        //On crée l'adresse
+        int newIdAdresse = 0;
+        Adresses adresses = new Adresses(
+                rueName,
+                newIdVille);
+        // On récupère l'id des adresses
+        newIdAdresse = adressesDAO.create(adresses);
+
+
+
+    }
+
     /**
      * Ouvre la fenêtre de détail de la mutuelle du client
      *
      * @throws SaisieException si une erreur survient lors de l'ouverture de la fenêtre de mutuelle
      */
     private void mutuelleDuClient() throws SaisieException {
-        Mutuelle mutuelle = (Mutuelle) mutuelleComboBox.getSelectedItem();
-        ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(mutuelle);
+//        Mutuelle idMutuelle = client.;
+        ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(idMutuelle);
         controllerDetailMutuelle.setVisible(true);
-    }
-
-    /**
-     * Modifie les informations du client
-     *
-     * @param idclient Le client à modifier
-     * @throws SaisieException si une erreur survient lors de la modification du client
-     */
-    private void modifier(Client idclient) throws SaisieException {
-        Client client = buildClient();
-        if (client == null) return; // Saisie incorrecte
-        try{
-            updateClientInfo(idclient, client);
-            Fenetre.Fenetre("Client modifié avec succès");
-        } catch (SaisieException e) {
-            Fenetre.Fenetre("Une erreur s'est produite lors de la modification du client" + e.getMessage());
-            new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Construit un client à partir des données saisies
-     *
-     * @return Le client construit
-     * @throws SaisieException si une erreur survient lors de la construction du client
-     */
-    private Client buildClient() throws SaisieException {
-        String nom = Verification.NomPrenom(nomTextField.getText(), "Nom");
-        String prenom = Verification.NomPrenom(prenomTextField.getText(), "Prénom");
-        String dateNaissance = Verification.BirthDate(dateNaissanceTextField.getText());
-        String secuSocial = Verification.SecuSocial(secusocialTextField.getText());
-        Object mutuelleObject = mutuelleComboBox.getSelectedItem();
-        Object medTraitantObject = medTraitantComboBox.getSelectedItem();
-        String cp = Verification.CodePostal(cpTextField.getText());
-        String rue = rueTextField.getText();
-        String ville = Verification.NomPrenom(villeTextField.getText(), "Ville");
-        String telephone = Verification.Telephone(telephoneTextField.getText());
-        String email = Verification.Email(emailTextField.getText());
-
-        return new Client(nom, prenom, rue, cp, ville, telephone, email, secuSocial, dateNaissance, (Mutuelle) mutuelleObject, ((Medecin) medTraitantObject).getNomMedecin(), ((Medecin) medTraitantObject).getPrenomMedecin());
-
-    }
-
-    /**
-     * Met à jour les informations du client
-     *
-     * @param idclient      Le client à mettre à jour
-     * @param updatedClient Le client mis à jour
-     * @throws SaisieException si une erreur survient lors de la mise à jour du client
-     */
-
-    // TODO : DAO Update CLIENT
-    private void updateClientInfo(Client idclient, Client updatedClient) throws SaisieException {
-        idclient.setNom(updatedClient.getNom());
-        idclient.setPrenom(updatedClient.getPrenom());
-        idclient.setAdresse(updatedClient.getAdresse());
-        idclient.setCodePostal(updatedClient.getCodePostal());
-        idclient.setVille(updatedClient.getVille());
-        idclient.setTelephone(updatedClient.getTelephone());
-        idclient.setEmail(updatedClient.getEmail());
-        idclient.setNumeroSecuClient(updatedClient.getNumeroSecuClient());
-        idclient.setDateNaissance(updatedClient.getDateNaissance());
-        idclient.setMutuelle(updatedClient.getMutuelle());
-        idclient.setMedecin(updatedClient.getMedecin());
     }
 
     /**
