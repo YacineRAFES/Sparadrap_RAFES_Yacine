@@ -12,7 +12,7 @@ public class RegionDAO extends DAO<Region> {
     public int create(Region obj) {
         int newId = 0;
         StringBuilder insertSQL = new StringBuilder();
-        insertSQL.append("INSERT INTO regions (REG_nomRegion)");
+        insertSQL.append("INSERT INTO region (REG_nomRegion)");
         insertSQL.append(" VALUES (?)");
         try {
             PreparedStatement pstmt = connect.prepareStatement(insertSQL.toString(),
@@ -32,7 +32,7 @@ public class RegionDAO extends DAO<Region> {
     @Override
     public boolean delete(Region obj) {
         StringBuilder deleteSQL = new StringBuilder();
-        deleteSQL.append("DELETE FROM regions WHERE REG_ID = ?");
+        deleteSQL.append("DELETE FROM region WHERE REG_ID = ?");
         try {
             PreparedStatement pstmt = connect.prepareStatement(deleteSQL.toString());
             pstmt.setInt(1, obj.getId());
@@ -47,7 +47,7 @@ public class RegionDAO extends DAO<Region> {
     @Override
     public boolean update(Region obj) {
         StringBuilder updateSQL = new StringBuilder();
-        updateSQL.append("UPDATE regions SET REG_nomRegion = ? WHERE REG_ID = ?");
+        updateSQL.append("UPDATE region SET REG_nomRegion = ? WHERE REG_ID = ?");
         try {
             PreparedStatement pstmt = connect.prepareStatement(updateSQL.toString());
             pstmt.setString(1, obj.getNom());
@@ -63,7 +63,7 @@ public class RegionDAO extends DAO<Region> {
     public Region find(int id) {
         Region region = new Region();
         StringBuilder selectSQL = new StringBuilder();
-        selectSQL.append("SELECT * FROM regions WHERE REG_ID = ?");
+        selectSQL.append("SELECT * FROM region WHERE REG_ID = ?");
         try {
             PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
             pstmt.setInt(1, id);
@@ -81,7 +81,7 @@ public class RegionDAO extends DAO<Region> {
     public List<Region> findAll() {
         List<Region> regions = new ArrayList<>();
         StringBuilder selectSQL = new StringBuilder();
-        selectSQL.append("SELECT * FROM regions");
+        selectSQL.append("SELECT * FROM region");
         try {
             PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
             ResultSet rs = pstmt.executeQuery();

@@ -24,8 +24,19 @@ public class MedecinDAO extends DAO<Medecin> {
             pstmt.setString(2, obj.getSpecialite());
             pstmt.setString(3, obj.getNom());
             pstmt.setString(4, obj.getPrenom());
-            pstmt.setInt(5, obj.getAdresses().getId());
-            pstmt.setInt(6, obj.getCoordonnees().getId());
+
+            if (obj.getAdresses() == null) {
+                pstmt.setNull(5, java.sql.Types.NULL);
+            } else {
+                pstmt.setInt(5, obj.getAdresses().getId());
+            }
+            //pstmt.setInt(5, obj.getAdresses().getId());
+            if (obj.getCoordonnees() == null) {
+                pstmt.setNull(6, java.sql.Types.NULL);
+            } else {
+                pstmt.setInt(6,  obj.getCoordonnees().getId());
+            }
+           // pstmt.setInt(6, obj.getCoordonnees().getId());
             pstmt.executeUpdate();
 
             ResultSet rs = pstmt.getGeneratedKeys();

@@ -44,7 +44,7 @@ public class ControllerDetailMutuelle extends JFrame {
 
         // Remplir les champs de texte
 
-
+        mutuelle = mutuelleDAO.find(mutuelle.getId());
         NomMutuelle.setText(mutuelle.getNom());
         AdresseMutuelle.setText(mutuelle.getAdresses().getRue());
         CodepostalMutuelle.setText(String.valueOf(mutuelle.getAdresses().getVille().getCp()));

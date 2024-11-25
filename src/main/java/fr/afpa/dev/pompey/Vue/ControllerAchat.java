@@ -78,14 +78,14 @@ public class ControllerAchat extends JFrame {
         // Création de la table
 
 
-//        String[] medicament = {"Nom de médicament", "Quantité", "Prix"};
-//        String[][] data = {
-//                {"Doliprane", "3", "2.5"},
-//                {"Ibuprofène", "2", "3.5"},
-//                {"Paracétamol", "1", "1.5"}
-//        };
-//        DefaultTableModel model = new DefaultTableModel(data, medicament);
-//        listeDeMedocTable.setModel(model);
+        String[] medicament = {"Nom de médicament", "Quantité", "Prix", "Action"};
+        String[][] data = {
+                {"Doliprane", "3", "2.5", "Supprimer"},
+                {"Ibuprofène", "2", "3.5", "Supprimer"},
+                {"Paracétamol", "1", "1.5", "Supprimer"}
+        };
+        DefaultTableModel model = new DefaultTableModel(data, medicament);
+        listeDeMedocTable.setModel(model);
 
         // Actualiser les combobox
         actualiserComboClient();
@@ -106,8 +106,11 @@ public class ControllerAchat extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int row = listeDeMedocTable.getEditingRow();
                 if (row >= 0) {
-                    Refresh(listeDeMedocTable);
+                    // Supprimer la ligne
+                    DefaultTableModel model = (DefaultTableModel) listeDeMedocTable.getModel();
+                    model.removeRow(row);
                     ShowLabelWithTimer(informationLabel, "Médicament supprimé de la liste", Color.RED);
+                    Refresh(listeDeMedocTable);
                 }
             }
         }));

@@ -47,7 +47,7 @@ public class Adresses<T> implements Serializable {
     }
 
     public Ville getVille() {
-        return new Ville<>();
+        return ville;
     }
 
     public void setVille(Ville ville) {

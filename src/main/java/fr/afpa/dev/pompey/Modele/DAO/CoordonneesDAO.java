@@ -14,7 +14,7 @@ public class CoordonneesDAO extends DAO<Coordonnees> {
     @Override
     public int create(Coordonnees obj) {
         int newId = 0;
-        StringBuilder insertSQL = new StringBuilder("INSERT INTO Coordonnees (email, telephone) VALUES (?, ?)");
+        StringBuilder insertSQL = new StringBuilder("INSERT INTO Coordonnees (COOR_email, COOR_telephone) VALUES (?, ?)");
 
 
         try {
@@ -49,7 +49,7 @@ public class CoordonneesDAO extends DAO<Coordonnees> {
 
     @Override
     public boolean update(Coordonnees obj) {
-        StringBuilder updateSQL = new StringBuilder("UPDATE Coordonnees SET email = ?, telephone = ? WHERE COOR_ID = ?");
+        StringBuilder updateSQL = new StringBuilder("UPDATE Coordonnees SET COOR_email = ?, COOR_telephone = ? WHERE COOR_ID = ?");
 
         try {
             PreparedStatement pstmt = connect.prepareStatement(updateSQL.toString());
@@ -76,8 +76,8 @@ public class CoordonneesDAO extends DAO<Coordonnees> {
                 if (rs.next()) {
                     coordonnees = new Coordonnees();
                     coordonnees.setId(rs.getInt("COOR_ID"));
-                    coordonnees.setEmail(rs.getString("email"));
-                    coordonnees.setTelephone(rs.getString("telephone"));
+                    coordonnees.setEmail(rs.getString("COOR_email"));
+                    coordonnees.setTelephone(rs.getString("COOR_telephone"));
                 }
             } catch (SaisieException e) {
                 throw new RuntimeException(e);
@@ -100,8 +100,8 @@ public class CoordonneesDAO extends DAO<Coordonnees> {
                 while (rs.next()) {
                     Coordonnees coordonnees = new Coordonnees();
                     coordonnees.setId(rs.getInt("COOR_ID"));
-                    coordonnees.setEmail(rs.getString("email"));
-                    coordonnees.setTelephone(rs.getString("telephone"));
+                    coordonnees.setEmail(rs.getString("COOR_email"));
+                    coordonnees.setTelephone(rs.getString("COOR_telephone"));
                     coordonneesList.add(coordonnees);
                 }
             } catch (SaisieException e) {
@@ -111,5 +111,51 @@ public class CoordonneesDAO extends DAO<Coordonnees> {
             e.printStackTrace();
         }
         return coordonneesList;
+    }
+
+    public Object findByEmail(String telephone) {
+        Coordonnees coordonnees = null;
+        StringBuilder selectSQL = new StringBuilder("SELECT * FROM Coordonnees WHERE COOR_email = ?");
+
+        try {
+            PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
+            pstmt.setString(1, telephone);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    coordonnees = new Coordonnees();
+                    coordonnees.setId(rs.getInt("COOR_ID"));
+                    coordonnees.setEmail(rs.getString("COOR_email"));
+                    coordonnees.setTelephone(rs.getString("COOR_telephone"));
+                }
+            } catch (SaisieException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return coordonnees;
+    }
+
+    public Object findByTelephone(String email) {
+        Coordonnees coordonnees = null;
+        StringBuilder selectSQL = new StringBuilder("SELECT * FROM Coordonnees WHERE COOR_telephone = ?");
+
+        try {
+            PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    coordonnees = new Coordonnees();
+                    coordonnees.setId(rs.getInt("COOR_ID"));
+                    coordonnees.setEmail(rs.getString("COOR_email"));
+                    coordonnees.setTelephone(rs.getString("COOR_telephone"));
+                }
+            } catch (SaisieException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return coordonnees;
     }
 }

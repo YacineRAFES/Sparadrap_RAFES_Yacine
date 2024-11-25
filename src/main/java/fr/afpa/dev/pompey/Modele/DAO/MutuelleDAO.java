@@ -17,14 +17,29 @@ public class MutuelleDAO extends DAO<Mutuelle> {
         int newId = 0;
         StringBuilder insertSQL = new StringBuilder();
         insertSQL.append("INSERT INTO mutuelle (MUT_nom, MUT_TxPriseEnCharge, ADRES_ID, COOR_ID)");
-        insertSQL.append(" VALUES (?, ?)");
+        insertSQL.append(" VALUES (?, ?, ?, ?)");
         try{
             PreparedStatement pstmt = connect.prepareStatement(insertSQL.toString(),
                     PreparedStatement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, obj.getNom());
-            pstmt.setInt(2, obj.getTauxDePriseEnCharge());
-            pstmt.setInt(3, obj.getAdresses().getId());
-            pstmt.setInt(4, obj.getCoordonnees().getId());
+
+            if(obj.getTauxDePriseEnCharge() == 0) {
+                pstmt.setNull(2, java.sql.Types.NULL);
+            }else{
+                pstmt.setInt(2, obj.getTauxDePriseEnCharge());
+            }
+            if (obj.getAdresses() == null) {
+                pstmt.setNull(3, java.sql.Types.NULL);
+            } else {
+                pstmt.setInt(3, obj.getAdresses().getId());
+            }
+            //pstmt.setInt(5, obj.getAdresses().getId());
+            if (obj.getCoordonnees() == null) {
+                pstmt.setNull(4, java.sql.Types.NULL);
+            } else {
+                pstmt.setInt(4,  obj.getCoordonnees().getId());
+            }
+
             pstmt.executeUpdate();
             ResultSet rs = pstmt.getGeneratedKeys();
             if(rs.next()){
@@ -137,5 +152,27 @@ public class MutuelleDAO extends DAO<Mutuelle> {
        }
 
        return mutuelles;
+    }
+
+    public Mutuelle findByName(String name) {
+        Mutuelle mutuelle = new Mutuelle();
+        StringBuilder selectByName = new StringBuilder("SELECT * FROM mutuelle WHERE MUT_nom = ?");
+
+        try {
+            PreparedStatement pstmt = connect.prepareStatement(selectByName.toString());
+            pstmt.setString(1, name);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    mutuelle.setId(rs.getInt("MUT_ID"));
+                    mutuelle.setNom(rs.getString("MUT_nom"));
+                    mutuelle.setTauxDePriseEnCharge(rs.getInt("MUT_TxPriseEnCharge"));
+                    mutuelle.setAdresses(new AdressesDAO().find(rs.getInt("ADRES_ID")));
+                    mutuelle.setCoordonnees(new CoordonneesDAO().find(rs.getInt("COOR_ID")));
+                }
+            }
+        } catch (SQLException | SaisieException e) {
+            e.printStackTrace();
+        }
+        return mutuelle;
     }
 }

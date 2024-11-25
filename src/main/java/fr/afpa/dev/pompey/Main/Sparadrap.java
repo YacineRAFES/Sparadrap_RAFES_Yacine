@@ -1,10 +1,11 @@
 package fr.afpa.dev.pompey.Main;
 
 import fr.afpa.dev.pompey.Modele.*;
-import fr.afpa.dev.pompey.Modele.DAO.ClientDAO;
-import fr.afpa.dev.pompey.Modele.DAO.Singleton;
+import fr.afpa.dev.pompey.Modele.DAO.*;
 import fr.afpa.dev.pompey.Vue.ControllerAccueil;
 import fr.afpa.dev.pompey.Exception.SaisieException;
+
+
 
 public class Sparadrap {
     //TODO enlever les exceptions inutiles, sauf les saisies

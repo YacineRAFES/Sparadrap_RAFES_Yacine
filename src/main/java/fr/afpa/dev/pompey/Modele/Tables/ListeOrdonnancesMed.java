@@ -1,6 +1,7 @@
 // src/fr/afpa/dev/pompey/Modele/Tables/ListeOrdonnancesMed.java
 package fr.afpa.dev.pompey.Modele.Tables;
 
+import fr.afpa.dev.pompey.Modele.DAO.OrdonnancesDAO;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Ordonnances;
 
@@ -9,14 +10,17 @@ import java.util.List;
 
 public class ListeOrdonnancesMed extends AbstractTableModel {
 
+
     private final String[] ENTETE = new String[] {
             "Date", "Client", "Détail"
     };
 
-    private final List<Ordonnances> ordonnances;
+    private OrdonnancesDAO ordonnancesDAO;
+    private List<Ordonnances> ordonnances;
 
     public ListeOrdonnancesMed(Medecin medecin) {
-        this.ordonnances = medecin.getOrdonnances();
+        ordonnancesDAO = new OrdonnancesDAO();
+        this.ordonnances = ordonnancesDAO.findAllByIdMed(medecin.getId());
     }
 
     public Ordonnances getOrdonnanceAt(int rowIndex) {

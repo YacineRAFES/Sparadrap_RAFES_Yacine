@@ -1,8 +1,8 @@
 package fr.afpa.dev.pompey.Modele.Tables;
 
 import fr.afpa.dev.pompey.Modele.Client;
+import fr.afpa.dev.pompey.Modele.DAO.ClientDAO;
 import fr.afpa.dev.pompey.Modele.Medecin;
-import fr.afpa.dev.pompey.Modele.Ordonnances;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.LinkedHashSet;
@@ -19,6 +19,7 @@ public class ListeClientMed extends AbstractTableModel  {
             "Nom", "Prenom", "Email", "Téléphone", "Code Postal", "Ville", "Sécu"
     };
 
+    private ClientDAO clientDAO;
     private List<Client> clients;
 
     /**
@@ -27,12 +28,14 @@ public class ListeClientMed extends AbstractTableModel  {
      * @param medecin Le médecin
      */
     public ListeClientMed(Medecin medecin) {
-
+        clientDAO = new ClientDAO();
         Set<Client> uniqueClients = new LinkedHashSet<>();
-        for (Ordonnances ordonnance : medecin.getOrdonnances()) {
-            uniqueClients.add(ordonnance.getClient());
+        List<Client> clients1 = clientDAO.findAllByIdMed(medecin.getId());
+        for(Client client6 : clients1){
+            uniqueClients.add(client6);
         }
         this.clients = uniqueClients.stream().collect(Collectors.toList());
+
     }
 
     @Override
@@ -63,7 +66,7 @@ public class ListeClientMed extends AbstractTableModel  {
             case 3:
                 return client.getCoordonnees().getTelephone() != null ? client.getCoordonnees().getTelephone() : "Non renseigné";
             case 4:
-                return client.getAdresses().getCodePostal() != 0 ? client.getAdresses().getCodePostal() : "Non renseigné";
+                return client.getAdresses().getVille().getCp() != null ? client.getAdresses().getVille().getCp() : "Non renseigné";
             case 5:
                 return client.getAdresses().getVille() != null ? client.getAdresses().getVille() : "Non renseigné";
             case 6:

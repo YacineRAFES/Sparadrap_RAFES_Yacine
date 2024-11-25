@@ -15,7 +15,7 @@ public class VilleDAO extends DAO<Ville> {
         int newId = 0;
 
         StringBuilder insertSQL = new StringBuilder();
-        insertSQL.append("INSERT INTO villes (VIL_nomVille, VIL_codePostal, REG_ID)");
+        insertSQL.append("INSERT INTO ville (VIL_nomVille, VIL_codePostal, REG_ID)");
         insertSQL.append(" VALUES (?, ?, ?)");
         try {
             PreparedStatement pstmt = connect.prepareStatement(insertSQL.toString(),
@@ -38,7 +38,7 @@ public class VilleDAO extends DAO<Ville> {
     @Override
     public boolean delete(Ville obj) {
         StringBuilder deleteSQL = new StringBuilder();
-        deleteSQL.append("DELETE FROM villes WHERE VIL_ID = ?");
+        deleteSQL.append("DELETE FROM ville WHERE VIL_ID = ?");
 
         try {
             PreparedStatement pstmt = connect.prepareStatement(deleteSQL.toString());
@@ -54,7 +54,7 @@ public class VilleDAO extends DAO<Ville> {
     @Override
     public boolean update(Ville obj) {
         StringBuilder updateSQL = new StringBuilder();
-        updateSQL.append("UPDATE villes SET VIL_nomVille = ?, VIL_codePostal = ?, REG_ID = ? WHERE VIL_ID = ?");
+        updateSQL.append("UPDATE ville SET VIL_nomVille = ?, VIL_codePostal = ?, REG_ID = ? WHERE VIL_ID = ?");
 
         try {
             PreparedStatement pstmt = connect.prepareStatement(updateSQL.toString());
@@ -73,7 +73,7 @@ public class VilleDAO extends DAO<Ville> {
     @Override
     public Ville find(int id) {
         Ville ville = new Ville(id);
-        StringBuilder updateSQL = new StringBuilder("SELECT * FROM villes WHERE VIL_ID = ?");
+        StringBuilder updateSQL = new StringBuilder("SELECT * FROM ville WHERE VIL_ID = ?");
 
         try {
             PreparedStatement pstmt = connect.prepareStatement(updateSQL.toString());
@@ -94,7 +94,7 @@ public class VilleDAO extends DAO<Ville> {
     @Override
     public List<Ville> findAll() {
         List<Ville> villes = new ArrayList<>();
-        StringBuilder selectAll = new StringBuilder("SELECT * FROM villes");
+        StringBuilder selectAll = new StringBuilder("SELECT * FROM ville");
 
         try {
             PreparedStatement pstmt = connect.prepareStatement(selectAll.toString());
@@ -112,5 +112,26 @@ public class VilleDAO extends DAO<Ville> {
             e.printStackTrace();
         }
         return villes;
+    }
+
+    public Ville findByName(String name) {
+        Ville ville = new Ville();
+        StringBuilder selectByName = new StringBuilder("SELECT * FROM ville WHERE VIL_nomVille = ?");
+
+        try {
+            PreparedStatement pstmt = connect.prepareStatement(selectByName.toString());
+            pstmt.setString(1, name);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    ville.setId(rs.getInt("VIL_ID"));
+                    ville.setNom(rs.getString("VIL_nomVille"));
+                    ville.setCp(rs.getString("VIL_codePostal"));
+                    ville.setRegion(new RegionDAO().find(rs.getInt("REG_ID")));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ville;
     }
 }

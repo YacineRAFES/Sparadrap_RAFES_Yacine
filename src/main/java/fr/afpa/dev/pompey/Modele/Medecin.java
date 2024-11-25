@@ -126,9 +126,6 @@ public class Medecin<T> implements Serializable {
     }
 
     public void setNumAgreement(String numAgreement) throws SaisieException {
-        if(numAgreement == null || numAgreement.isEmpty()){
-            throw new SaisieException("Le numéro d'agreement ne doit pas être vide");
-        }
         this.numAgreement = numAgreement;
     }
 
@@ -137,11 +134,6 @@ public class Medecin<T> implements Serializable {
     }
 
     public void setSpecialite(String specialite) throws SaisieException {
-        if (specialite == null || specialite.isEmpty()) {
-            throw new SaisieException("La specialité ne doit pas être vide.");
-        } else if (!specialite.matches(Regex.REGEXNOMPRENOM)) {
-            throw new SaisieException("Le nom de spécialité ne corresponds pas");
-        }
         this.specialite = specialite;
     }
 

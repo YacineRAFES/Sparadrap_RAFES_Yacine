@@ -80,4 +80,33 @@ public class PlaceholderTextField extends JTextField {
             }
         });
     }
+
+    public static void setPlaceholderCombobox(JComboBox combobox, String placeholder) {
+        combobox.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                combobox.repaint();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                combobox.repaint();
+            }
+        });
+
+        combobox.setUI(new javax.swing.plaf.basic.BasicComboBoxUI() {
+            @Override
+            public void paintCurrentValueBackground(Graphics g, Rectangle bounds, boolean hasFocus) {
+                super.paintCurrentValueBackground(g, bounds, hasFocus);
+                if (combobox.getSelectedItem() == null && !combobox.isFocusOwner()) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setColor(Color.GRAY);
+                    g2.setFont(combobox.getFont().deriveFont(Font.ITALIC));
+                    int padding = (combobox.getHeight() - combobox.getFont().getSize()) / 2;
+                    g2.drawString(placeholder, combobox.getInsets().left, combobox.getHeight() - padding - 1);
+                    g2.dispose();
+                }
+            }
+        });
+    }
 }

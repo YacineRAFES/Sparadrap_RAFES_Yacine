@@ -3,15 +3,19 @@ package fr.afpa.dev.pompey.Vue;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.*;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
+import fr.afpa.dev.pompey.Utilitaires.InterfaceModel;
 import fr.afpa.dev.pompey.Utilitaires.PlaceholderTextField;
 import fr.afpa.dev.pompey.Utilitaires.Verification;
 import fr.afpa.dev.pompey.Modele.DAO.*;
 
 import javax.swing.*;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
+import static fr.afpa.dev.pompey.Modele.DAO.DAOUtils.*;
 
 public class ControllerClient extends JFrame {
     private JPanel contentPane;
@@ -78,20 +82,22 @@ public class ControllerClient extends JFrame {
         PlaceholderTextField.setPlaceholder(villeTextField, "Ville");
 
         DefaultComboBoxModel<Medecin> MedTraitantModel = new DefaultComboBoxModel<>();
-        for (Medecin medecin : getMedecin()) {
+        for (Medecin medecin : getMedecins()) {
             MedTraitantModel.addElement(medecin);
         }
         medTraitantComboBox.setModel(MedTraitantModel);
+        mutuelleComboBox.setEditable(true);
 
         DefaultComboBoxModel<Mutuelle> mutuelleModel = new DefaultComboBoxModel<>();
-        for (Mutuelle mutuelle : getMutuelle()) {
+        for (Mutuelle mutuelle : getMutuelles()) {
             mutuelleModel.addElement(mutuelle);
         }
         mutuelleComboBox.setModel(mutuelleModel);
+        mutuelleComboBox.setEditable(true);
 
         DefaultComboBoxModel<Region> regionModel = new DefaultComboBoxModel<>();
-        for (Region region : getRegion()) {
-            regionModel.addElement(region);
+        for (Region region : getRegions()) {
+            regionModel.addElement(region); // Ajoute les objets Region directement
         }
         regionComboBox.setModel(regionModel);
 
@@ -121,150 +127,20 @@ public class ControllerClient extends JFrame {
      * @throws SaisieException
      */
     private void enregistrerClient() throws SaisieException {
-        //Récupération des valeurs des champs
-        String nom = nomTextField.getText().trim();
-        String prenom = prenomTextField.getText().trim();
-        String dateNaissance = dateNaissanceTextField.getText();
-        String secusocial = secusocialTextField.getText();
-        String cp = cpTextField.getText().trim();
-        String telephone = telephoneTextField.getText().trim();
-        String email = emailTextField.getText().trim();
-        String rueName = rueTextField.getText();
-        String villeName = villeTextField.getText();
-        Object medTraitant = medTraitantComboBox.getSelectedItem();
-        Object mutuelle = mutuelleComboBox.getSelectedItem();
-        Object regionSelected = regionComboBox.getSelectedItem();
-
-        //Vérification des champs
-        //trouver des champs de saisie vide et le transformer en rouge
-
-        if (nom.isEmpty() || prenom.isEmpty() || dateNaissance.isEmpty() || secusocial.isEmpty() ||
-                telephone.isEmpty() || email.isEmpty() || rueName.isEmpty() || villeName.isEmpty() ||
-                medTraitant == null || mutuelle == null || regionSelected == null) {
-            Fenetre.Fenetre("Veuillez remplir tous les champs");
-            throw new SaisieException();
-        }
-
-        //Création de la région
-
-
-        // 1. Créer des coordonnées
-        int newIdCoordonnees = 0;
-        boolean coordonnesExist = false;
-
-        for (Coordonnees coordonneesCheck : coordonneesDAO.findAll()) {
-            if (coordonneesCheck.getEmail().equals(email) || coordonneesCheck.getTelephone().equals(telephone)) {
-                coordonnesExist = true;
-                break;
-            }
-        }
-        if (coordonnesExist) {
-            Fenetre.Fenetre("Les coordonnées existent déjà");
-            throw new SaisieException();
-        } else {
-            Coordonnees coordonnees = new Coordonnees(
-                    email,
-                    telephone
-            );
-            // On récupère l'id des coordonnées
-            newIdCoordonnees = coordonneesDAO.create(coordonnees);
-        }
-
-        // 2. Créer des adresses
-        // on crée la région dans la base de données
-        Region nameRegion = null;
-        if (regionSelected instanceof RegionDAO) {
-            nameRegion = (Region) regionSelected;
-        } else if (regionSelected instanceof String) {
-            nameRegion = new Region((String) regionSelected);
-        }
-        int newIdRegion = 0;
-        for (Region regionCheck : regionDAO.findAll()) {
-            if (regionCheck.getNom().equals(nameRegion.getNom())) {
-                Fenetre.Fenetre("La région existe déjà");
-                throw new SaisieException();
-            } else {
-                Region region = new Region(
-                        String.valueOf(nameRegion)
-                );
-                newIdRegion = regionDAO.create(region);
-            }
-        }
-
-        //on crée la ville dans la base de données
-        int newIdVille = 0;
-        boolean villeExist = false;
-        for (Ville villeCheck : villeDAO.findAll()) {
-            if (villeCheck.getNom().equals(villeName)) {
-                villeExist = true;
-                break;
-            }
-        }
-        if(villeExist){
-            Fenetre.Fenetre("La ville existe déjà");
-            throw new SaisieException();
-        } else {
-            Ville ville = new Ville(
-                    villeName,
-                    cp,
-                    newIdRegion
-            );
-            newIdVille = villeDAO.create(ville);
-        }
-
-        //On crée l'adresse
-        int newIdAdresse = 0;
-        Adresses adresses = new Adresses(
-                rueName,
-                newIdVille);
-        // On récupère l'id des adresses
-        newIdAdresse = adressesDAO.create(adresses);
-
-
-        int newIdMedecin = 0;
-        if (medecinDAO.find(((Medecin) medTraitant).getId()) == null) {
-            Medecin medecin1 = new Medecin(
-                    Verification.NomPrenom(medTraitant.toString(), "Nom du médecin"),
-                    Verification.NomPrenom(medTraitant.toString(), "Prénom du médecin")
-            );
-            newIdMedecin = medecinDAO.create(medecin1);
-        } else {
-            newIdMedecin = medecinDAO.find(((Medecin) medTraitant).getId()).getId();
-        }
-
-        // tester si mutuelle existe ? si non creer mutuelle
-        int newIDMutuelle = 0;
-        if (mutuelle == null) {
-            //Création d'une mutuelle
-            Mutuelle mutuelle1 = new Mutuelle(
-                    Verification.NomPrenom(mutuelle.toString(), "Nom de la mutuelle")
-            );
-            //Ajout de la mutuelle à la liste des mutuelles
-            newIDMutuelle = mutuelleDAO.create(mutuelle1);
-        }
-
-        //Création d'un client(
-        Client client = new Client(
-                Verification.NomPrenom(nom, "Nom"),
-                Verification.NomPrenom(prenom, "Prénom"),
-                Verification.SecuSocial(secusocial),
-                Verification.BirthDate(dateNaissance),
-                newIdMedecin,
-                newIdCoordonnees,
-                newIdAdresse,
-                newIDMutuelle
-        );
-        clientDAO.create(client);
-
-        //Affichage d'un message de confirmation
-        Fenetre.Fenetre("Client enregistrée avec succès");
-
-        //Fermeture de la fenêtre
-        this.dispose();
-
-        //Effacer les champs
-        effaceToutLesChamps();
-
+        //Validation des champs
+        validerChamps();
+        int idCoordonnees = creerCoordonnees();
+        System.out.println("idCoordonnees = " + idCoordonnees);
+        int idVille = creerVille();
+        System.out.println("idVille = " + idVille);
+        int idAdresse = creerAdresse(idVille);
+        System.out.println("idAdresse = " + idAdresse);
+        int idMedecin = creerMedecin();
+        System.out.println("idMedecin = " + idMedecin);
+        int idMutuelle = creerMutuelle();
+        System.out.println("idMutuelle = " + idMutuelle);
+        creerClient(idCoordonnees, idAdresse, idMedecin, idMutuelle);
+        System.out.println("Client créé");
     }
 
     /**
@@ -289,27 +165,91 @@ public class ControllerClient extends JFrame {
         villeTextField.setText("");
     }
 
-
-
-
-    //Affichage des listes
-    public List<Medecin> getMedecin() {
-        return medecinDAO.findAll();
+    private int creerCoordonnees() throws SaisieException {
+        String email = emailTextField.getText().trim();
+        String telephone = telephoneTextField.getText().trim();
+        if(coordonneesDAO.findByEmail(telephone) != null || coordonneesDAO.findByTelephone(email) != null){
+            throw new SaisieException("Les coordonnées existent déjà");
+        }
+        return coordonneesDAO.create(new Coordonnees(email, telephone));
     }
 
-    public List<Mutuelle> getMutuelle() {
-        return mutuelleDAO.findAll();
+    /**
+     * Créer une nouvelle ville dans la base de données.
+     *
+     * @return l'id de la ville créée
+     * @throws SaisieException si la ville existe déjà
+     */
+    private int creerVille() throws SaisieException {
+        Region region = (Region) regionComboBox.getSelectedItem();
+        String villeName = villeTextField.getText().trim();
+        if(isVilleExist(villeName)){
+            return villeDAO.findByName(villeName).getId();
+        }
+        return villeDAO.create(new Ville(villeName, cpTextField.getText().trim(), region.getId()));
     }
 
-    public List<Region> getRegion() {
-        return regionDAO.findAll();
+    private void creerClient(int idCoordonnees, int idAdresse, int idMedecin, int idMutuelle) throws SaisieException {
+        Client client = new Client(
+                nomTextField.getText().trim(),
+                prenomTextField.getText().trim(),
+                secusocialTextField.getText().trim(),
+                dateNaissanceTextField.getText().trim(),
+                idMedecin,
+                idCoordonnees,
+                idAdresse,
+                idMutuelle
+        );
+        clientDAO.create(client);
+        InterfaceModel.ShowLabelWithTimer(informationLabel, "Client créé", Color.GREEN);
     }
 
+    private int creerAdresse(int idVille) {
+        return adressesDAO.create(new Adresses(rueTextField.getText().trim(), idVille));
+    }
 
+    private int creerMedecin() throws SaisieException {
+        Object selectedMedecin = medTraitantComboBox.getSelectedItem();
 
+        int newIdMedecin;
+        if (selectedMedecin instanceof Medecin) {
+            newIdMedecin = ((Medecin) selectedMedecin).getId();
+        } else if (selectedMedecin instanceof String) {
+            String[] parts = ((String) selectedMedecin).split(" ");
+            if (parts.length >= 2) {
+                Medecin newMedecin = new Medecin(parts[0], parts[1]);
+                newIdMedecin = medecinDAO.create(newMedecin);
+            } else {
+                throw new SaisieException("Nom ou prénom du médecin incomplet.");
+            }
+        } else {
+            throw new SaisieException("Sélection invalide pour le médecin traitant.");
+        }
+        return newIdMedecin;
+    }
 
+    private int creerMutuelle() throws SaisieException {
+        String mutuelle = mutuelleComboBox.getSelectedItem().toString();
+        if(mutuelleDAO.findByName(mutuelle) != null){
+            return mutuelleDAO.findByName(mutuelle).getId();
+        }
 
+        return mutuelleDAO.create(new Mutuelle(mutuelle));
+    }
 
+    private void validerChamps() throws SaisieException {
+        if(nomTextField.getText().trim().isEmpty() || prenomTextField.getText().trim().isEmpty() || dateNaissanceTextField.getText().trim().isEmpty() || secusocialTextField.getText().trim().isEmpty() || cpTextField.getText().trim().isEmpty() || telephoneTextField.getText().trim().isEmpty() || emailTextField.getText().trim().isEmpty() || rueTextField.getText().trim().isEmpty() || villeTextField.getText().trim().isEmpty()){
+            throw new SaisieException("Veuillez remplir tous les champs");
+        }
+    }
 
+    private boolean isVilleExist(String villeName) {
+        return villeDAO.findAll().stream()
+                .anyMatch(ville -> ville.getNom().equals(villeName));
+    }
 
+    private boolean isMedecinExist(String medecinName) {
+        return medecinDAO.findAll().stream()
+                .anyMatch(medecin -> medecin.getNom().equals(medecinName));
+    }
 }

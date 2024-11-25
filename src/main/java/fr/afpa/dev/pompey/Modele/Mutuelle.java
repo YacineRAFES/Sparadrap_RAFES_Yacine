@@ -77,9 +77,6 @@ public class Mutuelle<T> implements Serializable {
     }
 
     public void setTauxDePriseEnCharge(int tauxDePriseEnCharge) throws SaisieException {
-        if(tauxDePriseEnCharge == 0){
-            throw new SaisieException("le taux de prise en charge ne doit pas être vide.");
-        }
         this.tauxDePriseEnCharge = tauxDePriseEnCharge;
     }
 

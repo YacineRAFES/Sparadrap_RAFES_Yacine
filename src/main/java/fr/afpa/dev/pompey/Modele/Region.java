@@ -42,4 +42,9 @@ public class Region<T> implements Serializable {
         }
         this.nom = nom;
     }
+
+    @Override
+    public String toString() {
+        return this.nom; // ou tout autre champ descriptif
+    }
 }

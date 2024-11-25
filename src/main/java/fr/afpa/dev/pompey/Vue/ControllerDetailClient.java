@@ -136,7 +136,7 @@ public class ControllerDetailClient extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    mutuelleDuClient();
+                    mutuelleDuClient(client.getMutuelle().getId());
                 } catch (SaisieException ex) {
                     Fenetre.Fenetre("Erreur lors de l'ouverture de la fenêtre de mutuelle");
                     throw new RuntimeException(ex);
@@ -152,8 +152,8 @@ public class ControllerDetailClient extends JFrame{
         String dateNaissance = dateNaissanceTextField.getText();
         String secusocial = secusocialTextField.getText();
         String cp = cpTextField.getText();
-        String rue = rueTextField.getText();
-        String ville = villeTextField.getText();
+        String rueName = rueTextField.getText();
+        String villeName = villeTextField.getText();
         String telephone = telephoneTextField.getText();
         String email = emailTextField.getText();
         Medecin medecin = (Medecin) medTraitantComboBox.getSelectedItem();
@@ -177,7 +177,7 @@ public class ControllerDetailClient extends JFrame{
         }
 
 
-        Region nameRegion;
+        Region nameRegion = null;
         if (regionSelected instanceof Region) {
             nameRegion = regionDAO.find((regionSelected).getId());
         } else if (regionSelected.getNom() instanceof String) {
@@ -187,7 +187,7 @@ public class ControllerDetailClient extends JFrame{
 
         int newIdRegion = 0;
         for (Region regionCheck : getRegions()) {
-            if (regionCheck.getNom().equals((Region) nameRegion)) {
+            if (regionCheck.getNom().equals(nameRegion)) {
                 break;
             } else {
                 Region region = new Region(
@@ -225,21 +225,29 @@ public class ControllerDetailClient extends JFrame{
         // On récupère l'id des adresses
         newIdAdresse = adressesDAO.create(adresses);
 
+        int newIdMedecin = medecin.getId();
+        int newIDMutuelle = mutuelle.getId();
+        int newIdCoordonnees = client.getCoordonnees().getId();
 
-
+        //Création d'un client(
+        Client clientModif = new Client(
+                Verification.NomPrenom(nom, "Nom"),
+                Verification.NomPrenom(prenom, "Prénom"),
+                Verification.SecuSocial(secusocial),
+                Verification.BirthDate(dateNaissance),
+                newIdMedecin,
+                newIdCoordonnees,
+                newIdAdresse,
+                newIDMutuelle
+        );
+        clientDAO.update(clientModif);
     }
 
-    /**
-     * Ouvre la fenêtre de détail de la mutuelle du client
-     *
-     * @throws SaisieException si une erreur survient lors de l'ouverture de la fenêtre de mutuelle
-     */
-    private void mutuelleDuClient() throws SaisieException {
-//        Mutuelle idMutuelle = client.;
+    private void mutuelleDuClient(int id) throws SaisieException {
+        Mutuelle idMutuelle = new Mutuelle(id);
         ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(idMutuelle);
         controllerDetailMutuelle.setVisible(true);
     }
-
     /**
      * Définit les données du client dans les champs de texte
      *
