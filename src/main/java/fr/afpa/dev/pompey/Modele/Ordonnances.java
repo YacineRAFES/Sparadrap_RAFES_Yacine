@@ -30,6 +30,10 @@ public class Ordonnances<T> implements Serializable {
         setMedecin(medecin);
     }
 
+    public Ordonnances(int ordonnances) {
+        setId(ordonnances);
+    }
+
     //GETTER ET SETTER
 
     public int getId() {

@@ -20,10 +20,22 @@ public class MedicamentDAO extends DAO<Medicament> {
         try{
             PreparedStatement pstmt = connect.prepareStatement(insertSQL.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, obj.getNom());
-            pstmt.setDate(2, obj.getMiseEnService());
-            pstmt.setInt(3, obj.getQuantite());
+            if (obj.getMiseEnService() == null) {
+                pstmt.setNull(2, java.sql.Types.NULL);
+            } else {
+                pstmt.setDate(2, obj.getMiseEnService());
+            }
+            if (obj.getQuantite() == 0) {
+                pstmt.setNull(3, java.sql.Types.NULL);
+            } else {
+                pstmt.setInt(3, obj.getQuantite());
+            }
             pstmt.setDouble(4, obj.getPrix());
-            pstmt.setInt(5, obj.getCategorie().getId());
+            if(obj.getCategorie().getId() == 0){
+                pstmt.setNull(5, java.sql.Types.NULL);
+            }else{
+                pstmt.setInt(5, obj.getCategorie().getId());
+            }
             pstmt.executeUpdate();
             ResultSet rs = pstmt.getGeneratedKeys();
             if(rs.next()){
@@ -117,7 +129,11 @@ public class MedicamentDAO extends DAO<Medicament> {
                 Medicament medicament = new Medicament();
                 medicament.setId(rs.getInt("MED_ID"));
                 medicament.setNom(rs.getString("MED_nom"));
-                medicament.setMiseEnService(rs.getDate("MED_miseEnService"));
+                if (rs.getDate("MED_miseEnService") == null) {
+                    medicament.setMiseEnService(null);
+                } else {
+                    medicament.setMiseEnService(rs.getDate("MED_miseEnService"));
+                }
                 medicament.setQuantite(rs.getInt("MED_quantite"));
                 medicament.setPrix(rs.getDouble("MED_prix"));
                 medicament.setCategorie(new CategorieDAO().find(rs.getInt("CAT_ID")));
@@ -127,5 +143,26 @@ public class MedicamentDAO extends DAO<Medicament> {
             e.printStackTrace();
         }
         return medicamentList;
+    }
+
+    public Medicament findByName(String name) {
+        Medicament medicament = new Medicament();
+        StringBuilder selectSQL = new StringBuilder("SELECT * FROM medicament WHERE MED_nom = ?");
+        try{
+            PreparedStatement pstmt = connect.prepareStatement(selectSQL.toString());
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                medicament.setId(rs.getInt("MED_ID"));
+                medicament.setNom(rs.getString("MED_nom"));
+                medicament.setMiseEnService(rs.getDate("MED_miseEnService"));
+                medicament.setQuantite(rs.getInt("MED_quantite"));
+                medicament.setPrix(rs.getDouble("MED_prix"));
+                medicament.setCategorie(new CategorieDAO().find(rs.getInt("CAT_ID")));
+            }
+        }catch (SQLException | SaisieException e){
+            e.printStackTrace();
+        }
+        return medicament;
     }
 }

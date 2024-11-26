@@ -12,10 +12,10 @@ public class Demande<T> implements Serializable {
     public Demande() {
     }
 
-    public Demande(int quantite, Medicament medicament, Ordonnances ordonnances) throws SaisieException {
+    public Demande(int ordonnances, int medicament, int quantite) throws SaisieException {
+        setOrdonnances(new Ordonnances(ordonnances));
+        setMedicament(new Medicament(medicament));
         setQuantite(quantite);
-        setMedicament(medicament);
-        setOrdonnances(ordonnances);
     }
 
     //GETTER ET SETTER

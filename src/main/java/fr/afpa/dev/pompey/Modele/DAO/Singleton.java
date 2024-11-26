@@ -46,10 +46,6 @@ public class Singleton {
     public static Connection getInstanceDB(){
         if(getConnection() == null){
             new Singleton();
-
-            System.out.println("Connexion à la base de données réussie !");
-        }else{
-            System.out.println("Connexion à la base de données déjà établie !");
         }
         return getConnection();
     }

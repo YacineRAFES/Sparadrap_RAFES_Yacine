@@ -28,13 +28,14 @@ public class MutuelleDAO extends DAO<Mutuelle> {
             }else{
                 pstmt.setInt(2, obj.getTauxDePriseEnCharge());
             }
-            if (obj.getAdresses() == null) {
+
+            if (obj.getAdresses().getId() == 0) {
                 pstmt.setNull(3, java.sql.Types.NULL);
             } else {
                 pstmt.setInt(3, obj.getAdresses().getId());
             }
-            //pstmt.setInt(5, obj.getAdresses().getId());
-            if (obj.getCoordonnees() == null) {
+
+            if (obj.getCoordonnees().getId() == 0) {
                 pstmt.setNull(4, java.sql.Types.NULL);
             } else {
                 pstmt.setInt(4,  obj.getCoordonnees().getId());
@@ -45,11 +46,12 @@ public class MutuelleDAO extends DAO<Mutuelle> {
             if(rs.next()){
                 newId = rs.getInt(1);
             }
+            return newId;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return newId;
+
     }
 
     /**

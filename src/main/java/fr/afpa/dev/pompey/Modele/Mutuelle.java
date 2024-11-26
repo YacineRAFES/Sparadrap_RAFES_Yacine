@@ -43,11 +43,11 @@ public class Mutuelle<T> implements Serializable {
         setCoordonnees(new Coordonnees(coordonnees.getId()));
     }
 
-    public Mutuelle(String nom, int tauxDePriseEnCharge, Adresses adresses, Coordonnees coordonnees) throws SaisieException {
+    public Mutuelle(String nom, int tauxDePriseEnCharge, int adresses, int coordonnees) throws SaisieException {
         setNom(nom);
         setTauxDePriseEnCharge(tauxDePriseEnCharge);
-        setCoordonnees(new Coordonnees(coordonnees.getId()));
-        setAdresses(new Adresses(adresses.getId()));
+        setCoordonnees(new Coordonnees(coordonnees));
+        setAdresses(new Adresses(adresses));
     }
 
     //GETTER ET SETTER
@@ -64,11 +64,6 @@ public class Mutuelle<T> implements Serializable {
     }
 
     public void setNom(String nom) throws SaisieException {
-        if(nom == null || nom.isEmpty()){
-            throw new SaisieException("le nom de la mutuelle ne doit pas être vide.");
-        }   else if (!nom.matches(Regex.REGEXNOMPRENOM)) {
-            throw new SaisieException("Le nom de la mutuelle ne corresponds pas");
-        }
         this.nom = nom;
     }
 

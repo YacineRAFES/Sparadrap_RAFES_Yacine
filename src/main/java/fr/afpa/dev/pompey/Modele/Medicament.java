@@ -27,12 +27,22 @@ public class Medicament<T> implements Serializable {
         setNom(nom);
     }
 
-    public Medicament(String nom, Date miseEnService, int quantite, double prix, Categorie categorie) throws SaisieException {
+    public Medicament(String nom, Date miseEnService, int quantite, double prix, int categorie) throws SaisieException {
         setNom(nom);
         setMiseEnService(miseEnService);
         setQuantite(quantite);
         setPrix(prix);
-        setCategorie(categorie);
+        setCategorie(new Categorie(categorie));
+    }
+    public Medicament(String nom, double prix){
+        this.nom = nom;
+        this.prix = prix;
+    }
+
+    public Medicament(String nom, Date miseEnService, double prix) throws SaisieException {
+        setNom(nom);
+        setMiseEnService(miseEnService);
+        setPrix(prix);
     }
 
     //GETTER ET SETTER
@@ -82,15 +92,6 @@ public class Medicament<T> implements Serializable {
     }
 
     public void setMiseEnService(Date miseEnService) throws SaisieException {
-        if(miseEnService == null){
-            throw new SaisieException("La date de mise en service ne doit pas être vide");
-        }
-        if(miseEnService.after(new Date())){
-            throw new SaisieException("La date de mise en service ne doit pas être dans le futur");
-        }
-        if (miseEnService.before(new Date())){
-            throw new SaisieException("La date de mise en service ne doit pas être dans le passé");
-        }
         this.miseEnService = miseEnService;
 
     }
@@ -100,9 +101,6 @@ public class Medicament<T> implements Serializable {
     }
 
     public void setQuantite(int quantite) throws SaisieException {
-        if(quantite <= 0){
-            throw new SaisieException("La quantité ne peut pas être négative");
-        }
         this.quantite = quantite;
     }
 

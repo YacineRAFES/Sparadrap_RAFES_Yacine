@@ -16,4 +16,8 @@ public abstract class DAO<T> {
 
     public abstract List<T> findAll();
 
+    public Connection getConnection() {
+        return connect;
+    }
+
 }

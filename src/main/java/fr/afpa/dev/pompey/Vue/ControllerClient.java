@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import static fr.afpa.dev.pompey.Modele.DAO.DAOUtils.*;
@@ -39,7 +41,7 @@ public class ControllerClient extends JFrame {
     private JComboBox regionComboBox;
     private JLabel informationLabel;
 
-    //Initialisation des DAO
+    // Initialisation des DAO
     private final CoordonneesDAO coordonneesDAO;
     private final AdressesDAO adressesDAO;
     private final ClientDAO clientDAO;
@@ -51,8 +53,8 @@ public class ControllerClient extends JFrame {
     /**
      * Constructeur de la classe ControllerClient
      */
-    public ControllerClient(){
-        //Initialisation de la DAO
+    public ControllerClient() {
+        // Initialisation de la DAO
         coordonneesDAO = new CoordonneesDAO();
         adressesDAO = new AdressesDAO();
         clientDAO = new ClientDAO();
@@ -69,7 +71,7 @@ public class ControllerClient extends JFrame {
 
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
-        
+
         // Placeholder
         PlaceholderTextField.setPlaceholder(nomTextField, "Nom");
         PlaceholderTextField.setPlaceholder(prenomTextField, "Prénom");
@@ -101,7 +103,7 @@ public class ControllerClient extends JFrame {
         }
         regionComboBox.setModel(regionModel);
 
-        //Les Listeners
+        // Les Listeners
         creerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -127,20 +129,35 @@ public class ControllerClient extends JFrame {
      * @throws SaisieException
      */
     private void enregistrerClient() throws SaisieException {
-        //Validation des champs
+        // Validation des champs
         validerChamps();
-        int idCoordonnees = creerCoordonnees();
-        System.out.println("idCoordonnees = " + idCoordonnees);
-        int idVille = creerVille();
-        System.out.println("idVille = " + idVille);
-        int idAdresse = creerAdresse(idVille);
-        System.out.println("idAdresse = " + idAdresse);
-        int idMedecin = creerMedecin();
-        System.out.println("idMedecin = " + idMedecin);
-        int idMutuelle = creerMutuelle();
-        System.out.println("idMutuelle = " + idMutuelle);
-        creerClient(idCoordonnees, idAdresse, idMedecin, idMutuelle);
-        System.out.println("Client créé");
+        try {
+            Connection connect = clientDAO.getConnection();
+            connect.setAutoCommit(false);
+
+            int idCoordonnees = creerCoordonnees();
+            int idVille = creerVille();
+            int idAdresse = creerAdresse(idVille);
+            int idMedecin = creerMedecin();
+            int idMutuelle = creerMutuelle();
+
+            creerClient(idCoordonnees, idAdresse, idMedecin, idMutuelle);
+
+            connect.commit();
+        } catch (Exception e) {
+            try {
+                clientDAO.getConnection().rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erreur lors du rollback.", ex);
+            }
+            throw new RuntimeException("Erreur lors de l'enregistrement du client.", e);
+        } finally {
+            try {
+                clientDAO.getConnection().setAutoCommit(true);
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erreur lors de la réinitialisation de l'auto-commit.", ex);
+            }
+        }
     }
 
     /**
@@ -153,7 +170,7 @@ public class ControllerClient extends JFrame {
     /**
      * Méthode pour effacer tous les champs
      */
-    private void effaceToutLesChamps(){
+    private void effaceToutLesChamps() {
         nomTextField.setText("");
         prenomTextField.setText("");
         dateNaissanceTextField.setText("");
@@ -168,7 +185,7 @@ public class ControllerClient extends JFrame {
     private int creerCoordonnees() throws SaisieException {
         String email = emailTextField.getText().trim();
         String telephone = telephoneTextField.getText().trim();
-        if(coordonneesDAO.findByEmail(telephone) != null || coordonneesDAO.findByTelephone(email) != null){
+        if (coordonneesDAO.findByEmail(telephone) != null || coordonneesDAO.findByTelephone(email) != null) {
             throw new SaisieException("Les coordonnées existent déjà");
         }
         return coordonneesDAO.create(new Coordonnees(email, telephone));
@@ -183,7 +200,7 @@ public class ControllerClient extends JFrame {
     private int creerVille() throws SaisieException {
         Region region = (Region) regionComboBox.getSelectedItem();
         String villeName = villeTextField.getText().trim();
-        if(isVilleExist(villeName)){
+        if (isVilleExist(villeName)) {
             return villeDAO.findByName(villeName).getId();
         }
         return villeDAO.create(new Ville(villeName, cpTextField.getText().trim(), region.getId()));
@@ -229,16 +246,19 @@ public class ControllerClient extends JFrame {
     }
 
     private int creerMutuelle() throws SaisieException {
-        String mutuelle = mutuelleComboBox.getSelectedItem().toString();
-        if(mutuelleDAO.findByName(mutuelle) != null){
-            return mutuelleDAO.findByName(mutuelle).getId();
-        }
+        Object mutuelle = mutuelleComboBox.getSelectedItem();
 
-        return mutuelleDAO.create(new Mutuelle(mutuelle));
+        if(mutuelle instanceof Mutuelle){
+            return ((Mutuelle) mutuelle).getId();
+        } else if(mutuelle instanceof String){
+            return mutuelleDAO.create(new Mutuelle(mutuelle.toString(), 0, 0, 0));
+        } else {
+            throw new SaisieException("Sélection invalide pour la mutuelle.");
+        }
     }
 
     private void validerChamps() throws SaisieException {
-        if(nomTextField.getText().trim().isEmpty() || prenomTextField.getText().trim().isEmpty() || dateNaissanceTextField.getText().trim().isEmpty() || secusocialTextField.getText().trim().isEmpty() || cpTextField.getText().trim().isEmpty() || telephoneTextField.getText().trim().isEmpty() || emailTextField.getText().trim().isEmpty() || rueTextField.getText().trim().isEmpty() || villeTextField.getText().trim().isEmpty()){
+        if (nomTextField.getText().trim().isEmpty() || prenomTextField.getText().trim().isEmpty() || dateNaissanceTextField.getText().trim().isEmpty() || secusocialTextField.getText().trim().isEmpty() || cpTextField.getText().trim().isEmpty() || telephoneTextField.getText().trim().isEmpty() || emailTextField.getText().trim().isEmpty() || rueTextField.getText().trim().isEmpty() || villeTextField.getText().trim().isEmpty() || mutuelleComboBox.getSelectedItem() == null) {
             throw new SaisieException("Veuillez remplir tous les champs");
         }
     }
