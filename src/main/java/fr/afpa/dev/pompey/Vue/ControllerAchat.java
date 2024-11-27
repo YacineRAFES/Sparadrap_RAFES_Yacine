@@ -104,8 +104,7 @@ public class ControllerAchat extends JFrame {
                 int row = listeDeMedocTable.getEditingRow();
                 if (row >= 0) {
                     // Supprimer la ligne
-                    DefaultTableModel model = (DefaultTableModel) listeDeMedocTable.getModel();
-                    model.removeRow(row);
+                    InterfaceModel.SuppressionLigneDansTableau(listeDeMedocTable, row);
                     ShowLabelWithTimer(informationLabel, "Médicament supprimé de la liste", Color.RED);
                     Refresh(listeDeMedocTable);
                 }
@@ -252,6 +251,13 @@ public class ControllerAchat extends JFrame {
             ShowLabelWithTimer(informationLabel, "Veuillez sélectionner ou ajouter un médicament", Color.RED);
             throw new SaisieException();
         }
+
+        for(int i = 0; i < listeDeMedocTable.getRowCount(); i++){
+            if(listeDeMedocTable.getValueAt(i,1).equals(nameMedicament.getNom())){
+                ShowLabelWithTimer(informationLabel, "Le médicament est déjà dans la liste", Color.RED);
+                throw new SaisieException();
+            }
+        }
         //Ajouter une ligne dans la table
         DefaultTableModel model = (DefaultTableModel) listeDeMedocTable.getModel();
         model.addRow(new Object[]{nameMedicament.getId(), nameMedicament.getNom(), 1, nameMedicament.getPrix(), "Supprimer"});
@@ -262,8 +268,6 @@ public class ControllerAchat extends JFrame {
             comboBoxModel3.addElement(medicamentList);
         }
         medicamentCombobox.setModel(comboBoxModel3);
-
-
 
         // Rafraîchir la table
         Refresh(listeDeMedocTable);
@@ -287,23 +291,23 @@ public class ControllerAchat extends JFrame {
             int newIdAchatDirect = achatDirectDAO.create(achatDirect);
 
             for (int i = 0; i < listeDeMedocTable.getRowCount(); i++) {
-                int newIdMedicament = 0;
-                String nomMedicament = listeDeMedocTable.getValueAt(i, 0).toString();
-                if (medicamentDAO.findByName(nomMedicament) == null) {
-                    double prixMedicament = Double.parseDouble(listeDeMedocTable.getValueAt(i, 2).toString());
-                    int quantite = Integer.parseInt(listeDeMedocTable.getValueAt(i, 1).toString());
-                    Medicament medicament = new Medicament(nomMedicament, prixMedicament);
-                    newIdMedicament = medicamentDAO.create(medicament);
+                Object medicamentId = listeDeMedocTable.getValueAt(i, 0);
+                if ((int) medicamentId == 0) {
+                    String nomMedicament = listeDeMedocTable.getValueAt(i, 1).toString();
+                    double prixMedicament = Double.parseDouble(listeDeMedocTable.getValueAt(i, 3).toString());
+                    Medicament medicament = new Medicament(nomMedicament, DateCustom.DateNow(), 1, prixMedicament, 1);
+                    int newIdMedicament = medicamentDAO.create(medicament);
+                    int quantite = Integer.parseInt(listeDeMedocTable.getValueAt(i, 2).toString());
                     Commande commande = new Commande(newIdMedicament, newIdAchatDirect, quantite);
                     commandeDAO.create(commande);
                 } else {
-                    newIdMedicament = medicamentDAO.findByName(nomMedicament).getId();
-                    int quantite = Integer.parseInt(listeDeMedocTable.getValueAt(i, 1).toString());
-                    Commande commande = new Commande(newIdMedicament, newIdAchatDirect, quantite);
+                    int quantite = Integer.parseInt(listeDeMedocTable.getValueAt(i, 2).toString());
+                    Commande commande = new Commande((Integer) medicamentId, newIdAchatDirect, quantite);
                     commandeDAO.create(commande);
                 }
+                ShowLabel(informationLabel, "Création de la commande effectué", Color.GREEN);
             }
-            ShowLabel(informationLabel, "Création de la commande effectué", Color.GREEN);
+            ShowLabelWithTimer(informationLabel, "Achat effectué", Color.GREEN);
         } else if (typeAchat == 2) {
             Ordonnances ordonnances = new Ordonnances(DateCustom.DateNow(), (Client) clientSelected, (Medecin) medecinSelected);
             int newidordonnances = ordonnancesDAO.create(ordonnances);
@@ -327,6 +331,17 @@ public class ControllerAchat extends JFrame {
             ShowLabel(informationLabel, "Création de la demande effectué", Color.GREEN);
         }
         ShowLabelWithTimer(informationLabel, "Achat effectué", Color.GREEN);
+
+        //Après l'achat effectué, on vide la table après 2 secondes
+        TimerAppelFonction(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultTableModel model = (DefaultTableModel) listeDeMedocTable.getModel();
+                model.setRowCount(0);
+                Refresh(listeDeMedocTable);
+            }
+        });
+
         annuler();
     }
 
@@ -387,4 +402,7 @@ public class ControllerAchat extends JFrame {
         }
         medicamentCombobox.setModel(comboBoxModel3);
     }
+
+
+
 }

@@ -34,11 +34,12 @@ public class CommandeDAO extends DAO<Commande> {
     }
 
     public boolean delete(Commande obj) {
-        StringBuilder deleteSQL = new StringBuilder();
-        deleteSQL.append("DELETE FROM Commande WHERE MED_ID = ? AND ACH_ID = ?");
+        StringBuilder deleteSQL = new StringBuilder("DELETE FROM Commande WHERE ACH_ID = ? OR MED_ID = ?");
+
         try (PreparedStatement pstmt = connect.prepareStatement(deleteSQL.toString())) {
-            pstmt.setInt(1, obj.getMedicament().getId());
-            pstmt.setInt(2, obj.getAchatDirect().getId());
+            pstmt.setInt(1, obj.getAchatDirect().getId());
+            pstmt.setInt(2, obj.getMedicament().getId());
+            pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -1,6 +1,8 @@
 package fr.afpa.dev.pompey.Modele.Tables;
 
 import fr.afpa.dev.pompey.Modele.AchatDirect;
+import fr.afpa.dev.pompey.Modele.DAO.AchatDirectDAO;
+import fr.afpa.dev.pompey.Modele.DAO.OrdonnancesDAO;
 import fr.afpa.dev.pompey.Modele.Ordonnances;
 
 import javax.swing.table.AbstractTableModel;
@@ -9,11 +11,14 @@ import java.util.List;
 public class ListeHistoriqueAchat extends AbstractTableModel {
 
     private final String[] ENTETE = new String[] {
-            "Date", "Client", "Type d'Achat", "Détail", "Action"
+            "ID" ,"Date", "Client", "Type d'Achat", "Détail", "Action"
     };
 
-    private final List<AchatDirect> achatDirect;
-    private final List<Ordonnances> ordonnances;
+    private List<AchatDirect> achatDirect;
+    private List<Ordonnances> ordonnances;
+
+    AchatDirectDAO achatDirectDAO = new AchatDirectDAO();
+    OrdonnancesDAO ordonnancesDAO = new OrdonnancesDAO();
 
     public ListeHistoriqueAchat(List<AchatDirect> achatDirect, List<Ordonnances> ordonnances) {
         this.achatDirect = achatDirect;
@@ -42,16 +47,18 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
             AchatDirect achatDirects = achatDirect.get(rowIndex);
             switch (columnIndex) {
                 case 0:
-                    return achatDirects.getDate();
+                    return achatDirects.getId();
                 case 1:
+                    return achatDirects.getDate();
+                case 2:
                     return achatDirects.getClient() != null
                             ? achatDirects.getClient().getPrenom() + " " + achatDirects.getClient().getNom()
                             : "Client inconnu";
-                case 2:
-                    return "Sans Ordonnance";
                 case 3:
-                    return "Détails";
+                    return "Sans Ordonnance";
                 case 4:
+                    return "Détails";
+                case 5:
                     return "Supprimer";
                 default:
                     return null;
@@ -62,16 +69,18 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
             Ordonnances ordonnance = ordonnances.get(ordonnanceIndex);
             switch (columnIndex) {
                 case 0:
-                    return ordonnance.getDate();
+                    return ordonnance.getId();
                 case 1:
+                    return ordonnance.getDate();
+                case 2:
                     return ordonnance.getClient() != null
                             ? ordonnance.getClient().getPrenom() + " " + ordonnance.getClient().getNom()
                             : "Client inconnu";
-                case 2:
-                    return "Ordonnance";
                 case 3:
-                    return "Détails";
+                    return "Ordonnance";
                 case 4:
+                    return "Détails";
+                case 5:
                     return "Supprimer";
                 default:
                     return null;
@@ -82,8 +91,11 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return true;
+        return columnIndex == 4 || columnIndex == 5;
     }
 
-
+    public void refreshList() {
+        this.achatDirect = achatDirectDAO.findAll();
+        this.ordonnances = ordonnancesDAO.findAll();
+    }
 }

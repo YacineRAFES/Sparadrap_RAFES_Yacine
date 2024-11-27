@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ListeClientTable extends AbstractTableModel {
     private final String[] ENTETE = new String[] {
-            "Nom", "Prenom", "Email", "Téléphone", "Détail", "Action"
+            "ID", "Nom", "Prenom", "Email", "Téléphone", "Détail", "Action"
     };
     private final List<Client> clients;
 
@@ -31,16 +31,18 @@ public class ListeClientTable extends AbstractTableModel {
         Client client = clients.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return client.getNom();
+                return client.getId();
             case 1:
-                return client.getPrenom();
+                return client.getNom();
             case 2:
-                return client.getCoordonnees().getEmail();
+                return client.getPrenom();
             case 3:
-                return client.getCoordonnees().getTelephone();
+                return client.getCoordonnees().getEmail();
             case 4:
-                return "Détail";
+                return client.getCoordonnees().getTelephone();
             case 5:
+                return "Détail";
+            case 6:
                 return "Supprimer";
             default:
                 return null;
@@ -48,7 +50,7 @@ public class ListeClientTable extends AbstractTableModel {
     }
 
     public boolean isCellEditable(int row, int col) {
-        if(col == 4 || col == 5) {
+        if(col == 5 || col == 6) {
             return true;
         }else{
             return false;

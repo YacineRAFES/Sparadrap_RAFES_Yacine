@@ -59,9 +59,6 @@ public class Ordonnances<T> implements Serializable {
         if (localDate.isAfter(LocalDate.now())){
             throw new SaisieException("La date ne doit pas être dans le futur");
         }
-        if (localDate.isBefore(LocalDate.now())){
-            throw new SaisieException("La date ne doit pas être avant aujourd'hui");
-        }
         this.date = date;
     }
 

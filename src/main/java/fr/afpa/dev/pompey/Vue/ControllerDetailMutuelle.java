@@ -26,10 +26,9 @@ public class ControllerDetailMutuelle extends JFrame {
 
     /**
      * Constructeur de la classe ControllerDetailMutuelle
-     *
-     * @param mutuelle La mutuelle
      */
-    public ControllerDetailMutuelle(Mutuelle mutuelle) {
+    public ControllerDetailMutuelle(int id) {
+        Mutuelle mutuelle = mutuelleDAO.find(id);
         //Initialisation des DAO
         mutuelleDAO = new MutuelleDAO();
 
@@ -44,7 +43,6 @@ public class ControllerDetailMutuelle extends JFrame {
 
         // Remplir les champs de texte
 
-        mutuelle = mutuelleDAO.find(mutuelle.getId());
         NomMutuelle.setText(mutuelle.getNom());
         AdresseMutuelle.setText(mutuelle.getAdresses().getRue());
         CodepostalMutuelle.setText(String.valueOf(mutuelle.getAdresses().getVille().getCp()));

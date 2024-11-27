@@ -115,6 +115,7 @@ public class MutuelleDAO extends DAO<Mutuelle> {
             ResultSet rs = pstmt.executeQuery();
 
             if(rs.next()) {
+                mutuelle.setId(rs.getInt("MUT_ID"));
                 mutuelle.setNom(rs.getString("MUT_nom"));
                 mutuelle.setTauxDePriseEnCharge(rs.getInt("MUT_TxPriseEnCharge"));
                 mutuelle.setAdresses(new AdressesDAO().find(rs.getInt("ADRES_ID")));

@@ -61,7 +61,9 @@ public class ControllerListeMedecin extends JFrame {
         //Bouton Détail
         listeMedecinTable1.getColumn("Détail").setCellRenderer(new button.ButtonRenderer());
         listeMedecinTable1.getColumn("Détail").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
-            ButtonDetail(e, medecinDAO, ControllerDetailMedecin.class);
+            int id = (int) listeMedecinTable1.getValueAt(listeMedecinTable1.getSelectedRow(), 0);
+            ControllerDetailMedecin controllerDetailMedecin = new ControllerDetailMedecin(id);
+            controllerDetailMedecin.setVisible(true);
         }));
 
         //Bouton Supprimer

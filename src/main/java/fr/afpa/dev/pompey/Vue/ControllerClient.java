@@ -207,6 +207,12 @@ public class ControllerClient extends JFrame {
     }
 
     private void creerClient(int idCoordonnees, int idAdresse, int idMedecin, int idMutuelle) throws SaisieException {
+        List<Client> clientCheck = clientDAO.findAll();
+        for(Client clientSecu : clientCheck){
+            if(clientSecu.getNumeroSecuClient().equals(secusocialTextField.getText().trim())){
+                throw new SaisieException("Le client existe déjà");
+            }
+        }
         Client client = new Client(
                 nomTextField.getText().trim(),
                 prenomTextField.getText().trim(),

@@ -14,11 +14,13 @@ import java.awt.event.ActionListener;
 
 import static fr.afpa.dev.pompey.Modele.DAO.DAOUtils.*;
 import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ShowLabelWithBlinker;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.configurerFenetre;
 
 /**
  * La classe ControllerDetailClient est le contrôleur de la fenêtre de détail du client
  */
 public class ControllerDetailClient extends JFrame{
+
     private JTextField nomTextField;
     private JTextField secusocialTextField;
     private JTextField cpTextField;
@@ -48,12 +50,13 @@ public class ControllerDetailClient extends JFrame{
     private VilleDAO villeDAO;
     private AdressesDAO adressesDAO;
 
+    private int idclient;
+
     /**
      * Constructeur de la classe ControllerDetailClient
-     *
-     * @param idclient L'identifiant du client
      */
     public ControllerDetailClient(int idclient) {
+        this.idclient = idclient;
         //Initialisation des DAO
         clientDAO = new ClientDAO();
         medecinDAO = new MedecinDAO();
@@ -63,88 +66,26 @@ public class ControllerDetailClient extends JFrame{
         villeDAO = new VilleDAO();
         adressesDAO = new AdressesDAO();
 
-
-        setTitle("Détail Client");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setContentPane(contentPane);
-        this.setResizable(false);
-        this.pack();
-
-        // le positionnement de la fenetre
-        this.setLocationRelativeTo(null);
-
+        configurerFenetre(this, contentPane, false, "Detail Client");
 
         // Placeholder
-        PlaceholderTextField.setPlaceholder(nomTextField, "Nom");
-        PlaceholderTextField.setPlaceholder(prenomTextField, "Prénom");
-        PlaceholderTextField.setPlaceholder(dateNaissanceTextField, "JJ/MM/AAAA");
-        PlaceholderTextField.setPlaceholder(secusocialTextField, "Numéro de sécurité sociale");
-        PlaceholderTextField.setPlaceholder(cpTextField, "Code postal");
-        PlaceholderTextField.setPlaceholder(telephoneTextField, "Téléphone");
-        PlaceholderTextField.setPlaceholder(emailTextField, "Email");
-        PlaceholderTextField.setPlaceholder(rueTextField, "Rue");
-        PlaceholderTextField.setPlaceholder(villeTextField, "Ville");
-
+        InsertPlaceholders();
         // Remplir les combobox
-        DefaultComboBoxModel<Medecin> MedTraitantModel = new DefaultComboBoxModel<>();
-        for (Medecin medecin : getMedecins()) {
-            MedTraitantModel.addElement(medecin);
-        }
-        medTraitantComboBox.setModel(MedTraitantModel);
-
-        DefaultComboBoxModel<Mutuelle> mutuelleModel = new DefaultComboBoxModel<>();
-        for (Mutuelle mutuelle : getMutuelles()) {
-            mutuelleModel.addElement(mutuelle);
-        }
-        mutuelleComboBox.setModel(mutuelleModel);
-
-        DefaultComboBoxModel<Region> regionModel = new DefaultComboBoxModel<>();
-        for (Region region : getRegions()) {
-            regionModel.addElement(region);
-        }
-        regionComboBox.setModel(regionModel);
-        regionComboBox.setEditable(true);
+        remplirComboxbox();
 
         // Récupérer les données du client
-        Client client = clientDAO.find(idclient);
-        setTextFieldData(nomTextField, client.getNom());
-        setTextFieldData(prenomTextField, client.getPrenom());
-        setTextFieldData(dateNaissanceTextField, client.getDateNaissance());
-        setTextFieldData(secusocialTextField, client.getNumeroSecuClient());
-        setTextFieldData(cpTextField, client.getAdresses().getVille().getCp());
-        setTextFieldData(rueTextField, client.getAdresses().getRue());
-        setTextFieldData(villeTextField, client.getAdresses().getVille().getNom());
-        setTextFieldData(telephoneTextField, client.getCoordonnees().getTelephone());
-        setTextFieldData(emailTextField, client.getCoordonnees().getEmail());
-        mutuelleComboBox.setSelectedItem(client.getMutuelle());
-        medTraitantComboBox.setSelectedItem(client.getMedecin());
-        regionComboBox.setSelectedItem(client.getAdresses().getVille().getRegion());
+        chargerLesDonneesClients();
 
-        annulerButton.addActionListener(e -> this.dispose());
-
-        modifierButton.addActionListener(e -> {
-            try {
-                modifier(idclient);
-            } catch (SaisieException ex) {
-                throw new RuntimeException(ex);
-            }
-            dispose();
-        });
-
-        // Ouvre la fenêtre de détail de la mutuelle du client
-        mutuelleDuClientButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    mutuelleDuClient(client.getMutuelle().getId());
-                } catch (SaisieException ex) {
-                    Fenetre.Fenetre("Erreur lors de l'ouverture de la fenêtre de mutuelle");
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
+        //Boutons de modifier, annuler et mutuelle du client
+        Boutons();
     }
 
+    /**
+     * Modifier les informations du client
+     *
+     * @param idclient L'identifiant du client
+     * @throws SaisieException
+     */
     private void modifier(int idclient) throws SaisieException {
         Client client = clientDAO.find(idclient);
         String nom = nomTextField.getText();
@@ -175,7 +116,6 @@ public class ControllerDetailClient extends JFrame{
             ShowLabelWithBlinker(informationLabel, "Veuillez remplir les champs", Color.RED);
             throw new SaisieException("Veuillez remplir les champs");
         }
-
 
         Region nameRegion = null;
         if (regionSelected instanceof Region) {
@@ -243,9 +183,14 @@ public class ControllerDetailClient extends JFrame{
         clientDAO.update(clientModif);
     }
 
+    /**
+     * Ouvre la fenêtre de détail de la mutuelle du client
+     *
+     * @param id L'identifiant de la mutuelle
+     * @throws SaisieException
+     */
     private void mutuelleDuClient(int id) throws SaisieException {
-        Mutuelle idMutuelle = new Mutuelle(id);
-        ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(idMutuelle);
+        ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(id);
         controllerDetailMutuelle.setVisible(true);
     }
     /**
@@ -260,4 +205,85 @@ public class ControllerDetailClient extends JFrame{
             textField.setForeground(Color.BLACK); // Texte en noir si les données existent
         }
     }
+
+    /**
+     * Remplir les combobox
+     */
+    private void remplirComboxbox(){
+        medTraitantComboBox.setModel(new DefaultComboBoxModel<>(getMedecins().toArray(new Medecin[0])));
+        mutuelleComboBox.setModel(new DefaultComboBoxModel<>(getMutuelles().toArray(new Mutuelle[0])));
+        regionComboBox.setModel(new DefaultComboBoxModel<>(getRegions().toArray(new Region[0])));
+        regionComboBox.setEditable(true);
+    }
+
+    /**
+     * Insérer les placeholders dans les champs de texte
+     */
+    private void InsertPlaceholders(){
+        PlaceholderTextField.setPlaceholder(nomTextField, "Nom");
+        PlaceholderTextField.setPlaceholder(prenomTextField, "Prénom");
+        PlaceholderTextField.setPlaceholder(dateNaissanceTextField, "JJ/MM/AAAA");
+        PlaceholderTextField.setPlaceholder(secusocialTextField, "Numéro de sécurité sociale");
+        PlaceholderTextField.setPlaceholder(cpTextField, "Code postal");
+        PlaceholderTextField.setPlaceholder(telephoneTextField, "Téléphone");
+        PlaceholderTextField.setPlaceholder(emailTextField, "Email");
+        PlaceholderTextField.setPlaceholder(rueTextField, "Rue");
+        PlaceholderTextField.setPlaceholder(villeTextField, "Ville");
+    }
+
+    /**
+     * Charger les données du client
+     *  @idclient L'identifiant du client
+     *  @throws SaisieException
+     */
+    private void chargerLesDonneesClients(){
+        Client client = clientDAO.find(idclient);
+        Adresses adresses = adressesDAO.find(client.getAdresses().getId());
+        Coordonnees coordonnees = coordonneesDAO.find(client.getCoordonnees().getId());
+        Ville ville = villeDAO.find(adresses.getVille().getId());
+        Region region = regionDAO.find(ville.getRegion().getId());
+        setTextFieldData(nomTextField, client.getNom());
+        setTextFieldData(prenomTextField, client.getPrenom());
+        setTextFieldData(dateNaissanceTextField, client.getDateNaissance());
+        setTextFieldData(secusocialTextField, client.getNumeroSecuClient());
+        setTextFieldData(cpTextField, ville.getCp());
+        setTextFieldData(rueTextField, adresses.getRue());
+        setTextFieldData(villeTextField, ville.getNom());
+        setTextFieldData(telephoneTextField, coordonnees.getTelephone());
+        setTextFieldData(emailTextField, coordonnees.getEmail());
+        mutuelleComboBox.setSelectedItem(client.getMutuelle());
+        medTraitantComboBox.setSelectedItem(client.getMedecin());
+        regionComboBox.setSelectedItem(region.getNom());
+    }
+
+    /**
+     * Les actions des boutons modifier, annuler et mutuelle du client
+     * @throws SaisieException
+     */
+    private void Boutons(){
+        annulerButton.addActionListener(e -> this.dispose());
+
+        modifierButton.addActionListener(e -> {
+            try {
+                modifier(idclient);
+            } catch (SaisieException ex) {
+                throw new RuntimeException(ex);
+            }
+            dispose();
+        });
+
+        // Ouvre la fenêtre de détail de la mutuelle du client
+        mutuelleDuClientButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    mutuelleDuClient(clientDAO.find(idclient).getMutuelle().getId());
+                } catch (SaisieException ex) {
+                    Fenetre.Fenetre("Erreur lors de l'ouverture de la fenêtre de mutuelle");
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    }
+
 }

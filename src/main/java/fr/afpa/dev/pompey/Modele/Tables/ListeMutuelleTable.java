@@ -9,7 +9,7 @@ import java.util.List;
 public class ListeMutuelleTable extends AbstractTableModel {
 
     private final String[] ENTETE = new String[] {
-            "Nom", "Adresse", "Ville", "Code Postal", "Détails"
+            "ID", "Nom", "Ville", "Code Postal", "Détails"
     };
 
     private List<Mutuelle> mutuelles;
@@ -34,13 +34,21 @@ public class ListeMutuelleTable extends AbstractTableModel {
         Mutuelle mutuelle = mutuelles.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return mutuelle.getNom() != null ? mutuelle.getNom() : "Non renseigné";
+                return mutuelle.getId();
             case 1:
-                return mutuelle.getAdresses() != null ? mutuelle.getAdresses() : "Non renseigné";
+                return mutuelle.getNom() != null ? mutuelle.getNom() : "Non renseigné";
             case 2:
-                return mutuelle.getAdresses().getVille() != null ? mutuelle.getAdresses().getVille() : "Non renseigné";
+                if (mutuelle.getAdresses() != null && mutuelle.getAdresses().getVille() != null) {
+                    return mutuelle.getAdresses().getVille().getNom();
+                } else {
+                    return "Non renseigné";
+                }
             case 3:
-                return mutuelle.getAdresses().getVille().getCp() != null ? mutuelle.getAdresses().getVille().getCp() : "Non renseigné";
+                if (mutuelle.getAdresses() != null && mutuelle.getAdresses().getVille() != null) {
+                    return mutuelle.getAdresses().getVille().getCp();
+                } else {
+                    return "Non renseigné";
+                }
             case 4:
                 //boutton détail avec id mutuelle
                 return "Détails";

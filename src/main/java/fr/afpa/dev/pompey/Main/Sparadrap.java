@@ -4,8 +4,10 @@ import fr.afpa.dev.pompey.Modele.*;
 import fr.afpa.dev.pompey.Modele.DAO.*;
 import fr.afpa.dev.pompey.Vue.ControllerAccueil;
 import fr.afpa.dev.pompey.Exception.SaisieException;
+import fr.afpa.dev.pompey.Vue.ControllerDetailClient;
 
 import java.util.Date;
+
 
 
 public class Sparadrap {
@@ -50,6 +52,7 @@ public class Sparadrap {
     public void start() throws SaisieException {
         ControllerAccueil controllerAccueil = new ControllerAccueil();
         controllerAccueil.setVisible(true);
+
 //
 //        regionDAO = new RegionDAO();
 //        String[] regionList = {"Grand Est", "Ile-de-France", "Nouvelle-Aquitaine", "Auvergne-Rhône-Alpes", "Bourgogne-Franche-Comté", "Bretagne", "Centre-Val de Loire", "Corse", "Occitanie", "Hauts-de-France", "Normandie", "Pays de la Loire", "Provence-Alpes-Côte d'Azur"};

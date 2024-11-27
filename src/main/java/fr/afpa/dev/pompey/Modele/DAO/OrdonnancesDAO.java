@@ -59,7 +59,6 @@ public class OrdonnancesDAO extends DAO<Ordonnances> {
                 pstmt.setInt(3, obj.getClient().getId());
                 pstmt.setInt(4, obj.getId());
                 pstmt.executeUpdate();
-                pstmt.close();
                 return true;
             } catch (SQLException e) {
                 throw new RuntimeException(e);

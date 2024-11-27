@@ -12,7 +12,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ButtonDetail;
 
 /**
  * La classe ControllerListeMutuelle est le contrôleur de la fenêtre de liste des mutuelles
@@ -55,7 +54,9 @@ public class ControllerListeMutuelle extends JFrame {
         // Bouton Détail
         mutuelleTable.getColumn("Détails").setCellRenderer(new button.ButtonRenderer());
         mutuelleTable.getColumn("Détails").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
-            ButtonDetail(e, mutuelleDAO, ControllerDetailMutuelle.class);
+            int id = (int) mutuelleTable.getValueAt(mutuelleTable.getSelectedRow(), 0);
+            ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(id);
+            controllerDetailMutuelle.setVisible(true);
         }));
 
         // Fermer la fenêtre

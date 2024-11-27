@@ -1,10 +1,14 @@
 package fr.afpa.dev.pompey.Utilitaires;
 
+import fr.afpa.dev.pompey.Exception.SaisieException;
+import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.Mutuelle;
+import fr.afpa.dev.pompey.Vue.ControllerDetailClient;
 import fr.afpa.dev.pompey.Vue.ControllerDetailMutuelle;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
@@ -116,24 +120,35 @@ public class InterfaceModel extends JFrame {
         stopTimer.start();
     }
 
+
     /**
-     * Adds a JLabel with text and color that disappears after 3 seconds
+     * Affiche un message sur un JLabel pendant une durée spécifiée, puis le cache.
+     * Le label est réinitialisé avant d'afficher le message pour s'assurer qu'il peut être affiché plusieurs fois.
      *
-     * @param label The JLabel to add
-     * @param text  The text to display
-     * @param color The color of the text
+     * @param label   Le JLabel sur lequel afficher le message.
+     * @param message Le message à afficher.
+     * @param color   La couleur du texte du message.
      */
-    public static void ShowLabelWithTimer(JLabel label, String text, Color color) {
-        label.setText(text);
-        label.setForeground(color);
-        Timer timer = new Timer(3000, new ActionListener() {
+    public static void ShowLabelWithTimer(JLabel label, String message, Color color) {
+        label.setText("");
+        label.setForeground(Color.BLACK);
+        Timer resetTimer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                label.setVisible(false);
+                label.setText(message);
+                label.setForeground(color);
+                Timer timer = new Timer(3000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        label.setText("");
+                    }
+                });
+                timer.setRepeats(false);
+                timer.start();
             }
         });
-        timer.setRepeats(false);
-        timer.start();
+        resetTimer.setRepeats(false);
+        resetTimer.start();
     }
 
     /**
@@ -168,32 +183,74 @@ public class InterfaceModel extends JFrame {
         stopTimer.start();
     }
 
-    public static void ButtonDetail(ActionEvent e, Object NomDeLaDAO, Object NomDuController) {
-        try {
-            // Récupérer le bouton source de l'événement
-            JButton button = (JButton) e.getSource();
+    //TODO: Fonction à revoir
+//    public static void ButtonDetail(Object NomDuController, int id) {
+//
+//        try {
+//            System.out.println("Appel de setId avec id = " + id);
+//            Method setIdMethod = NomDuController.getClass().getMethod("setId", int.class);
+//            setIdMethod.invoke(NomDuController, id);
+//
+//            Method getIdMethod = NomDuController.getClass().getMethod("getId");
+//            int newId = (int) getIdMethod.invoke(NomDuController);
+//            System.out.println("Après setId, id = " + newId);
+//
+//            Method setVisibleMethod = NomDuController.getClass().getMethod("setVisible", boolean.class);
+//            setVisibleMethod.invoke(NomDuController, true);
+//        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-            // Récupérer l'ID depuis le bouton
-            int id = (int) button.getClientProperty("id");
+    //TODO: Fonction à revoir également
+//    public static void ButtonSupprimer(Object NomDeLaDAO, int id){
+//       try{
+//              Method method = NomDeLaDAO.getClass().getMethod("delete", int.class);
+//              method.invoke(NomDeLaDAO, id);
+//       }catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
+//              e.printStackTrace();
+//       }
+//    }
 
-            // Appeler la méthode "find" sur l'instance du DAO
-            Object entity = NomDeLaDAO.getClass().getMethod("find", int.class).invoke(NomDeLaDAO, id);
-
-            if (entity != null) {
-                // Créer une nouvelle instance du contrôleur avec l'entité comme paramètre
-                Constructor<?> constructor = NomDuController.getClass().getConstructor(entity.getClass());
-                Object controller = constructor.newInstance(entity);
-
-                // Rendre le contrôleur visible
-                Method setVisibleMethod = controller.getClass().getMethod("setVisible", boolean.class);
-                setVisibleMethod.invoke(controller, true);
-            } else {
-                // Afficher un message d'erreur si l'entité n'existe pas
-                Fenetre.Fenetre("L'entité n'existe pas.");
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Fenetre.Fenetre("Erreur lors de l'ouverture des détails.");
-        }
+    public static void VidangeDuTableau(JTable table){
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
     }
+
+    public static void AjoutLigneDansTableau(JTable table, Object[] data){
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.addRow(data);
+    }
+
+    public static void SuppressionLigneDansTableau(JTable table, int rowIndex){
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.removeRow(rowIndex);
+    }
+
+    public static void TimerAppelFonction(int delay, ActionListener action){
+        Timer timer = new Timer(delay, action);
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    /**
+     * Configurer un JFrame avec un JPanel, redimensionnable et un titre
+     *
+     * @param frame     La Fenêtre à configurer
+     * @param panel     Le Panel à ajouter au JFrame
+     * @param resizable Si le JFrame est redimensionnable
+     * @param title     Le titre de la Fenêtre
+     */
+    public static void configurerFenetre(JFrame frame, JPanel panel, boolean resizable, String title){
+        frame.setContentPane(panel);
+        frame.setResizable(resizable);
+        frame.setTitle(title);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+    }
+
+    public static void hauteurCellule(JTable table, int height){
+        table.setRowHeight(height);
+    }
+
 }

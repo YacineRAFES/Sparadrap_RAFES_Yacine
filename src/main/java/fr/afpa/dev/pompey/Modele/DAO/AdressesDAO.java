@@ -84,6 +84,7 @@ public class AdressesDAO extends DAO<Adresses> {
             ResultSet resultSet = pstmt.executeQuery();
 
             if (resultSet.next()) {
+                adresses.setId(resultSet.getInt("ADRES_ID"));
                 adresses.setRue(resultSet.getString("ADRES_rue"));
                 adresses.setVille(new Ville(resultSet.getInt("VIL_ID")));
             }

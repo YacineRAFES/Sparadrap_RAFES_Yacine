@@ -59,7 +59,6 @@ public class MedecinDAO extends DAO<Medecin> {
             PreparedStatement pstmt = connect.prepareStatement(deleteSQL.toString());
             pstmt.setInt(1, obj.getId());
             pstmt.executeUpdate();
-            pstmt.close();
             return true;
         } catch (Exception e) {
             e.printStackTrace();

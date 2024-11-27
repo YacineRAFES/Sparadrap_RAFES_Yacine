@@ -23,8 +23,8 @@ public class Fenetre extends JFrame {
      * @param message Le message à afficher
      * @return true si l'utilisateur clique sur "Oui", false sinon
      */
-    public static boolean Confirmation(String message){
-        int choix = JOptionPane.showConfirmDialog(null, message, "Confirmation", JOptionPane.YES_NO_OPTION);
+    public static boolean Confirmation(String message, String titreOfFenetre){
+        int choix = JOptionPane.showConfirmDialog(null, message, titreOfFenetre, JOptionPane.YES_NO_OPTION);
         return choix == JOptionPane.YES_OPTION;
     }
 }

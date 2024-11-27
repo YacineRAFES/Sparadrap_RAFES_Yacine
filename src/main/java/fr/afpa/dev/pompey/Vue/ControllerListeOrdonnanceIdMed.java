@@ -12,7 +12,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ButtonDetail;
 
 /**
  * La classe ControllerListeOrdonnanceIdMed est le contrôleur de la fenêtre de liste des ordonnances par identifiant du médecin
@@ -58,10 +57,12 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
         //Bouton Détail
         tableHistoriqueOrdonnanceidmed.getColumn("Détail").setCellRenderer(new button.ButtonRenderer());
         tableHistoriqueOrdonnanceidmed.getColumn("Détail").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
-            ButtonDetail(e, ordonnancesDAO, ControllerDetailAchat.class);
+            int id = (int) tableHistoriqueOrdonnanceidmed.getValueAt(tableHistoriqueOrdonnanceidmed.getSelectedRow(), 0);
+            ControllerDetailAchat controllerDetailAchat = new ControllerDetailAchat(id, 1);
+            controllerDetailAchat.setVisible(true);
         }));
 
-        //A fix!
+        // TODO: A fixé!
 
         // Fermer la fenêtre
         fermerButton.addActionListener(new ActionListener() {
