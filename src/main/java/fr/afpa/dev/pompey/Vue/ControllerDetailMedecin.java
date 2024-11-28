@@ -3,14 +3,17 @@ package fr.afpa.dev.pompey.Vue;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.*;
 import fr.afpa.dev.pompey.Modele.DAO.*;
+import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.InterfaceModel;
+import fr.afpa.dev.pompey.Utilitaires.PlaceholderTextField;
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * La classe ControllerDetailMedecin est le contrôleur de la fenêtre de détail du médecin
- */
+import static fr.afpa.dev.pompey.Modele.DAO.DAOUtils.getRegions;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ShowLabelWithTimer;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.configurerFenetre;
+
 public class ControllerDetailMedecin extends JFrame {
     private JPanel contentPane;
     private JLabel coordonneeLabel;
@@ -33,6 +36,7 @@ public class ControllerDetailMedecin extends JFrame {
     private JButton listesDesClientsButton;
     private JLabel informationLabel;
     private JTextField regionTextField;
+    private JComboBox regionCombobox;
 
     private MedecinDAO medecinDAO;
     private CoordonneesDAO coordonneesDAO;
@@ -40,27 +44,17 @@ public class ControllerDetailMedecin extends JFrame {
     private VilleDAO villeDAO;
     private RegionDAO regionDAO;
 
-    /**
-     * Constructeur de la classe ControllerDetailMedecin
-     *
-     * @param idmedecin L'identifiant du médecin
-     */
+    private int idmedecin;
+
     public ControllerDetailMedecin(int idmedecin) {
-        //Initialisation des DAO
+        this.idmedecin = idmedecin;
         medecinDAO = new MedecinDAO();
         coordonneesDAO = new CoordonneesDAO();
         adressesDAO = new AdressesDAO();
         villeDAO = new VilleDAO();
         regionDAO = new RegionDAO();
 
-        setTitle("Détail Médecin");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setContentPane(contentPane);
-        this.setResizable(false);
-        this.pack();
-
-        // le positionnement de la fenetre
-        this.setLocationRelativeTo(null);
+        configurerFenetre(this, contentPane, false, "Détail Médecin");
 
         annulerButton.addActionListener(e -> this.dispose());
 
@@ -72,111 +66,154 @@ public class ControllerDetailMedecin extends JFrame {
             }
         });
 
-        listesDesOrdonnancesButton.addActionListener(e -> {
-            ControllerListeOrdonnanceIdMed controllerListeOrdonnanceIdMed = new ControllerListeOrdonnanceIdMed(idmedecin);
-            controllerListeOrdonnanceIdMed.setVisible(true);
-        });
+        listesDesOrdonnancesButton.addActionListener(e -> new ControllerListeOrdonnanceIdMed(idmedecin).setVisible(true));
+        listesDesClientsButton.addActionListener(e -> new ControllerListeClientIdMed(idmedecin).setVisible(true));
 
-        listesDesClientsButton.addActionListener(e -> {
-            ControllerListeClientIdMed controllerListeClientIdMed = new ControllerListeClientIdMed(idmedecin);
-            controllerListeClientIdMed.setVisible(true);
-        });
+        chargerLesRegions();
+
+        InsertPlaceholders();
+
+        chargerLesDonnesMedecin();
+    }
+
+    private void InsertPlaceholders(){
+        PlaceholderTextField.setPlaceholder(nomTextField,"Nom");
+        PlaceholderTextField.setPlaceholder(prenomTextField,"Prénom");
+        PlaceholderTextField.setPlaceholder(cpTextField,"Code Postal");
+        PlaceholderTextField.setPlaceholder(rueTextField,"Rue");
+        PlaceholderTextField.setPlaceholder(villeTextField,"Ville");
+        PlaceholderTextField.setPlaceholder(telephoneTextField,"Téléphone");
+        PlaceholderTextField.setPlaceholder(emailTextField,"Email");
+        PlaceholderTextField.setPlaceholder(numAgreementTextField,"Numéro d'agreement");
+        PlaceholderTextField.setPlaceholder(specialisteTextField,"Spécialiste");
+    }
+
+    private void chargerLesDonnesMedecin(){
+        Medecin medecin = medecinDAO.find(idmedecin);
+        if (medecin != null) {
+            nomTextField.setText(medecin.getNom());
+            prenomTextField.setText(medecin.getPrenom());
+
+            if (medecin.getAdresses() != null) {
+                rueTextField.setText(medecin.getAdresses().getRue());
+                if (medecin.getAdresses().getVille() != null) {
+                    villeTextField.setText(medecin.getAdresses().getVille().getNom());
+                    cpTextField.setText(medecin.getAdresses().getVille().getCp());
+                    if (medecin.getAdresses().getVille().getRegion() != null) {
+                        regionCombobox.setSelectedItem(medecin.getAdresses().getVille().getRegion().getNom());
+                    }
+                }
+            }
+
+            if (medecin.getCoordonnees() != null) {
+                telephoneTextField.setText(medecin.getCoordonnees().getTelephone());
+                emailTextField.setText(medecin.getCoordonnees().getEmail());
+            }
+
+            numAgreementTextField.setText(medecin.getNumAgreement());
+            specialisteTextField.setText(medecin.getSpecialite());
+        } else {
+            InterfaceModel.ShowLabelWithTimer(informationLabel, "Médecin introuvable", Color.RED);
+        }
     }
 
     private void modifier(int idmedecin) throws SaisieException {
         Medecin medecin = medecinDAO.find(idmedecin);
-        String nom = setTextFieldData(nomTextField, medecin.getNom());
-        String prenom = setTextFieldData(prenomTextField, medecin.getPrenom());
-        String codepostal = setTextFieldData(cpTextField, medecin.getAdresses().getVille().getCp());
-        String rue = setTextFieldData(rueTextField, medecin.getAdresses().getRue());
-        String ville = setTextFieldData(villeTextField, medecin.getAdresses().getVille().getNom());
-        String region = setTextFieldData(regionTextField, medecin.getAdresses().getVille().getRegion().getNom());
-        String telephone = setTextFieldData(telephoneTextField, medecin.getCoordonnees().getTelephone());
-        String email = setTextFieldData(emailTextField, medecin.getCoordonnees().getEmail());
-        String numAgreement = setTextFieldData(numAgreementTextField, medecin.getNumAgreement());
-        String specialiste = setTextFieldData(specialisteTextField, medecin.getSpecialite());
-        //Vérifier si les données coordonnées sont vides
-        if (telephone != null && !telephone.isEmpty() && email != null && !email.isEmpty()) {
-            //On vérifie si les données ont été changé
-            if (!medecin.getCoordonnees().getTelephone().equals(telephone) || !medecin.getCoordonnees().getEmail().equals(email)) {
-                //Mettre à jour les coordonnées du médecin
+        String nom = nomTextField.getText();
+        String prenom = prenomTextField.getText();
+        String cp = cpTextField.getText();
+        String rue = rueTextField.getText();
+        String villeName = villeTextField.getText();
+        Region regionSelected = (Region) regionCombobox.getSelectedItem();
+        String telephone = telephoneTextField.getText();
+        String email = emailTextField.getText();
+        String numAgreement = numAgreementTextField.getText();
+        String specialiste = specialisteTextField.getText();
+
+        int idCoordonnees = 0;
+        if (medecin.getCoordonnees() != null) {
+            if (!telephone.equals(medecin.getCoordonnees().getTelephone()) ||
+                    !email.equals(medecin.getCoordonnees().getEmail())) {
                 Coordonnees coordonnees = new Coordonnees(
                         medecin.getCoordonnees().getId(),
-                        telephoneTextField.getText(),
-                        emailTextField.getText()
+                        email,
+                        telephone
                 );
                 coordonneesDAO.update(coordonnees);
+                idCoordonnees = medecin.getCoordonnees().getId();
             }
         } else {
+            Coordonnees nouvellesCoordonnees = new Coordonnees(email, telephone);
+            idCoordonnees = coordonneesDAO.create(nouvellesCoordonnees);
+        }
+
+        Region nameRegion = null;
+        if (regionSelected instanceof Region) {
+            nameRegion = regionDAO.find(regionSelected.getId());
+        }
+
+        int newIdRegion = nameRegion.getId();
+
+        if (villeName == null || villeName.isEmpty() || cp == null || cp.isEmpty()) {
             InterfaceModel.ShowLabelWithTimer(informationLabel, "Veuillez remplir tous les champs", Color.RED);
+            throw new SaisieException();
         }
-
-        int newIdRegion = 0;
-        if (region != null && !region.isEmpty()) {
-            if (!medecin.getAdresses().getVille().getRegion().equals(region)) {
-                //Créer une nouvelle région
-                Region region1 = new Region(
-                        region
-                );
-                newIdRegion = regionDAO.create(region1);
-            }
-        }
-
         int newIdVille = 0;
-        if (ville != null && !ville.isEmpty()) {
-            //On vérifie si les données ont été changé
-            if (!medecin.getAdresses().getVille().equals(ville)) {
-                //Créer une nouvelle ville
-                Ville ville1 = new Ville(
-                        ville,
-                        codepostal,
-                        newIdRegion
-                );
-                newIdVille = villeDAO.create(ville1);
+        boolean villeExist = false;
+        for (Ville villeCheck : villeDAO.findAll()) {
+            if (villeCheck.getNom().equals(villeName)) {
+                villeExist = true;
+                newIdVille = villeCheck.getId();
+                break;
             }
         }
-
-        if (rue != null && !rue.isEmpty()) {
-            if (!medecin.getAdresses().getRue().equals(rue)) {
-                //Mettre à jour l'adresse du médecin
-                Adresses adresses = new Adresses(
-                        medecin.getAdresses().getId(),
-                        rue,
-                        newIdVille
-                );
-                adressesDAO.update(adresses);
-
-            }
-        }
-
-        if (nom != null && !nom.isEmpty() && prenom != null && !prenom.isEmpty() && specialiste != null && !specialiste.isEmpty() && numAgreement != null && !numAgreement.isEmpty()) {
-            //Mettre à jour les informations du médecin
-            Medecin medecin1 = new Medecin(
-                    medecin.getId(),
-                    nomTextField.getText(),
-                    prenomTextField.getText(),
-                    specialisteTextField.getText(),
-                    numAgreementTextField.getText()
+        if (!villeExist) {
+            Ville ville = new Ville(
+                    villeName,
+                    cp,
+                    newIdRegion
             );
-            medecinDAO.update(medecin1);
-            informationLabel.setText("Les informations ont été modifiées avec succès");
+            newIdVille = villeDAO.create(ville);
         }
+
+        int idAdresses = 0;
+        Adresses adresses1 = adressesDAO.find(medecin.getAdresses().getId());
+        if (adresses1.getId() > 0) {
+            Adresses adresses = new Adresses(
+                    medecin.getAdresses().getId(),
+                    rue,
+                    newIdVille
+            );
+            adressesDAO.update(adresses);
+            idAdresses = adresses.getId();
+        } else {
+            Adresses nouvellesAdresses = new Adresses(rue, newIdVille);
+            idAdresses = adressesDAO.create(nouvellesAdresses);
+        }
+
+
+        Medecin medecinModifie = new Medecin(
+                idmedecin,
+                nom,
+                prenom,
+                numAgreement,
+                specialiste,
+                idAdresses,
+                idCoordonnees
+        );
+        medecinDAO.update(medecinModifie);
     }
 
-
-    /**
-     * Mettre les données dans les champs de texte
-     *
-     * @param textField Le champ de texte
-     * @param data      Les données
-     * @return
-     */
     private String setTextFieldData(JTextField textField, String data) {
         if (data != null && !data.isEmpty()) {
             textField.setText(data);
-            textField.setForeground(Color.BLACK); // Texte en noir si les données existent
+            textField.setForeground(Color.BLACK);
         }
         return data;
     }
 
+    private void chargerLesRegions() {
+        regionCombobox.setModel(new DefaultComboBoxModel<>(getRegions().toArray(new Region[0])));
+        regionCombobox.setEditable(false);
+    }
 }

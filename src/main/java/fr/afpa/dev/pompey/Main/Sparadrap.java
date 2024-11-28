@@ -53,6 +53,7 @@ public class Sparadrap {
         ControllerAccueil controllerAccueil = new ControllerAccueil();
         controllerAccueil.setVisible(true);
 
+
 //
 //        regionDAO = new RegionDAO();
 //        String[] regionList = {"Grand Est", "Ile-de-France", "Nouvelle-Aquitaine", "Auvergne-Rhône-Alpes", "Bourgogne-Franche-Comté", "Bretagne", "Centre-Val de Loire", "Corse", "Occitanie", "Hauts-de-France", "Normandie", "Pays de la Loire", "Provence-Alpes-Côte d'Azur"};

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class ListeClientMed extends AbstractTableModel  {
 
     private final String[] ENTETE = new String[] {
-            "Nom", "Prenom", "Email", "Téléphone", "Code Postal", "Ville", "Sécu"
+            "ID", "Nom", "Prenom", "Email", "Téléphone", "Code Postal", "Ville", "Sécu"
     };
 
     private ClientDAO clientDAO;
@@ -29,12 +29,7 @@ public class ListeClientMed extends AbstractTableModel  {
      */
     public ListeClientMed(Medecin medecin) {
         clientDAO = new ClientDAO();
-        Set<Client> uniqueClients = new LinkedHashSet<>();
-        List<Client> clients1 = clientDAO.findAllByIdMed(medecin.getId());
-        for(Client client6 : clients1){
-            uniqueClients.add(client6);
-        }
-        this.clients = uniqueClients.stream().collect(Collectors.toList());
+        this.clients = clientDAO.findAllByIdMed(medecin.getId());
 
     }
 
@@ -58,18 +53,20 @@ public class ListeClientMed extends AbstractTableModel  {
         Client client = clients.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return client.getNom() != null ? client.getNom() : "Non renseigné";
+                return client.getId();
             case 1:
-                return client.getPrenom() != null ? client.getPrenom() : "Non renseigné";
+                return client.getNom() != null ? client.getNom() : "Non renseigné";
             case 2:
-                return client.getCoordonnees().getEmail() != null ? client.getCoordonnees().getEmail() : "Non renseigné";
+                return client.getPrenom() != null ? client.getPrenom() : "Non renseigné";
             case 3:
-                return client.getCoordonnees().getTelephone() != null ? client.getCoordonnees().getTelephone() : "Non renseigné";
+                return client.getCoordonnees().getEmail() != null ? client.getCoordonnees().getEmail() : "Non renseigné";
             case 4:
-                return client.getAdresses().getVille().getCp() != null ? client.getAdresses().getVille().getCp() : "Non renseigné";
+                return client.getCoordonnees().getTelephone() != null ? client.getCoordonnees().getTelephone() : "Non renseigné";
             case 5:
-                return client.getAdresses().getVille() != null ? client.getAdresses().getVille() : "Non renseigné";
+                return client.getAdresses().getVille().getCp() != null ? client.getAdresses().getVille().getCp() : "Non renseigné";
             case 6:
+                return client.getAdresses().getVille() != null ? client.getAdresses().getVille() : "Non renseigné";
+            case 7:
                 return client.getNumeroSecuClient() != null ? client.getNumeroSecuClient() : "Non renseigné";
             default:
                 return null;

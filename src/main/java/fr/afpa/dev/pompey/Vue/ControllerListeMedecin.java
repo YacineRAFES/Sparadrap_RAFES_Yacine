@@ -12,6 +12,7 @@ import fr.afpa.dev.pompey.Utilitaires.button;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -69,31 +70,17 @@ public class ControllerListeMedecin extends JFrame {
         //Bouton Supprimer
         listeMedecinTable1.getColumn("Action").setCellRenderer(new button.ButtonRenderer());
         listeMedecinTable1.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
-            JButton button = (JButton) e.getSource();
-            int id = (int) button.getClientProperty("id");
-
+            int row = listeMedecinTable1.getEditingRow();
+            int id = (int) listeMedecinTable1.getValueAt(row, 0);
             Medecin medecin = medecinDAO.find(id);
-            if(medecin != null){
-                // On vérifie si le médecin est lié à un client ou une ordonnance
-                boolean medecinLieClient = clientDAO.findAll().stream().anyMatch(client -> client.getMedecin() != null && client.getMedecin().equals(medecin));
-                boolean medecinLieOrdonnance = ordonnancesDAO.findAll().stream().anyMatch(ordonnance -> ordonnance.getMedecin().equals(medecin));
-                if (medecinLieClient || medecinLieOrdonnance) {
-                    ShowLabelWithTimer(
-                            informationLabel,
-                            "<html><p>Le médecin est lié à un client ou une ordonnance,<br> impossible de le supprimer</p></html>",
-                            Color.RED);
-                } else {
-                    medecinDAO.delete(medecin);
-                    ShowLabelWithTimer(
-                            informationLabel,
-                            "Le médecin a été supprimé avec succès",
-                            Color.GREEN);
-                }
-            } else {
+            if(ordonnancesDAO.findAllByIdMed(medecin.getId()) != null) {
                 ShowLabelWithTimer(
                         informationLabel,
-                        "Le médecin n'existe",
-                        Color.RED);
+                        "Impossible de supprimer ce médecin car il a des ordonnances enregistrées",
+                        Color.RED
+                );
+            } else {
+                medecinDAO.delete(medecin);
             }
             Refresh(listeMedecinTable1); // Rafraîchir la table après la suppression
         }));

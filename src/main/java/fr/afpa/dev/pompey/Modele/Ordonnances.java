@@ -23,11 +23,11 @@ public class Ordonnances<T> implements Serializable {
         setMedecin(medecin);
     }
 
-    public Ordonnances(int id, Date date, Client client, Medecin medecin) throws SaisieException {
+    public Ordonnances(int id, Date date, int client, int medecin) throws SaisieException {
         setId(id);
         setDate(date);
-        setClient(new Client(client.getId()));
-        setMedecin(medecin);
+        setClient(new Client(client));
+        setMedecin(new Medecin(medecin));
     }
 
     public Ordonnances(int ordonnances) {

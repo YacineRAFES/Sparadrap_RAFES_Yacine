@@ -3,10 +3,9 @@ package fr.afpa.dev.pompey.Vue;
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.*;
 import fr.afpa.dev.pompey.Modele.DAO.*;
-import fr.afpa.dev.pompey.Modele.Tables.ListeMedicamentDetailAchat;
-import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public class ControllerDetailAchat extends JFrame {
@@ -59,6 +58,16 @@ public class ControllerDetailAchat extends JFrame {
             this.dispose();
         });
 
+        Object[][] data = new Object[0][0];
+        String[] columnNames = {"ID", "Nom du Médicament", "Quantité", "Prix"};
+        DefaultTableModel model = new DefaultTableModel(data, columnNames){
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            };
+        };
+        listeDeMedicamentTable.setModel(model);
+
+
         if(type == 0){
             //Je récupère les informations du client par l'ID AchatDirect
             AchatDirect achatDirect = achatDirectDAO.find(id);
@@ -67,8 +76,20 @@ public class ControllerDetailAchat extends JFrame {
             nomLabel.setText("Nom : "+ client.getNom());
             prenomLabel.setText("Prénom : "+ client.getPrenom());
             medecinLabel.setText("");
+            dateAchatLabel.setText("Date : "+ achatDirect.getDate());
+
             // Je récupère la listes des médicaments par l'ID AchatDirect
             List<Commande> commandes = commandeDAO.findAllByAchatDirect(id);
+            for (Commande commande : commandes) {
+                model.addRow(new Object[]{
+                        commande.getMedicament().getId(),
+                        commande.getMedicament().getNom(),
+                        commande.getQuantite(),
+                        commande.getMedicament().getPrix()
+                });
+            }
+
+
             double prixtotal = 0;
             //Je calcule la totalité des prix en récupérant les prix des médicaments
             for (int i = 1; i < commandes.size(); i++) {
@@ -85,11 +106,21 @@ public class ControllerDetailAchat extends JFrame {
 
             typeAchatLabel.setText("Achat avec ordonnance");
             nomLabel.setText("Nom : " + client.getNom());
-            prenomLabel.setText("Prénom : " + medecin.getPrenom());
+            prenomLabel.setText("Prénom : " + client.getPrenom());
             medecinLabel.setText("Medecin : " + medecin.getNom() + " " + medecin.getPrenom());
+            dateAchatLabel.setText("Date : " + ordonnances.getDate());
 
             // Je récupère la listes des médicaments par l'ID Demande
             List<Demande> demandes = demandeDAO.findAllByOrdonnance(id);
+            for (Demande demande : demandes) {
+                model.addRow(new Object[]{
+                        demande.getMedicament().getId(),
+                        demande.getMedicament().getNom(),
+                        demande.getQuantite(),
+                        demande.getMedicament().getPrix()
+                });
+            }
+
             double prixtotal = 0;
             //Je calcule la totalité des prix en récupérant les prix des médicaments
             for (int i = 1; i < demandes.size(); i++) {
@@ -99,6 +130,8 @@ public class ControllerDetailAchat extends JFrame {
             //prixtotal après le taux de prise en charge
             double prixTotalApresLaCharge = prixtotal - (prixtotal * mutuelle.getTauxDePriseEnCharge());
             prixTotalLabel.setText("Prix total : " + prixtotal + " Prix total après la charge : " + prixTotalApresLaCharge + " €");
+
+
         }
     }
 }

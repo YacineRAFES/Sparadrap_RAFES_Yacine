@@ -332,16 +332,6 @@ public class ControllerAchat extends JFrame {
         }
         ShowLabelWithTimer(informationLabel, "Achat effectué", Color.GREEN);
 
-        //Après l'achat effectué, on vide la table après 2 secondes
-        TimerAppelFonction(2000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DefaultTableModel model = (DefaultTableModel) listeDeMedocTable.getModel();
-                model.setRowCount(0);
-                Refresh(listeDeMedocTable);
-            }
-        });
-
         annuler();
     }
 

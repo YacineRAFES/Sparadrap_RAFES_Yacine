@@ -1,6 +1,7 @@
 // src/fr/afpa/dev/pompey/Modele/Tables/ListeOrdonnancesMed.java
 package fr.afpa.dev.pompey.Modele.Tables;
 
+import fr.afpa.dev.pompey.Modele.DAO.ClientDAO;
 import fr.afpa.dev.pompey.Modele.DAO.OrdonnancesDAO;
 import fr.afpa.dev.pompey.Modele.Medecin;
 import fr.afpa.dev.pompey.Modele.Ordonnances;
@@ -12,22 +13,16 @@ public class ListeOrdonnancesMed extends AbstractTableModel {
 
 
     private final String[] ENTETE = new String[] {
-            "Date", "Client", "Détail"
+            "ID" ,"Date", "Client", "Détail"
     };
 
     private OrdonnancesDAO ordonnancesDAO;
+    private ClientDAO clientDAO;
     private List<Ordonnances> ordonnances;
 
     public ListeOrdonnancesMed(Medecin medecin) {
         ordonnancesDAO = new OrdonnancesDAO();
         this.ordonnances = ordonnancesDAO.findAllByIdMed(medecin.getId());
-    }
-
-    public Ordonnances getOrdonnanceAt(int rowIndex) {
-        if (rowIndex >= 0 && rowIndex < ordonnances.size()) {
-            return ordonnances.get(rowIndex);
-        }
-        return null;
     }
 
     @Override
@@ -50,12 +45,14 @@ public class ListeOrdonnancesMed extends AbstractTableModel {
         Ordonnances ordonnance = ordonnances.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return ordonnance.getDate();
+                return ordonnance.getId();
             case 1:
+                return ordonnance.getDate();
+            case 2:
                 return ordonnance.getClient() != null
                         ? ordonnance.getClient().getPrenom() + " " + ordonnance.getClient().getNom()
                         : "Client inconnu";
-            case 2:
+            case 3:
                 return "Détails";
             default:
                 return null;
@@ -64,6 +61,6 @@ public class ListeOrdonnancesMed extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == 2;
+        return columnIndex == 3;
     }
 }

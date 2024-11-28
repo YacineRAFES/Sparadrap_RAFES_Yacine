@@ -1,7 +1,9 @@
 package fr.afpa.dev.pompey.Modele.Tables;
 
 import fr.afpa.dev.pompey.Modele.AchatDirect;
+import fr.afpa.dev.pompey.Modele.Client;
 import fr.afpa.dev.pompey.Modele.DAO.AchatDirectDAO;
+import fr.afpa.dev.pompey.Modele.DAO.ClientDAO;
 import fr.afpa.dev.pompey.Modele.DAO.OrdonnancesDAO;
 import fr.afpa.dev.pompey.Modele.Ordonnances;
 
@@ -16,6 +18,7 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
 
     private List<AchatDirect> achatDirect;
     private List<Ordonnances> ordonnances;
+
 
     AchatDirectDAO achatDirectDAO = new AchatDirectDAO();
     OrdonnancesDAO ordonnancesDAO = new OrdonnancesDAO();
@@ -43,7 +46,6 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         if (rowIndex < achatDirect.size()) {
-            // Si l'index est dans les limites de achatSansOrdonnances
             AchatDirect achatDirects = achatDirect.get(rowIndex);
             switch (columnIndex) {
                 case 0:
@@ -51,8 +53,9 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
                 case 1:
                     return achatDirects.getDate();
                 case 2:
-                    return achatDirects.getClient() != null
-                            ? achatDirects.getClient().getPrenom() + " " + achatDirects.getClient().getNom()
+                    Client client = achatDirectDAO.find(achatDirects.getId()).getClient();
+                    return client != null
+                            ? client.getPrenom() + " " + client.getNom()
                             : "Client inconnu";
                 case 3:
                     return "Sans Ordonnance";
@@ -63,18 +66,17 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
                 default:
                     return null;
             }
-        } else {
-            // Si l'index dépasse achatSansOrdonnances, il faut accéder à la liste des ordonnances
-            int ordonnanceIndex = rowIndex - achatDirect.size();  // Calculer l'index relatif pour ordonnance
-            Ordonnances ordonnance = ordonnances.get(ordonnanceIndex);
+        } else if (rowIndex < achatDirect.size() + ordonnances.size()) {
+            Ordonnances ordonnance = ordonnances.get(rowIndex - achatDirect.size());
             switch (columnIndex) {
                 case 0:
                     return ordonnance.getId();
                 case 1:
                     return ordonnance.getDate();
                 case 2:
-                    return ordonnance.getClient() != null
-                            ? ordonnance.getClient().getPrenom() + " " + ordonnance.getClient().getNom()
+                    Client client = ordonnancesDAO.find(ordonnance.getId()).getClient();
+                    return client != null
+                            ? client.getPrenom() + " " + client.getNom()
                             : "Client inconnu";
                 case 3:
                     return "Ordonnance";
@@ -86,6 +88,7 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
                     return null;
             }
         }
+        return null;
     }
 
 
@@ -97,5 +100,6 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
     public void refreshList() {
         this.achatDirect = achatDirectDAO.findAll();
         this.ordonnances = ordonnancesDAO.findAll();
+        fireTableDataChanged();
     }
 }

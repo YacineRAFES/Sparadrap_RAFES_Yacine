@@ -2,10 +2,7 @@ package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.AchatDirect;
-import fr.afpa.dev.pompey.Modele.DAO.AchatDirectDAO;
-import fr.afpa.dev.pompey.Modele.DAO.CommandeDAO;
-import fr.afpa.dev.pompey.Modele.DAO.DemandeDAO;
-import fr.afpa.dev.pompey.Modele.DAO.OrdonnancesDAO;
+import fr.afpa.dev.pompey.Modele.DAO.*;
 import fr.afpa.dev.pompey.Modele.Ordonnances;
 import fr.afpa.dev.pompey.Modele.Tables.ListeHistoriqueAchat;
 import fr.afpa.dev.pompey.Utilitaires.button;
@@ -49,6 +46,7 @@ public class ControllerHistoriqueAchat extends JFrame {
         OrdonnancesDAO ordonnancesDAO = new OrdonnancesDAO();
         CommandeDAO commandeDAO = new CommandeDAO();
         DemandeDAO demandeDAO = new DemandeDAO();
+        ClientDAO clientDAO = new ClientDAO();
 
         // Remplir le tableau
         model1 = new ListeHistoriqueAchat(achatDirectDAO.findAll(), ordonnancesDAO.findAll());
@@ -70,6 +68,7 @@ public class ControllerHistoriqueAchat extends JFrame {
                 ControllerDetailAchat controllerDetailAchat = new ControllerDetailAchat(id, 1);
                 controllerDetailAchat.setVisible(true);
             }
+            model1.refreshList();
         }));
 
 // Supprimer

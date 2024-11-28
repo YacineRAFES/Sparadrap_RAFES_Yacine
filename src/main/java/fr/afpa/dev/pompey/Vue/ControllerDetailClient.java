@@ -107,8 +107,8 @@ public class ControllerDetailClient extends JFrame{
                 //Mettre à jour les coordonnées du client
                 Coordonnees coordonnees = new Coordonnees(
                         client.getCoordonnees().getId(),
-                        telephone,
-                        email
+                        email,
+                        telephone
                 );
                 coordonneesDAO.update(coordonnees);
             }

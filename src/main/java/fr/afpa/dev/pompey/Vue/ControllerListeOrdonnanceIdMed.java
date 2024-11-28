@@ -38,6 +38,7 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
         medecinDAO = new MedecinDAO();
 
         Medecin medecin = medecinDAO.find(idMedecin);
+
         setTitle("Historiques des ordonnances de " + medecin.getNom() + " " +
                 medecin.getPrenom());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -52,7 +53,9 @@ public class ControllerListeOrdonnanceIdMed extends JFrame {
                 medecin.getPrenom());
 
         // Affichage des ordonnances du médecin
-        tableHistoriqueOrdonnanceidmed.setModel(new ListeOrdonnancesMed((Medecin) ordonnancesDAO.findAllByIdMed(medecin.getId())));
+        ListeOrdonnancesMed model1 = new ListeOrdonnancesMed(medecin);
+        tableHistoriqueOrdonnanceidmed.setModel(model1);
+
 
         //Bouton Détail
         tableHistoriqueOrdonnanceidmed.getColumn("Détail").setCellRenderer(new button.ButtonRenderer());

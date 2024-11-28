@@ -118,6 +118,8 @@ public class OrdonnancesDAO extends DAO<Ordonnances> {
                 Ordonnances ordonnance = new Ordonnances();
                 ordonnance.setId(rs.getInt("ORDO_ID"));
                 ordonnance.setDate(rs.getDate("ORDO_date"));
+                ordonnance.setClient(new ClientDAO().find(rs.getInt("CLI_ID")));
+                ordonnance.setMedecin(new MedecinDAO().find(rs.getInt("MEDE_ID")));
                 ordonnances.add(ordonnance);
             }
         }catch (SQLException | SaisieException e){

@@ -80,7 +80,6 @@ public class MedecinDAO extends DAO<Medecin> {
             pstmt.setInt(6, obj.getCoordonnees().getId());
             pstmt.setInt(7, obj.getId());
             pstmt.executeUpdate();
-            pstmt.close();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

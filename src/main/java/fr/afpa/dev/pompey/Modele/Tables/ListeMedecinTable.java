@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ListeMedecinTable extends AbstractTableModel {
     private final String[] ENTETE = new String[] {
-            "Nom", "Prenom", "Détail", "Action"
+            "ID", "Nom", "Prenom", "Détail", "Action"
     };
 
     private final List<Medecin> medecins;
@@ -32,12 +32,14 @@ public class ListeMedecinTable extends AbstractTableModel {
         Medecin medecin = medecins.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return medecin.getNom();
+                return medecin.getId();
             case 1:
-                return medecin.getPrenom();
+                return medecin.getNom();
             case 2:
-                return "Détail";
+                return medecin.getPrenom();
             case 3:
+                return "Détail";
+            case 4:
                 return "Supprimer";
             default:
                 return null;
@@ -45,7 +47,7 @@ public class ListeMedecinTable extends AbstractTableModel {
     }
 
     public boolean isCellEditable(int row, int col) {
-        if(col == 2 || col == 3) {
+        if(col == 3 || col == 4) {
             return true;
         } else {
             return false;

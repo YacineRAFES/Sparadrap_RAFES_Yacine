@@ -58,7 +58,7 @@ public class AdressesDAO extends DAO<Adresses> {
     @Override
     public boolean update(Adresses obj) {
         StringBuilder updateSQL = new StringBuilder();
-        updateSQL.append("UPDATE adresses SET ADRES_rue = ?, VILL_ID = ? WHERE ADRES_ID = ?");
+        updateSQL.append("UPDATE adresses SET ADRES_rue = ?, VIL_ID = ? WHERE ADRES_ID = ?");
         try {
             PreparedStatement pstmt = connect.prepareStatement(updateSQL.toString());
             pstmt.setString(1, obj.getRue());
@@ -86,7 +86,7 @@ public class AdressesDAO extends DAO<Adresses> {
             if (resultSet.next()) {
                 adresses.setId(resultSet.getInt("ADRES_ID"));
                 adresses.setRue(resultSet.getString("ADRES_rue"));
-                adresses.setVille(new Ville(resultSet.getInt("VIL_ID")));
+                adresses.setVille(new VilleDAO().find(resultSet.getInt("VIL_ID")));
             }
 
             return adresses;

@@ -49,7 +49,7 @@ public class ControllerListeClientIdMed extends JFrame {
         // le positionnement de la fenetre
         this.setLocationRelativeTo(null);
 
-        ListeClientMed model1 = new ListeClientMed((Medecin) ordonnancesDAO.findAllByIdMed(medecin.getId()));
+        ListeClientMed model1 = new ListeClientMed(medecin);
 
         // Affichage des clients du médecin
         listeDesClientByIdMed.setModel(model1);
