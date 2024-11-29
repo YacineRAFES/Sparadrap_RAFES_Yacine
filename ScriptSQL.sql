@@ -153,3 +153,6 @@ INSERT INTO Region (REG_nomRegion) VALUES
 ('Guyane'),
 ('La Réunion'),
 ('Mayotte');
+
+INSERT INTO categorie (CAT_nom) VALUES
+('CatégorieDefault');

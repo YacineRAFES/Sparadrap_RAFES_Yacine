@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static fr.afpa.dev.pompey.Modele.DAO.DAOUtils.*;
+import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.ShowLabelWithTimer;
 
 public class ControllerClient extends JFrame {
     private JPanel contentPane;
@@ -182,6 +183,12 @@ public class ControllerClient extends JFrame {
         villeTextField.setText("");
     }
 
+    /**
+     * Créer de nouvelles coordonnées dans la base de données.
+     *
+     * @return l'id des coordonnées créées
+     * @throws SaisieException si les coordonnées existent déjà
+     */
     private int creerCoordonnees() throws SaisieException {
         String email = emailTextField.getText().trim();
         String telephone = telephoneTextField.getText().trim();
@@ -206,6 +213,15 @@ public class ControllerClient extends JFrame {
         return villeDAO.create(new Ville(villeName, cpTextField.getText().trim(), region.getId()));
     }
 
+    /**
+     * Créer un nouveau client dans la base de données.
+     *
+     * @param idCoordonnees l'id des coordonnées du client
+     * @param idAdresse     l'id de l'adresse du client
+     * @param idMedecin     l'id du médecin traitant du client
+     * @param idMutuelle    l'id de la mutuelle du client
+     * @throws SaisieException si le client existe déjà
+     */
     private void creerClient(int idCoordonnees, int idAdresse, int idMedecin, int idMutuelle) throws SaisieException {
         List<Client> clientCheck = clientDAO.findAll();
         for(Client clientSecu : clientCheck){
@@ -224,13 +240,24 @@ public class ControllerClient extends JFrame {
                 idMutuelle
         );
         clientDAO.create(client);
-        InterfaceModel.ShowLabelWithTimer(informationLabel, "Client créé", Color.GREEN);
+        ShowLabelWithTimer(informationLabel, "Client créé", Color.GREEN);
     }
 
+    /**
+     * Créer une nouvelle adresse dans la base de données.
+     *
+     * @param idVille l'id de la ville de l'adresse
+     * @return l'id de l'adresse créée
+     */
     private int creerAdresse(int idVille) {
         return adressesDAO.create(new Adresses(rueTextField.getText().trim(), idVille));
     }
 
+    /**
+     * Récupère la liste des médecins
+     *
+     * @return la liste des médecins
+     */
     private int creerMedecin() throws SaisieException {
         Object selectedMedecin = medTraitantComboBox.getSelectedItem();
 
@@ -243,14 +270,21 @@ public class ControllerClient extends JFrame {
                 Medecin newMedecin = new Medecin(parts[0], parts[1]);
                 newIdMedecin = medecinDAO.create(newMedecin);
             } else {
+                ShowLabelWithTimer(informationLabel, "Nom ou prénom du médecin incomplet.", Color.RED);
                 throw new SaisieException("Nom ou prénom du médecin incomplet.");
             }
         } else {
+            ShowLabelWithTimer(informationLabel, "Sélection invalide pour le médecin traitant.", Color.RED);
             throw new SaisieException("Sélection invalide pour le médecin traitant.");
         }
         return newIdMedecin;
     }
 
+    /**
+     * Récupère la liste des médecins
+     *
+     * @return la liste des médecins
+     */
     private int creerMutuelle() throws SaisieException {
         Object mutuelle = mutuelleComboBox.getSelectedItem();
 
@@ -263,17 +297,33 @@ public class ControllerClient extends JFrame {
         }
     }
 
+    /**
+     * Récupère la liste des médecins
+     *
+     * @return la liste des médecins
+     */
     private void validerChamps() throws SaisieException {
         if (nomTextField.getText().trim().isEmpty() || prenomTextField.getText().trim().isEmpty() || dateNaissanceTextField.getText().trim().isEmpty() || secusocialTextField.getText().trim().isEmpty() || cpTextField.getText().trim().isEmpty() || telephoneTextField.getText().trim().isEmpty() || emailTextField.getText().trim().isEmpty() || rueTextField.getText().trim().isEmpty() || villeTextField.getText().trim().isEmpty() || mutuelleComboBox.getSelectedItem() == null) {
             throw new SaisieException("Veuillez remplir tous les champs");
         }
     }
 
+    /**
+     * Récupère la liste des médecins
+     *
+     * @return la liste des médecins
+     */
     private boolean isVilleExist(String villeName) {
         return villeDAO.findAll().stream()
                 .anyMatch(ville -> ville.getNom().equals(villeName));
     }
 
+    /**
+     * Récupère la liste des médecins
+     *
+     * @return la liste des médecins
+     * Fonction non utilisée
+     */
     private boolean isMedecinExist(String medecinName) {
         return medecinDAO.findAll().stream()
                 .anyMatch(medecin -> medecin.getNom().equals(medecinName));

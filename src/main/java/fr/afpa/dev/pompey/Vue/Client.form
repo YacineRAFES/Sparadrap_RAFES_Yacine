@@ -62,6 +62,7 @@
             </constraints>
             <properties>
               <text value=""/>
+              <toolTipText value="Num. de sécu. social"/>
             </properties>
           </component>
           <component id="5db49" class="javax.swing.JLabel" binding="adresseLabel">
@@ -78,7 +79,9 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <toolTipText value="Code postal"/>
+            </properties>
           </component>
           <component id="90851" class="javax.swing.JTextField" binding="prenomTextField">
             <constraints>
@@ -86,7 +89,9 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <toolTipText value="Prénom"/>
+            </properties>
           </component>
           <component id="31bd9" class="javax.swing.JTextField" binding="dateNaissanceTextField">
             <constraints>
@@ -96,6 +101,7 @@
             </constraints>
             <properties>
               <text value=""/>
+              <toolTipText value="Date de naissance"/>
             </properties>
           </component>
           <component id="c9b77" class="javax.swing.JTextField" binding="rueTextField">
@@ -104,7 +110,9 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <toolTipText value="Rue"/>
+            </properties>
           </component>
           <component id="f4c89" class="javax.swing.JTextField" binding="villeTextField">
             <constraints>
@@ -112,7 +120,9 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <toolTipText value="Ville"/>
+            </properties>
           </component>
           <component id="8b0f3" class="javax.swing.JLabel" binding="contactLabel">
             <constraints>
@@ -128,7 +138,9 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <toolTipText value="Téléphone"/>
+            </properties>
           </component>
           <component id="93b87" class="javax.swing.JTextField" binding="emailTextField">
             <constraints>
@@ -136,7 +148,9 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <toolTipText value="Email"/>
+            </properties>
           </component>
           <component id="56322" class="javax.swing.JSeparator">
             <constraints>
@@ -156,6 +170,7 @@
             </constraints>
             <properties>
               <editable value="true"/>
+              <toolTipText value="Medecin"/>
             </properties>
           </component>
           <component id="4de43" class="javax.swing.JComboBox" binding="mutuelleComboBox">
@@ -164,13 +179,16 @@
             </constraints>
             <properties>
               <name value="test"/>
+              <toolTipText value="Mutuelle"/>
             </properties>
           </component>
           <component id="45143" class="javax.swing.JComboBox" binding="regionComboBox">
             <constraints>
               <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <toolTipText value="Region"/>
+            </properties>
           </component>
         </children>
       </grid>

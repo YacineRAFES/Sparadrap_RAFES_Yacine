@@ -30,6 +30,7 @@ public class ControllerDetailAchat extends JFrame {
     private ClientDAO clientDAO;
     private MedecinDAO medecinDAO;
     private MutuelleDAO mutuelleDAO;
+    private MedicamentDAO medicamentDAO;
 
     /**
      * Constructeur de la classe ControllerDetailAchat
@@ -44,6 +45,7 @@ public class ControllerDetailAchat extends JFrame {
         clientDAO = new ClientDAO();
         medecinDAO = new MedecinDAO();
         mutuelleDAO = new MutuelleDAO();
+        medicamentDAO = new MedicamentDAO();
 
         setTitle("Détail d'Achat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -92,7 +94,7 @@ public class ControllerDetailAchat extends JFrame {
 
             double prixtotal = 0;
             //Je calcule la totalité des prix en récupérant les prix des médicaments
-            for (int i = 1; i < commandes.size(); i++) {
+            for (int i = 0; i < commandes.size(); i++) {
                 prixtotal += commandes.get(i).getMedicament().getPrix() * commandes.get(i).getQuantite();
             }
             prixTotalLabel.setText("Prix total : " + prixtotal + " €");
@@ -123,13 +125,18 @@ public class ControllerDetailAchat extends JFrame {
 
             double prixtotal = 0;
             //Je calcule la totalité des prix en récupérant les prix des médicaments
-            for (int i = 1; i < demandes.size(); i++) {
-                prixtotal += demandes.get(i).getMedicament().getPrix() * demandes.get(i).getQuantite();
+            for (int i = 0; i < demandes.size(); i++) {
+                Medicament medicament = medicamentDAO.find(demandes.get(i).getMedicament().getId());
+                prixtotal += medicament.getPrix() * demandes.get(i).getQuantite();
             }
 
             //prixtotal après le taux de prise en charge
-            double prixTotalApresLaCharge = prixtotal - (prixtotal * mutuelle.getTauxDePriseEnCharge());
-            prixTotalLabel.setText("Prix total : " + prixtotal + " Prix total après la charge : " + prixTotalApresLaCharge + " €");
+            if(mutuelle.getTauxDePriseEnCharge() == 0){
+                prixTotalLabel.setText("Prix total : " + prixtotal + " € (Taux de prise en charge de la mutuelle manquante)");
+            }else{
+                double prixTotalApresLaCharge = prixtotal - (prixtotal * mutuelle.getTauxDePriseEnCharge());
+                prixTotalLabel.setText("Prix total : " + prixtotal + " Prix total après la charge : " + prixTotalApresLaCharge + " €");
+            }
 
 
         }

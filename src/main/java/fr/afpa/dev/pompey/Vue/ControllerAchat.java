@@ -290,6 +290,7 @@ public class ControllerAchat extends JFrame {
             AchatDirect achatDirect = new AchatDirect(DateCustom.DateNow(), (Client) clientSelected);
             int newIdAchatDirect = achatDirectDAO.create(achatDirect);
 
+            //Récupères les médicaments de la table
             for (int i = 0; i < listeDeMedocTable.getRowCount(); i++) {
                 Object medicamentId = listeDeMedocTable.getValueAt(i, 0);
                 if ((int) medicamentId == 0) {
@@ -311,6 +312,7 @@ public class ControllerAchat extends JFrame {
         } else if (typeAchat == 2) {
             Ordonnances ordonnances = new Ordonnances(DateCustom.DateNow(), (Client) clientSelected, (Medecin) medecinSelected);
             int newidordonnances = ordonnancesDAO.create(ordonnances);
+
 
             for (int i = 0; i < listeDeMedocTable.getRowCount(); i++) {
                 Object medicamentId = listeDeMedocTable.getValueAt(i, 0);
@@ -367,6 +369,7 @@ public class ControllerAchat extends JFrame {
             comboBoxModel1.addElement(client);
         }
         clientCombobox.setModel(comboBoxModel1);
+        clientCombobox.setEditable(false);
     }
 
     /**

@@ -102,8 +102,10 @@ public class ControllerDetailClient extends JFrame{
         Region regionSelected = (Region) regionComboBox.getSelectedItem();
 
         //Vérifier si les données coordonnées(email, telephone) sont vides
-        if(email != null && email.isEmpty() && telephone.isEmpty()){
-            if(client.getCoordonnees().getEmail().equals(email) && client.getCoordonnees().getTelephone().equals(telephone)){
+        if(email.isEmpty() && telephone.isEmpty()) {
+            ShowLabelWithBlinker(informationLabel, "Veuillez remplir les champs", Color.RED);
+            throw new SaisieException("Veuillez remplir les champs");
+        }else{
                 //Mettre à jour les coordonnées du client
                 Coordonnees coordonnees = new Coordonnees(
                         client.getCoordonnees().getId(),
@@ -111,15 +113,12 @@ public class ControllerDetailClient extends JFrame{
                         telephone
                 );
                 coordonneesDAO.update(coordonnees);
-            }
-        }else{
-            ShowLabelWithBlinker(informationLabel, "Veuillez remplir les champs", Color.RED);
-            throw new SaisieException("Veuillez remplir les champs");
         }
+
 
         Region nameRegion = null;
         if (regionSelected instanceof Region) {
-            nameRegion = regionDAO.find((regionSelected).getId());
+            nameRegion = regionDAO.find(regionSelected.getId());
         } else if (regionSelected.getNom() instanceof String) {
             String getRegionNameString = regionSelected.getNom();
             nameRegion = new Region(getRegionNameString);
@@ -127,28 +126,38 @@ public class ControllerDetailClient extends JFrame{
 
         int newIdRegion = 0;
         for (Region regionCheck : getRegions()) {
-            if (regionCheck.getNom().equals(nameRegion)) {
+            if (regionCheck.getNom().equals(nameRegion.getNom())) {
+                newIdRegion = regionCheck.getId();
                 break;
             } else {
                 Region region = new Region(
-                        String.valueOf(nameRegion)
+                        nameRegion.getNom()
                 );
                 newIdRegion = regionDAO.create(region);
             }
         }
-        //on crée la ville dans la base de données
+        //On vérifie si l'id region est associé à une ville
         int newIdVille = 0;
         boolean villeExist = false;
         for (Ville villeCheck : villeDAO.findAll()) {
             if (villeCheck.getNom().equals(villeName)) {
+                newIdVille = villeCheck.getId();
                 villeExist = true;
-                break;
             }
         }
+
         if(villeExist){
-            Fenetre.Fenetre("La ville existe déjà");
-            throw new SaisieException();
-        } else {
+            Ville ville = villeDAO.find(newIdVille);
+            if(ville.getRegion().getId() != newIdRegion){
+                Ville villeUpdate = new Ville(
+                        newIdVille,
+                        villeName,
+                        ville.getCp(),
+                        newIdRegion
+                );
+                villeDAO.update(villeUpdate);
+            }
+        }else{
             Ville ville = new Ville(
                     villeName,
                     cp,
@@ -213,7 +222,7 @@ public class ControllerDetailClient extends JFrame{
         medTraitantComboBox.setModel(new DefaultComboBoxModel<>(getMedecins().toArray(new Medecin[0])));
         mutuelleComboBox.setModel(new DefaultComboBoxModel<>(getMutuelles().toArray(new Mutuelle[0])));
         regionComboBox.setModel(new DefaultComboBoxModel<>(getRegions().toArray(new Region[0])));
-        regionComboBox.setEditable(true);
+        regionComboBox.setEditable(false);
     }
 
     /**

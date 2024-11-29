@@ -28,6 +28,7 @@ public class ControllerDetailMutuelle extends JFrame {
      * Constructeur de la classe ControllerDetailMutuelle
      */
     public ControllerDetailMutuelle(int id) {
+        //TODO : Fix this
         Mutuelle mutuelle = mutuelleDAO.find(id);
         //Initialisation des DAO
         mutuelleDAO = new MutuelleDAO();
@@ -43,13 +44,42 @@ public class ControllerDetailMutuelle extends JFrame {
 
         // Remplir les champs de texte
 
-        NomMutuelle.setText(mutuelle.getNom());
-        AdresseMutuelle.setText(mutuelle.getAdresses().getRue());
-        CodepostalMutuelle.setText(String.valueOf(mutuelle.getAdresses().getVille().getCp()));
-        VilleMutuelle.setText(mutuelle.getAdresses().getVille().getNom());
-        TelephoneMutuelle.setText(mutuelle.getCoordonnees().getTelephone());
-        EmailMutuelle.setText(mutuelle.getCoordonnees().getEmail());
-        TxMutuelle.setText(mutuelle.getTauxDePriseEnCharge() + " %");
+        // Si le nom de la mutuelle est null, afficher "Non renseigné"
+        if(mutuelle.getNom() == null){
+            NomMutuelle.setText("Non renseigné");
+        }else{
+            NomMutuelle.setText(mutuelle.getNom());
+        }
+
+        // Si l'adresse de la mutuelle est null, afficher "Non renseigné"
+        if(mutuelle.getAdresses() != null){
+            AdresseMutuelle.setText(mutuelle.getAdresses().getRue());
+            DepartementMutuelle.setText(mutuelle.getAdresses().getVille().getRegion().getNom());
+            CodepostalMutuelle.setText(mutuelle.getAdresses().getVille().getCp());
+            VilleMutuelle.setText(mutuelle.getAdresses().getVille().getNom());
+        }else{
+            AdresseMutuelle.setText("Non renseigné");
+            DepartementMutuelle.setText("Non renseigné");
+            CodepostalMutuelle.setText("Non renseigné");
+            VilleMutuelle.setText("Non renseigné");
+        }
+
+        // Si le téléphone et l'email de la mutuelle sont null, afficher "Non renseigné"
+        if(mutuelle.getCoordonnees() != null){
+            TelephoneMutuelle.setText(mutuelle.getCoordonnees().getTelephone());
+            EmailMutuelle.setText(mutuelle.getCoordonnees().getEmail());
+        }else{
+            TelephoneMutuelle.setText("Non renseigné");
+            EmailMutuelle.setText("Non renseigné");
+        }
+
+        // Si le taux de prise en charge de la mutuelle est 0, afficher "Non renseigné"
+        if(mutuelle.getTauxDePriseEnCharge() == 0){
+            TxMutuelle.setText("Non renseigné");
+        }else{
+            TxMutuelle.setText(mutuelle.getTauxDePriseEnCharge() + " %");
+        }
+
 
         // Fermer la fenêtre
         fermerButton.addActionListener(new ActionListener() {

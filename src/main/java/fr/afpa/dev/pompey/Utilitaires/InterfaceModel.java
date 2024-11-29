@@ -130,7 +130,7 @@ public class InterfaceModel extends JFrame {
      * @param color   La couleur du texte du message.
      */
     public static void ShowLabelWithTimer(JLabel label, String message, Color color) {
-        String htmlMessage = "<html><body style='width: 300px; word-wrap: break-word;'>" + message + "</body></html>";
+        String htmlMessage = "<html><body style='width: 300px; word-wrap: break-word; align: center'>" + message + "</body></html>";
         label.setText("");
         label.setForeground(Color.BLACK);
         Timer resetTimer = new Timer(100, new ActionListener() {

@@ -54,7 +54,8 @@ public class ControllerListeMutuelle extends JFrame {
         // Bouton Détail
         mutuelleTable.getColumn("Détails").setCellRenderer(new button.ButtonRenderer());
         mutuelleTable.getColumn("Détails").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
-            int id = (int) mutuelleTable.getValueAt(mutuelleTable.getSelectedRow(), 0);
+            int row = mutuelleTable.getEditingRow();
+            int id = (int) mutuelleTable.getValueAt(row, 0);
             ControllerDetailMutuelle controllerDetailMutuelle = new ControllerDetailMutuelle(id);
             controllerDetailMutuelle.setVisible(true);
         }));
