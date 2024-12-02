@@ -64,7 +64,7 @@ public class Singleton {
     }
 
 
-   // public static void main(String[] args) {
+    // public static void main(String[] args) {
     //    Singleton.getInstanceDB();
-  //  }
+    //  }
 }

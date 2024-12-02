@@ -29,9 +29,11 @@ public class ControllerDetailMutuelle extends JFrame {
      */
     public ControllerDetailMutuelle(int id) {
         //TODO : Fix this
-        Mutuelle mutuelle = mutuelleDAO.find(id);
+
         //Initialisation des DAO
         mutuelleDAO = new MutuelleDAO();
+
+        Mutuelle mutuelle = mutuelleDAO.find(id);
 
         setTitle("Détail Mutuelle");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -52,12 +54,33 @@ public class ControllerDetailMutuelle extends JFrame {
         }
 
         // Si l'adresse de la mutuelle est null, afficher "Non renseigné"
-        if(mutuelle.getAdresses() != null){
+        // Check if the address is null
+        if (mutuelle.getAdresses() != null) {
             AdresseMutuelle.setText(mutuelle.getAdresses().getRue());
-            DepartementMutuelle.setText(mutuelle.getAdresses().getVille().getRegion().getNom());
-            CodepostalMutuelle.setText(mutuelle.getAdresses().getVille().getCp());
-            VilleMutuelle.setText(mutuelle.getAdresses().getVille().getNom());
-        }else{
+
+            // Check if the city is null
+            if (mutuelle.getAdresses().getVille() != null) {
+                if (mutuelle.getAdresses().getVille().getRegion() != null) {
+                    DepartementMutuelle.setText(mutuelle.getAdresses().getVille().getRegion().getNom());
+                } else {
+                    DepartementMutuelle.setText("Non renseigné");
+                }
+                if (mutuelle.getAdresses().getVille().getCp() != null) {
+                    CodepostalMutuelle.setText(String.valueOf(mutuelle.getAdresses().getVille().getCp()));
+                } else {
+                    CodepostalMutuelle.setText("Non renseigné");
+                }
+                if (mutuelle.getAdresses().getVille().getNom() != null) {
+                    VilleMutuelle.setText(mutuelle.getAdresses().getVille().getNom());
+                } else {
+                    VilleMutuelle.setText("Non renseigné");
+                }
+            } else {
+                DepartementMutuelle.setText("Non renseigné");
+                CodepostalMutuelle.setText("Non renseigné");
+                VilleMutuelle.setText("Non renseigné");
+            }
+        } else {
             AdresseMutuelle.setText("Non renseigné");
             DepartementMutuelle.setText("Non renseigné");
             CodepostalMutuelle.setText("Non renseigné");
