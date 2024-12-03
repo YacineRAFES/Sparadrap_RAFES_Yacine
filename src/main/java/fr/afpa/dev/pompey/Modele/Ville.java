@@ -9,10 +9,10 @@ public class Ville<T> extends Region implements Serializable {
     private Region region;
 
     public Ville(int id, String nom, String cp, int idRegion) {
-        super(idRegion);
         setId(id);
         setNom(nom);
         setCp(cp);
+        setRegion(new Region(idRegion));
     }
 
     public Ville(int id){

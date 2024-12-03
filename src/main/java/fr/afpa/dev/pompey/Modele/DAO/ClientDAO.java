@@ -74,8 +74,8 @@ public class ClientDAO extends DAO<Client> {
 
     @Override
     public boolean update(Client obj) {
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Format attendu
+        SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         StringBuilder updateSQL = new StringBuilder();
         updateSQL.append("UPDATE client SET CLI_nom = ?, CLI_prenom = ?, CLI_dateNaissance = ?, CLI_numero_de_securite_social = ?, COOR_ID = ?, ADRES_ID = ?, MUT_ID = ?, MEDE_ID = ? ");
@@ -86,7 +86,12 @@ public class ClientDAO extends DAO<Client> {
 
             pstmt.setString(1, obj.getNom());
             pstmt.setString(2, obj.getPrenom());
-            pstmt.setString(3, simpleDateFormat.format(obj.getDateNaissance()));
+
+            // Conversion de date
+            java.util.Date utilDate = inputDateFormat.parse(obj.getDateNaissance()); // Conversion du format utilisateur
+            String formattedDate = dbDateFormat.format(utilDate); // Format adapté pour la base
+            pstmt.setDate(3, java.sql.Date.valueOf(formattedDate));
+
             pstmt.setString(4, obj.getNumeroSecuClient());
             pstmt.setInt(5, obj.getCoordonnees().getId());
             pstmt.setInt(6, obj.getAdresses().getId());
@@ -97,7 +102,7 @@ public class ClientDAO extends DAO<Client> {
             pstmt.executeUpdate();
 
             return true;
-        }catch(SQLException e){
+        }catch(SQLException | ParseException e){
             throw new RuntimeException(e);
         }
     }

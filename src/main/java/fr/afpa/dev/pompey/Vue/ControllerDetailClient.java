@@ -201,21 +201,23 @@ public class ControllerDetailClient extends JFrame{
      */
     private int checkVille(String villeName, String cp, int newIdRegion) {
         int newIdVille = 0;
-        boolean villeExist = false;
+        Ville villeExist = null;
         for (Ville villeCheck : villeDAO.findAll()) {
             if (villeCheck.getNom().equals(villeName)) {
-                newIdVille = villeCheck.getId();
-                villeExist = true;
+                villeExist = villeCheck;
+                break;
             }
         }
-//TODO: A FIX!
-        if(villeExist){
-            Ville ville = villeDAO.find(newIdVille);
-            if(ville.getRegion().getId() != newIdRegion){
+
+        if(villeExist != null){
+            newIdVille = villeExist.getId();
+            String cpVille = villeExist.getCp();
+
+            if(villeExist.getRegion().getId() != newIdRegion){
                 Ville villeUpdate = new Ville(
                         newIdVille,
                         villeName,
-                        ville.getCp(),
+                        cpVille,
                         newIdRegion
                 );
                 villeDAO.update(villeUpdate);
@@ -252,8 +254,6 @@ public class ControllerDetailClient extends JFrame{
                         telephone
                 );
                 coordonneesDAO.update(coordonnees);
-            }else{
-                throw new SaisieException("Le client n'a pas changé ses coordonnées");
             }
         }
     }

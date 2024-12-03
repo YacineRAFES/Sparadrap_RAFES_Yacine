@@ -5,11 +5,13 @@ import fr.afpa.dev.pompey.Modele.Client;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
+import static fr.afpa.dev.pompey.Modele.DAO.DAOUtils.getClients;
+
 public class ListeClientTable extends AbstractTableModel {
     private final String[] ENTETE = new String[] {
             "ID", "Nom", "Prenom", "Email", "Téléphone", "Détail", "Action"
     };
-    private final List<Client> clients;
+    private List<Client> clients;
 
     public ListeClientTable(List<Client> clients) {
         this.clients = clients;
@@ -55,6 +57,11 @@ public class ListeClientTable extends AbstractTableModel {
         }else{
             return false;
         }
+    }
+
+    public void refreshList() {
+        this.clients = getClients();
+        fireTableDataChanged();
     }
 
 

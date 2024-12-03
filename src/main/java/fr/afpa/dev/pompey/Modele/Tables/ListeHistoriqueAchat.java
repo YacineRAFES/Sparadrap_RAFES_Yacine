@@ -19,7 +19,6 @@ public class ListeHistoriqueAchat extends AbstractTableModel {
     private List<AchatDirect> achatDirect;
     private List<Ordonnances> ordonnances;
 
-
     AchatDirectDAO achatDirectDAO = new AchatDirectDAO();
     OrdonnancesDAO ordonnancesDAO = new OrdonnancesDAO();
 

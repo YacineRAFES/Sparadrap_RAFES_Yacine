@@ -1,12 +1,8 @@
 package fr.afpa.dev.pompey.Vue;
 
 import fr.afpa.dev.pompey.Exception.SaisieException;
-import fr.afpa.dev.pompey.Modele.Client;
-import fr.afpa.dev.pompey.Modele.DAO.AchatDirectDAO;
-import fr.afpa.dev.pompey.Modele.DAO.ClientDAO;
-import fr.afpa.dev.pompey.Modele.DAO.OrdonnancesDAO;
-import fr.afpa.dev.pompey.Modele.Ordonnances;
-import fr.afpa.dev.pompey.Modele.Region;
+import fr.afpa.dev.pompey.Modele.*;
+import fr.afpa.dev.pompey.Modele.DAO.*;
 import fr.afpa.dev.pompey.Modele.Tables.ListeClientTable;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.InterfaceModel;
@@ -15,6 +11,7 @@ import fr.afpa.dev.pompey.Utilitaires.button;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 import static fr.afpa.dev.pompey.Utilitaires.InterfaceModel.*;
 
@@ -33,6 +30,8 @@ public class ControllerListeClient extends JFrame {
     private ClientDAO clientDAO;
     private OrdonnancesDAO ordonnanceDAO;
     private AchatDirectDAO achatDirectDAO;
+    private DemandeDAO demandeDAO;
+    private CommandeDAO commandeDAO;
 
 
     /**
@@ -41,7 +40,9 @@ public class ControllerListeClient extends JFrame {
     public ControllerListeClient() {
         clientDAO = new ClientDAO();
         ordonnanceDAO = new OrdonnancesDAO();
+        demandeDAO = new DemandeDAO();
         achatDirectDAO = new AchatDirectDAO();
+        commandeDAO = new CommandeDAO();
 
         setTitle("Liste des clients");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -67,23 +68,41 @@ public class ControllerListeClient extends JFrame {
 
         //Bouton Supprimer
         listeClientTable.getColumn("Action").setCellRenderer(new button.ButtonRenderer());
-        listeClientTable.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), e ->  {
+        listeClientTable.getColumn("Action").setCellEditor(new button.ButtonEditor(new JCheckBox(), e -> {
             int id = (int) listeClientTable.getValueAt(listeClientTable.getSelectedRow(), 0);
             Client client = clientDAO.find(id);
-            if(client != null){
-                Ordonnances ordonnances = (Ordonnances) ordonnanceDAO.findAllByIdClient(client.getId());
-                if(ordonnances != null) {
-                    Fenetre.Confirmation("Le client a des ordonnances, voulez-vous vraiment le supprimer ?", "Confirmation");
-                    if (Fenetre.Confirmation("Le client a des ordonnances, voulez-vous vraiment le supprimer ?", "Confirmation")) {
-                        //TODO A REVOIR
-//                        InterfaceModel.ButtonSupprimer(clientDAO, client.getId());
-//                        InterfaceModel.ButtonSupprimer(ordonnanceDAO, ordonnances.getId());
-//                        InterfaceModel.ButtonSupprimer(achatDirectDAO, ordonnances.getId());
-                        Refresh(listeClientTable);
+            if (client != null) {
+                List<Ordonnances> ordonnances = ordonnanceDAO.findAllByIdClient(client.getId());
+                List<AchatDirect> achatDirects = achatDirectDAO.findAllByIdClient(client.getId());
+                //Si le client a des ordonnandes et/ou achatdirect, on demande une confirmation
+                if (ordonnances != null || achatDirects != null) {
+                    if (Fenetre.Confirmation("Le client a des ordonnances et/ou les achat direct, voulez-vous vraiment le supprimer ?", "Confirmation de suppression")) {
+                        //Supprimer les demandes
+                        List<Demande> demandes = demandeDAO.findAllByOrdonnance(client.getId());
+                        for(Ordonnances ordonnance : ordonnances){
+                            for(Demande demande : demandes){
+                                if(ordonnance.getId() == demande.getOrdonnances().getId()){
+                                    demandeDAO.delete(demande);
+                                }
+                            }
+                            ordonnanceDAO.deleteAllByIdClient(ordonnance.getId());
+                        }
+                        //Supprimer les commandes
+                        List<Commande> commandes = commandeDAO.findAllByIdClient(client.getId());
+                        for(AchatDirect achatDirect : achatDirects){
+                            for(Commande commande : commandes){
+                                if(achatDirect.getId() == commande.getAchatDirect().getId()){
+                                    commandeDAO.delete(commande);
+                                }
+                            }
+                            achatDirectDAO.deleteAllByIdClient(achatDirect.getId());
+                        }
+                        //Supprimer le client
+                        clientDAO.delete(client);
+                        listeClientTable.refreshList();
                     }
                 }
             }
-            clientDAO.find(id);
         }));
 
 

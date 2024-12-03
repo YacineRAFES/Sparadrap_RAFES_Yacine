@@ -121,4 +121,24 @@ public class CommandeDAO extends DAO<Commande> {
         }
         return commandesList;
     }
+
+    public List<Commande> findAllByIdClient(int id) {
+        List<Commande> commandesList = new ArrayList<>();
+        StringBuilder selectAllSQL = new StringBuilder();
+        selectAllSQL.append("SELECT * FROM Commande WHERE ACH_ID IN (SELECT ACH_ID FROM AchatDirect WHERE CLI_ID = ?)");
+        try (PreparedStatement pstmt = connect.prepareStatement(selectAllSQL.toString())) {
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Commande commande = new Commande();
+                commande.setMedicament(new MedicamentDAO().find(rs.getInt("MED_ID")));
+                commande.setAchatDirect(new AchatDirectDAO().find(rs.getInt("ACH_ID")));
+                commande.setQuantite(rs.getInt("quantite"));
+                commandesList.add(commande);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return commandesList;
+    }
 }
