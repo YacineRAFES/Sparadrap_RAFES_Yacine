@@ -99,7 +99,7 @@ public class ControllerListeClient extends JFrame {
                         }
                         //Supprimer le client
                         clientDAO.delete(client);
-                        listeClientTable.refreshList();
+//                        listeClientTable.refreshList();
                     }
                 }
             }
