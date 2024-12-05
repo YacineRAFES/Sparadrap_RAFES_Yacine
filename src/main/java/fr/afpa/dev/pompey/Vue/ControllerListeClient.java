@@ -4,6 +4,7 @@ import fr.afpa.dev.pompey.Exception.SaisieException;
 import fr.afpa.dev.pompey.Modele.*;
 import fr.afpa.dev.pompey.Modele.DAO.*;
 import fr.afpa.dev.pompey.Modele.Tables.ListeClientTable;
+import fr.afpa.dev.pompey.Modele.Tables.ListeHistoriqueAchat;
 import fr.afpa.dev.pompey.Utilitaires.Fenetre;
 import fr.afpa.dev.pompey.Utilitaires.InterfaceModel;
 import fr.afpa.dev.pompey.Utilitaires.button;
@@ -32,6 +33,7 @@ public class ControllerListeClient extends JFrame {
     private AchatDirectDAO achatDirectDAO;
     private DemandeDAO demandeDAO;
     private CommandeDAO commandeDAO;
+    private ListeClientTable model1;
 
 
     /**
@@ -78,28 +80,24 @@ public class ControllerListeClient extends JFrame {
                 if (ordonnances != null || achatDirects != null) {
                     if (Fenetre.Confirmation("Le client a des ordonnances et/ou les achat direct, voulez-vous vraiment le supprimer ?", "Confirmation de suppression")) {
                         //Supprimer les demandes
-                        List<Demande> demandes = demandeDAO.findAllByOrdonnance(client.getId());
-                        for(Ordonnances ordonnance : ordonnances){
-                            for(Demande demande : demandes){
-                                if(ordonnance.getId() == demande.getOrdonnances().getId()){
-                                    demandeDAO.delete(demande);
-                                }
-                            }
-                            ordonnanceDAO.deleteAllByIdClient(ordonnance.getId());
+                        //Trouver tout les id Ordonnances par un ID client
+                        List<Ordonnances> ordonnancesList = ordonnanceDAO.findAllByIdClient(client.getId());
+
+                        for (Ordonnances ordonnance : ordonnancesList) {
+                            List<Demande> demandes = demandeDAO.findAllByOrdonnance(ordonnance.getId());
+                            demandes.forEach(demandeDAO::delete);
+                            ordonnanceDAO.delete(ordonnance);
                         }
                         //Supprimer les commandes
-                        List<Commande> commandes = commandeDAO.findAllByIdClient(client.getId());
-                        for(AchatDirect achatDirect : achatDirects){
-                            for(Commande commande : commandes){
-                                if(achatDirect.getId() == commande.getAchatDirect().getId()){
-                                    commandeDAO.delete(commande);
-                                }
-                            }
-                            achatDirectDAO.deleteAllByIdClient(achatDirect.getId());
+                        List<AchatDirect> achatDirectList = achatDirectDAO.findAllByIdClient(client.getId());
+                        for (AchatDirect achatDirect : achatDirectList) {
+                            List<Commande> commandes = commandeDAO.findAllByIdClient(client.getId());
+                            commandes.forEach(commandeDAO::delete);
+                            achatDirectDAO.delete(achatDirect);
                         }
-                        //Supprimer le client
+//                        Supprimer le client
                         clientDAO.delete(client);
-//                        listeClientTable.refreshList();
+                        model1.refreshList();
                     }
                 }
             }
